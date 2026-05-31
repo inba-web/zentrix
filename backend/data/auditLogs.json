@@ -258,5 +258,25 @@
     "ip": "127.0.0.1",
     "createdAt": "2026-05-31T14:54:45.330Z",
     "updatedAt": "2026-05-31T14:54:45.330Z"
+  },
+  {
+    "_id": "7imxe53",
+    "timestamp": "2026-05-31T14:55:00.333Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket xbmm695",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-05-31T14:55:00.333Z",
+    "updatedAt": "2026-05-31T14:55:00.333Z"
+  },
+  {
+    "_id": "7l0owz6",
+    "timestamp": "2026-05-31T14:55:15.329Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket v9yr5p4",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-05-31T14:55:15.329Z",
+    "updatedAt": "2026-05-31T14:55:15.329Z"
   }
 ]
