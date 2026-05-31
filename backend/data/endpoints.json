@@ -1,0 +1,36 @@
+[
+  {
+    "_id": "6zksvem",
+    "hostname": "anonymous",
+    "ip": "192.168.137.64",
+    "os": "Linux 6.17.10+kali-amd64",
+    "cpuUsage": 42,
+    "ramUsage": 61,
+    "status": "Online",
+    "lastSeen": "2026-05-31T13:51:18.817Z",
+    "processes": [
+      {
+        "pid": 1,
+        "name": "systemd",
+        "path": "/sbin/init",
+        "parent": 0
+      },
+      {
+        "pid": 512,
+        "name": "python3",
+        "path": "/usr/bin/python3",
+        "parent": 1
+      }
+    ],
+    "networkConnections": [
+      {
+        "localPort": 22,
+        "remoteAddress": "0.0.0.0",
+        "remotePort": 0,
+        "state": "LISTENING"
+      }
+    ],
+    "createdAt": "2026-05-31T13:48:45.931Z",
+    "updatedAt": "2026-05-31T13:51:18.817Z"
+  }
+]

@@ -1,0 +1,347 @@
+const fs = require('fs');
+const path = require('path');
+const mongoose = require('mongoose');
+
+// Path for fallback local storage
+const FALLBACK_DIR = path.join(__dirname, 'data');
+if (!fs.existsSync(FALLBACK_DIR)) {
+  fs.mkdirSync(FALLBACK_DIR, { recursive: true });
+}
+
+let useMongoose = false;
+
+// Initialize connection
+async function connect() {
+  const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/enterprise_soc';
+  try {
+    console.log('[DB] Attempting MongoDB connection...');
+    await mongoose.connect(mongoUri, {
+      serverSelectionTimeoutMS: 2000 // Quick timeout to trigger fallback
+    });
+    useMongoose = true;
+    console.log('[DB] Connected successfully to Enterprise MongoDB Server.');
+  } catch (err) {
+    console.warn(`[DB] MongoDB connection failed: ${err.message}`);
+    console.warn('[DB] GRACEFUL FALLBACK: Initializing localized JSON File Database.');
+    useMongoose = false;
+  }
+}
+
+// ----------------------------------------------------
+// Schema Definitions for MongoDB
+// ----------------------------------------------------
+
+const userSchema = new mongoose.Schema({
+  email: { type: String, required: true, unique: true },
+  name: String,
+  role: { type: String, default: 'Analyst' },
+  avatar: String,
+  joinedAt: { type: Date, default: Date.now }
+});
+
+const logSchema = new mongoose.Schema({
+  timestamp: { type: Date, default: Date.now },
+  source: String,     // 'WinEvent', 'Sysmon', 'AuthLog', 'AppLog', 'Suricata'
+  severity: String,   // 'INFO', 'WARNING', 'ERROR', 'CRITICAL'
+  message: String,
+  host: String,
+  user: String,
+  srcIp: String,
+  destIp: String,
+  mitreTactic: String,
+  mitreTechnique: String,
+  payload: Object
+});
+
+const endpointSchema = new mongoose.Schema({
+  hostname: String,
+  ip: String,
+  os: String,
+  status: { type: String, default: 'Online' }, // 'Online', 'Offline', 'Isolated'
+  cpuUsage: Number,
+  ramUsage: Number,
+  lastSeen: { type: Date, default: Date.now },
+  processes: Array,
+  networkConnections: Array
+});
+
+const alertSchema = new mongoose.Schema({
+  timestamp: { type: Date, default: Date.now },
+  severity: { type: String, enum: ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW'], default: 'MEDIUM' },
+  title: String,
+  description: String,
+  category: String, // 'Malware', 'Credential Theft', 'IDS Intrusion', 'Honeypot Trigger', etc.
+  host: String,
+  status: { type: String, enum: ['NEW', 'ACKNOWLEDGED', 'INVESTIGATING', 'RESOLVED'], default: 'NEW' },
+  assignedTo: String,
+  evidence: Object
+});
+
+const incidentSchema = new mongoose.Schema({
+  title: String,
+  severity: { type: String, enum: ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW'], default: 'MEDIUM' },
+  status: { type: String, enum: ['NEW', 'INVESTIGATING', 'CONTAINED', 'RESOLVED'], default: 'NEW' },
+  assignedTo: String,
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
+  impact: String,
+  rootCause: String,
+  recommendations: [String],
+  timeline: [{
+    timestamp: { type: Date, default: Date.now },
+    activity: String,
+    actor: String
+  }],
+  evidence: Array
+});
+
+const iocSchema = new mongoose.Schema({
+  type: { type: String, enum: ['Domain', 'IP', 'Hash', 'URL', 'Registry Key'], required: true },
+  value: { type: String, required: true, unique: true },
+  threatType: String,
+  reputation: { type: Number, default: 0 }, // 0 to 100
+  source: String,
+  createdAt: { type: Date, default: Date.now },
+  notes: String
+});
+
+const soarPlaybookSchema = new mongoose.Schema({
+  name: String,
+  trigger: String, // 'AlertCritical', 'MalwareDetected', 'HoneypotTrigger'
+  status: { type: String, default: 'Active' },
+  steps: [{
+    order: Number,
+    action: String, // 'EnrichIOC', 'NotifyAnalyst', 'IsolateEndpoint', 'BlockIP'
+    params: Object
+  }],
+  executions: [{
+    timestamp: { type: Date, default: Date.now },
+    status: String,
+    logs: [String]
+  }]
+});
+
+const auditLogSchema = new mongoose.Schema({
+  timestamp: { type: Date, default: Date.now },
+  user: String,
+  action: String,
+  details: String,
+  ip: String
+});
+
+const reportSchema = new mongoose.Schema({
+  timestamp: { type: Date, default: Date.now },
+  title: String,
+  deliveryStatus: { type: String, default: 'Delivered' },
+  recipient: String,
+  alertsCount: Number,
+  endpointCount: Number,
+  securityScore: Number,
+  fileName: String
+});
+
+// Compile Mongoose models
+const MongoModels = {
+  users: mongoose.model('User', userSchema),
+  logs: mongoose.model('Log', logSchema),
+  endpoints: mongoose.model('Endpoint', endpointSchema),
+  alerts: mongoose.model('Alert', alertSchema),
+  incidents: mongoose.model('Incident', incidentSchema),
+  iocs: mongoose.model('IOC', iocSchema),
+  playbooks: mongoose.model('SOARPlaybook', soarPlaybookSchema),
+  auditLogs: mongoose.model('AuditLog', auditLogSchema),
+  reports: mongoose.model('Report', reportSchema)
+};
+
+// ----------------------------------------------------
+// Local File Storage Engine (Fallback Layer)
+// ----------------------------------------------------
+
+class FileCollection {
+  constructor(name) {
+    this.name = name;
+    this.filePath = path.join(FALLBACK_DIR, `${name}.json`);
+    if (!fs.existsSync(this.filePath)) {
+      fs.writeFileSync(this.filePath, JSON.stringify([], null, 2));
+    }
+  }
+
+  _read() {
+    try {
+      const data = fs.readFileSync(this.filePath, 'utf8');
+      return JSON.parse(data);
+    } catch {
+      return [];
+    }
+  }
+
+  _write(data) {
+    fs.writeFileSync(this.filePath, JSON.stringify(data, null, 2));
+  }
+
+  async find(query = {}) {
+    const list = this._read();
+    return list.filter(item => {
+      for (let key in query) {
+        if (query[key] && typeof query[key] === 'object' && query[key].$regex) {
+          const reg = new RegExp(query[key].$regex, query[key].$options || 'i');
+          if (!reg.test(item[key])) return false;
+        } else if (item[key] !== query[key]) {
+          return false;
+        }
+      }
+      return true;
+    });
+  }
+
+  async findOne(query = {}) {
+    const list = await this.find(query);
+    return list[0] || null;
+  }
+
+  async create(doc) {
+    const list = this._read();
+    const newDoc = {
+      _id: doc._id || Math.random().toString(36).substring(2, 9),
+      ...doc,
+      createdAt: doc.createdAt || new Date().toISOString(),
+      updatedAt: doc.updatedAt || new Date().toISOString()
+    };
+    list.push(newDoc);
+    this._write(list);
+    return newDoc;
+  }
+
+  async insertMany(docs) {
+    const list = this._read();
+    const createdDocs = docs.map(doc => ({
+      _id: doc._id || Math.random().toString(36).substring(2, 9),
+      ...doc,
+      createdAt: doc.createdAt || new Date().toISOString(),
+      updatedAt: doc.updatedAt || new Date().toISOString()
+    }));
+    list.push(...createdDocs);
+    this._write(list);
+    return createdDocs;
+  }
+
+  async findByIdAndUpdate(id, update, options = {}) {
+    const list = this._read();
+    const idx = list.findIndex(item => item._id === id);
+    if (idx === -1) return null;
+    const item = list[idx];
+    const updated = {
+      ...item,
+      ...(update.$set || update),
+      updatedAt: new Date().toISOString()
+    };
+    list[idx] = updated;
+    this._write(list);
+    return updated;
+  }
+
+  async findOneAndUpdate(query, update, options = {}) {
+    const item = await this.findOne(query);
+    if (!item) return null;
+    return this.findByIdAndUpdate(item._id, update, options);
+  }
+
+  async deleteOne(query) {
+    const list = this._read();
+    const idx = list.findIndex(item => {
+      for (let key in query) {
+        if (item[key] !== query[key]) return false;
+      }
+      return true;
+    });
+    if (idx === -1) return false;
+    list.splice(idx, 1);
+    this._write(list);
+    return { deletedCount: 1 };
+  }
+
+  async countDocuments(query = {}) {
+    const items = await this.find(query);
+    return items.length;
+  }
+}
+
+const FileModels = {
+  users: new FileCollection('users'),
+  logs: new FileCollection('logs'),
+  endpoints: new FileCollection('endpoints'),
+  alerts: new FileCollection('alerts'),
+  incidents: new FileCollection('incidents'),
+  iocs: new FileCollection('iocs'),
+  playbooks: new FileCollection('playbooks'),
+  auditLogs: new FileCollection('auditLogs'),
+  reports: new FileCollection('reports')
+};
+
+// ----------------------------------------------------
+// Unified Database Access Layer
+// ----------------------------------------------------
+
+const db = {
+  connect,
+  isMongoose: () => useMongoose,
+  users: {
+    find: q => useMongoose ? MongoModels.users.find(q).lean() : FileModels.users.find(q),
+    findOne: q => useMongoose ? MongoModels.users.findOne(q).lean() : FileModels.users.findOne(q),
+    create: d => useMongoose ? MongoModels.users.create(d) : FileModels.users.create(d),
+    findByIdAndUpdate: (id, u) => useMongoose ? MongoModels.users.findByIdAndUpdate(id, u, { new: true }).lean() : FileModels.users.findByIdAndUpdate(id, u)
+  },
+  logs: {
+    find: (q, limit = 100) => useMongoose ? MongoModels.logs.find(q).sort({ timestamp: -1 }).limit(limit).lean() : FileModels.logs.find(q).then(arr => arr.slice(-limit).reverse()),
+    create: d => useMongoose ? MongoModels.logs.create(d) : FileModels.logs.create(d),
+    insertMany: d => useMongoose ? MongoModels.logs.insertMany(d) : FileModels.logs.insertMany(d),
+    countDocuments: q => useMongoose ? MongoModels.logs.countDocuments(q) : FileModels.logs.countDocuments(q)
+  },
+  endpoints: {
+    find: q => useMongoose ? MongoModels.endpoints.find(q).lean() : FileModels.endpoints.find(q),
+    findOne: q => useMongoose ? MongoModels.endpoints.findOne(q).lean() : FileModels.endpoints.findOne(q),
+    create: d => useMongoose ? MongoModels.endpoints.create(d) : FileModels.endpoints.create(d),
+    findByIdAndUpdate: (id, u) => useMongoose ? MongoModels.endpoints.findByIdAndUpdate(id, u, { new: true }).lean() : FileModels.endpoints.findByIdAndUpdate(id, u),
+    findOneAndUpdate: (q, u) => useMongoose ? MongoModels.endpoints.findOneAndUpdate(q, u, { new: true }).lean() : FileModels.endpoints.findOneAndUpdate(q, u),
+    countDocuments: q => useMongoose ? MongoModels.endpoints.countDocuments(q) : FileModels.endpoints.countDocuments(q)
+  },
+  alerts: {
+    find: (q, limit = 100) => useMongoose ? MongoModels.alerts.find(q).sort({ timestamp: -1 }).limit(limit).lean() : FileModels.alerts.find(q).then(arr => arr.slice(-limit).reverse()),
+    create: d => useMongoose ? MongoModels.alerts.create(d) : FileModels.alerts.create(d),
+    findByIdAndUpdate: (id, u) => useMongoose ? MongoModels.alerts.findByIdAndUpdate(id, u, { new: true }).lean() : FileModels.alerts.findByIdAndUpdate(id, u),
+    countDocuments: q => useMongoose ? MongoModels.alerts.countDocuments(q) : FileModels.alerts.countDocuments(q)
+  },
+  incidents: {
+    find: q => useMongoose ? MongoModels.incidents.find(q).sort({ createdAt: -1 }).lean() : FileModels.incidents.find(q).then(arr => arr.reverse()),
+    findOne: q => useMongoose ? MongoModels.incidents.findOne(q).lean() : FileModels.incidents.findOne(q),
+    create: d => useMongoose ? MongoModels.incidents.create(d) : FileModels.incidents.create(d),
+    findByIdAndUpdate: (id, u) => useMongoose ? MongoModels.incidents.findByIdAndUpdate(id, u, { new: true }).lean() : FileModels.incidents.findByIdAndUpdate(id, u),
+    countDocuments: q => useMongoose ? MongoModels.incidents.countDocuments(q) : FileModels.incidents.countDocuments(q)
+  },
+  iocs: {
+    find: q => useMongoose ? MongoModels.iocs.find(q).lean() : FileModels.iocs.find(q),
+    findOne: q => useMongoose ? MongoModels.iocs.findOne(q).lean() : FileModels.iocs.findOne(q),
+    create: d => useMongoose ? MongoModels.iocs.create(d) : FileModels.iocs.create(d),
+    findByIdAndUpdate: (id, u) => useMongoose ? MongoModels.iocs.findByIdAndUpdate(id, u, { new: true }).lean() : FileModels.iocs.findByIdAndUpdate(id, u),
+    deleteOne: q => useMongoose ? MongoModels.iocs.deleteOne(q) : FileModels.iocs.deleteOne(q),
+    countDocuments: q => useMongoose ? MongoModels.iocs.countDocuments(q) : FileModels.iocs.countDocuments(q)
+  },
+  playbooks: {
+    find: q => useMongoose ? MongoModels.playbooks.find(q).lean() : FileModels.playbooks.find(q),
+    findOne: q => useMongoose ? MongoModels.playbooks.findOne(q).lean() : FileModels.playbooks.findOne(q),
+    create: d => useMongoose ? MongoModels.playbooks.create(d) : FileModels.playbooks.create(d),
+    findByIdAndUpdate: (id, u) => useMongoose ? MongoModels.playbooks.findByIdAndUpdate(id, u, { new: true }).lean() : FileModels.playbooks.findByIdAndUpdate(id, u),
+    findOneAndUpdate: (q, u) => useMongoose ? MongoModels.playbooks.findOneAndUpdate(q, u, { new: true }).lean() : FileModels.playbooks.findOneAndUpdate(q, u)
+  },
+  auditLogs: {
+    find: (q, limit = 200) => useMongoose ? MongoModels.auditLogs.find(q).sort({ timestamp: -1 }).limit(limit).lean() : FileModels.auditLogs.find(q).then(arr => arr.slice(-limit).reverse()),
+    create: d => useMongoose ? MongoModels.auditLogs.create(d) : FileModels.auditLogs.create(d)
+  },
+  reports: {
+    find: q => useMongoose ? MongoModels.reports.find(q).sort({ timestamp: -1 }).lean() : FileModels.reports.find(q).then(arr => arr.reverse()),
+    create: d => useMongoose ? MongoModels.reports.create(d) : FileModels.reports.create(d),
+    countDocuments: q => useMongoose ? MongoModels.reports.countDocuments(q) : FileModels.reports.countDocuments(q)
+  }
+};
+
+module.exports = db;
