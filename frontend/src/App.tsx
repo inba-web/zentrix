@@ -216,7 +216,7 @@ export default function App() {
             <div className="p-3 bg-blue-950/50 border border-blue-500/30 rounded-xl mb-3">
               <ShieldAlert className="w-10 h-10 text-blue-500" />
             </div>
-            <h1 className="text-xl font-bold tracking-wider font-sans text-slate-100">ENTERPRISE SOC</h1>
+            <h1 className="text-xl font-bold tracking-wider font-sans text-slate-100">ZENTRIX</h1>
             <p className="text-xs text-slate-400 mt-1 uppercase font-mono">Operations Platform Version 4.8.0</p>
           </div>
 

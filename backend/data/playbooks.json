@@ -1,1 +1,90 @@
-[]
+[
+  {
+    "_id": "jaaaz0t",
+    "name": "Critical Malware Containment Playbook",
+    "trigger": "MalwareDetected",
+    "status": "Active",
+    "steps": [
+      {
+        "order": 1,
+        "action": "EnrichIOC",
+        "params": {
+          "source": "VirusTotal"
+        }
+      },
+      {
+        "order": 2,
+        "action": "NotifyAnalyst",
+        "params": {
+          "channel": "Email/AlertCenter"
+        }
+      },
+      {
+        "order": 3,
+        "action": "IsolateEndpoint",
+        "params": {
+          "automatic": true
+        }
+      }
+    ],
+    "executions": [],
+    "createdAt": "2026-05-31T14:49:30.297Z",
+    "updatedAt": "2026-05-31T14:52:45.321Z",
+    "$push": {
+      "executions": {
+        "timestamp": "2026-05-31T14:52:45.321Z",
+        "status": "SUCCESS",
+        "logs": [
+          "Playbook triggered by alert 2ejyesx",
+          "Analyzing threat levels...",
+          "Executing Step 1: EnrichIOC",
+          "IOC Enriched successfully. Threat Rank: 98% malicious.",
+          "Executing Step 2: NotifyAnalyst",
+          "Executing Step 3: IsolateEndpoint",
+          "Containment threshold exceeded. Sending Isolation command to EDR Agent.",
+          "Playbook executed successfully. Security orchestration finalized."
+        ]
+      }
+    }
+  },
+  {
+    "_id": "yxl9xyi",
+    "name": "Brute Force Auto-Mitigation Playbook",
+    "trigger": "HoneypotTrigger",
+    "status": "Active",
+    "steps": [
+      {
+        "order": 1,
+        "action": "EnrichIOC",
+        "params": {
+          "source": "AbuseIPDB"
+        }
+      },
+      {
+        "order": 2,
+        "action": "BlockIP",
+        "params": {
+          "automatic": true
+        }
+      }
+    ],
+    "executions": [],
+    "createdAt": "2026-05-31T14:49:30.297Z",
+    "updatedAt": "2026-05-31T14:53:15.324Z",
+    "$push": {
+      "executions": {
+        "timestamp": "2026-05-31T14:53:15.323Z",
+        "status": "SUCCESS",
+        "logs": [
+          "Playbook triggered by alert 03vylvn",
+          "Analyzing threat levels...",
+          "Executing Step 1: EnrichIOC",
+          "IOC Enriched successfully. Threat Rank: 98% malicious.",
+          "Executing Step 2: BlockIP",
+          "Firewall Rules updated. Source IP blocked in Border IDS router gateway.",
+          "Playbook executed successfully. Security orchestration finalized."
+        ]
+      }
+    }
+  }
+]

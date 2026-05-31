@@ -1,1 +1,46 @@
-[]
+[
+  {
+    "_id": "3jbbarn",
+    "type": "IP",
+    "value": "185.220.101.5",
+    "threatType": "Tor Exit Node / Brute Force Scanner",
+    "reputation": 98,
+    "source": "AbuseIPDB",
+    "notes": "Frequently scanned network endpoints.",
+    "createdAt": "2026-05-31T14:49:30.296Z",
+    "updatedAt": "2026-05-31T14:49:30.296Z"
+  },
+  {
+    "_id": "crcly69",
+    "type": "Hash",
+    "value": "44d88612fe83832c247e353831d95e3a9772b919",
+    "threatType": "Mimikatz Credential Dumping tool",
+    "reputation": 100,
+    "source": "VirusTotal",
+    "notes": "Detected in multiple AD environments.",
+    "createdAt": "2026-05-31T14:49:30.296Z",
+    "updatedAt": "2026-05-31T14:49:30.296Z"
+  },
+  {
+    "_id": "0mbevlf",
+    "type": "Domain",
+    "value": "c2-server-botnet.top",
+    "threatType": "Active Cobalt Strike Command & Control server",
+    "reputation": 100,
+    "source": "AlienVault OTX",
+    "notes": "Active beacon target.",
+    "createdAt": "2026-05-31T14:49:30.296Z",
+    "updatedAt": "2026-05-31T14:49:30.296Z"
+  },
+  {
+    "_id": "49iiuho",
+    "type": "URL",
+    "value": "http://94.23.111.4/miners/xmrig.sh",
+    "threatType": "XMRig Cryptomining Payload",
+    "reputation": 95,
+    "source": "VirusTotal",
+    "notes": "Downloaded script in honeypot logs.",
+    "createdAt": "2026-05-31T14:49:30.296Z",
+    "updatedAt": "2026-05-31T14:49:30.296Z"
+  }
+]

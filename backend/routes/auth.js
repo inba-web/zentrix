@@ -2,23 +2,12 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const userRepo = require('../repositories/userRepository');
+const { authenticateToken } = require('../middleware/authenticate');
 const db = require('../db');
-
 const JWT_SECRET = process.env.JWT_SECRET || 'soc_enterprise_secure_secret_token_100%';
 
-// Midleware to verify JWT
-function authenticateToken(req, res, next) {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
-
-  if (!token) return res.status(401).json({ error: 'Access token required.' });
-
-  jwt.verify(token, JWT_SECRET, (err, user) => {
-    if (err) return res.status(403).json({ error: 'Invalid or expired credentials.' });
-    req.user = user;
-    next();
-  });
-}
+// Middleware removed; using shared authenticate middleware
 
 // Local Analyst Login
 router.post('/login', async (req, res) => {
@@ -29,10 +18,10 @@ router.post('/login', async (req, res) => {
   }
 
   try {
-    let user = await db.users.findOne({ email });
+    let user = await userRepo.findByEmail(email);
     if (!user) {
       // Automatic user creation for first-time login convenience in development
-      user = await db.users.create({
+      user = await userRepo.create({
         email,
         name: email.split('@')[0].toUpperCase(),
         role: email.includes('admin') ? 'Administrator' : 'Analyst',
@@ -66,9 +55,9 @@ router.post('/oauth', async (req, res) => {
   }
 
   try {
-    let user = await db.users.findOne({ email });
+    let user = await userRepo.findByEmail(email);
     if (!user) {
-      user = await db.users.create({
+      user = await userRepo.create({
         email,
         name: name || email.split('@')[0],
         role: 'Analyst',
@@ -96,9 +85,9 @@ router.post('/oauth', async (req, res) => {
 // Get currently logged-in Profile
 router.get('/me', authenticateToken, async (req, res) => {
   try {
-    const user = await db.users.findOne({ email: req.user.email });
-    if (!user) return res.status(404).json({ error: 'User profile not found.' });
-    res.json(user);
+    // req.user already contains full user object from authentication middleware
+    if (!req.user) return res.status(404).json({ error: 'User profile not found.' });
+    res.json(req.user);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

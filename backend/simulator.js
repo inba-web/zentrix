@@ -110,7 +110,7 @@ async function setupInitialDBData() {
           { localPort: 445, remoteAddress: '10.100.12.1', remotePort: 54122, state: 'ESTABLISHED' }
         ]
       }));
-      await db.endpoints.insertMany(staticEndpoints);
+      await db.endpoints.createMany(staticEndpoints);
     }
 
     const intelCount = await db.iocs.countDocuments();
@@ -122,7 +122,7 @@ async function setupInitialDBData() {
         { type: 'Domain', value: 'c2-server-botnet.top', threatType: 'Active Cobalt Strike Command & Control server', reputation: 100, source: 'AlienVault OTX', notes: 'Active beacon target.' },
         { type: 'URL', value: 'http://94.23.111.4/miners/xmrig.sh', threatType: 'XMRig Cryptomining Payload', reputation: 95, source: 'VirusTotal', notes: 'Downloaded script in honeypot logs.' }
       ];
-      await db.iocs.insertMany(mockIOCs);
+      await db.iocs.createMany(mockIOCs);
     }
 
     // Insert standard playbooks if missing
@@ -152,7 +152,7 @@ async function setupInitialDBData() {
           executions: []
         }
       ];
-      await db.playbooks.insertMany(mockPlaybooks);
+      await db.playbooks.createMany(mockPlaybooks);
     }
   } catch (err) {
     console.error('[SIM] Seeding database failed:', err);
