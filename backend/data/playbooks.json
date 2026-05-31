@@ -29,13 +29,13 @@
     ],
     "executions": [],
     "createdAt": "2026-05-31T14:49:30.297Z",
-    "updatedAt": "2026-05-31T14:52:45.321Z",
+    "updatedAt": "2026-05-31T14:54:15.333Z",
     "$push": {
       "executions": {
-        "timestamp": "2026-05-31T14:52:45.321Z",
+        "timestamp": "2026-05-31T14:54:15.333Z",
         "status": "SUCCESS",
         "logs": [
-          "Playbook triggered by alert 2ejyesx",
+          "Playbook triggered by alert fiw9j4a",
           "Analyzing threat levels...",
           "Executing Step 1: EnrichIOC",
           "IOC Enriched successfully. Threat Rank: 98% malicious.",
@@ -70,13 +70,13 @@
     ],
     "executions": [],
     "createdAt": "2026-05-31T14:49:30.297Z",
-    "updatedAt": "2026-05-31T14:53:15.324Z",
+    "updatedAt": "2026-05-31T14:55:15.327Z",
     "$push": {
       "executions": {
-        "timestamp": "2026-05-31T14:53:15.323Z",
+        "timestamp": "2026-05-31T14:55:15.327Z",
         "status": "SUCCESS",
         "logs": [
-          "Playbook triggered by alert 03vylvn",
+          "Playbook triggered by alert lgvrxj9",
           "Analyzing threat levels...",
           "Executing Step 1: EnrichIOC",
           "IOC Enriched successfully. Threat Rank: 98% malicious.",

