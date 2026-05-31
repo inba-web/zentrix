@@ -1,1 +1,15 @@
-[]
+[
+  {
+    "_id": "uqx2t1r",
+    "timestamp": "2026-05-31T14:52:32.266Z",
+    "title": "SOC Executive Report - Score 30%",
+    "deliveryStatus": "Delivered",
+    "recipient": "soc-director@enterprise.com",
+    "alertsCount": 85,
+    "endpointCount": 1,
+    "securityScore": 30,
+    "fileName": "SOC_Executive_Report_1780239152200.pdf",
+    "createdAt": "2026-05-31T14:52:32.267Z",
+    "updatedAt": "2026-05-31T14:52:32.267Z"
+  }
+]

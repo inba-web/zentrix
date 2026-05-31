@@ -1,1 +1,29 @@
-[]
+[
+  {
+    "_id": "728leb0",
+    "email": "admin.director@enterprise.com",
+    "name": "ADRIAN DIRECTOR",
+    "role": "Analyst",
+    "avatar": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=100&q=80",
+    "createdAt": "2026-05-31T14:26:14.971Z",
+    "updatedAt": "2026-05-31T14:26:14.971Z"
+  },
+  {
+    "_id": "t0mj7m6",
+    "email": "inbavarunans@gmail.com",
+    "name": "INBAVARUNANS",
+    "role": "Analyst",
+    "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80",
+    "createdAt": "2026-05-31T14:29:47.292Z",
+    "updatedAt": "2026-05-31T14:29:47.292Z"
+  },
+  {
+    "_id": "hjviuvf",
+    "email": "inbafreakz@gmail.com",
+    "name": "INBAFREAKZ",
+    "role": "Analyst",
+    "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80",
+    "createdAt": "2026-05-31T14:52:56.338Z",
+    "updatedAt": "2026-05-31T14:52:56.338Z"
+  }
+]

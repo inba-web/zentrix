@@ -1,6 +1,29 @@
+const mongoose = require('mongoose');
 const fs = require('fs');
 const path = require('path');
-const mongoose = require('mongoose');
+const jsonAdapter = require('./adapters/jsonAdapter');
+
+// Unified Database Access Layer using JSON storage only
+console.log('[DB] Using Local JSON Database');
+
+// Helper to generate collection interface
+function collection(name) {
+  return {
+    find: (query = {}) => jsonAdapter.find(name, query),
+    findOne: (query = {}) => jsonAdapter.findOne(name, query),
+    create: (doc) => jsonAdapter.create(name, doc),
+    createMany: (docs) => jsonAdapter.createMany(name, docs),
+    findByIdAndUpdate: (id, updates) => jsonAdapter.update(name, id, updates),
+    findOneAndUpdate: async (query, updates) => {
+      const doc = await jsonAdapter.findOne(name, query);
+      if (!doc) return null;
+      return jsonAdapter.update(name, doc._id, updates);
+    },
+    deleteOne: (query) => jsonAdapter.delete(name, query),
+    countDocuments: () => jsonAdapter.count(name)
+  };
+}
+
 
 // Path for fallback local storage
 const FALLBACK_DIR = path.join(__dirname, 'data');
@@ -283,65 +306,18 @@ const FileModels = {
 // ----------------------------------------------------
 
 const db = {
-  connect,
-  isMongoose: () => useMongoose,
-  users: {
-    find: q => useMongoose ? MongoModels.users.find(q).lean() : FileModels.users.find(q),
-    findOne: q => useMongoose ? MongoModels.users.findOne(q).lean() : FileModels.users.findOne(q),
-    create: d => useMongoose ? MongoModels.users.create(d) : FileModels.users.create(d),
-    findByIdAndUpdate: (id, u) => useMongoose ? MongoModels.users.findByIdAndUpdate(id, u, { new: true }).lean() : FileModels.users.findByIdAndUpdate(id, u)
-  },
-  logs: {
-    find: (q, limit = 100) => useMongoose ? MongoModels.logs.find(q).sort({ timestamp: -1 }).limit(limit).lean() : FileModels.logs.find(q).then(arr => arr.slice(-limit).reverse()),
-    create: d => useMongoose ? MongoModels.logs.create(d) : FileModels.logs.create(d),
-    insertMany: d => useMongoose ? MongoModels.logs.insertMany(d) : FileModels.logs.insertMany(d),
-    countDocuments: q => useMongoose ? MongoModels.logs.countDocuments(q) : FileModels.logs.countDocuments(q)
-  },
-  endpoints: {
-    find: q => useMongoose ? MongoModels.endpoints.find(q).lean() : FileModels.endpoints.find(q),
-    findOne: q => useMongoose ? MongoModels.endpoints.findOne(q).lean() : FileModels.endpoints.findOne(q),
-    create: d => useMongoose ? MongoModels.endpoints.create(d) : FileModels.endpoints.create(d),
-    findByIdAndUpdate: (id, u) => useMongoose ? MongoModels.endpoints.findByIdAndUpdate(id, u, { new: true }).lean() : FileModels.endpoints.findByIdAndUpdate(id, u),
-    findOneAndUpdate: (q, u) => useMongoose ? MongoModels.endpoints.findOneAndUpdate(q, u, { new: true }).lean() : FileModels.endpoints.findOneAndUpdate(q, u),
-    countDocuments: q => useMongoose ? MongoModels.endpoints.countDocuments(q) : FileModels.endpoints.countDocuments(q)
-  },
-  alerts: {
-    find: (q, limit = 100) => useMongoose ? MongoModels.alerts.find(q).sort({ timestamp: -1 }).limit(limit).lean() : FileModels.alerts.find(q).then(arr => arr.slice(-limit).reverse()),
-    create: d => useMongoose ? MongoModels.alerts.create(d) : FileModels.alerts.create(d),
-    findByIdAndUpdate: (id, u) => useMongoose ? MongoModels.alerts.findByIdAndUpdate(id, u, { new: true }).lean() : FileModels.alerts.findByIdAndUpdate(id, u),
-    countDocuments: q => useMongoose ? MongoModels.alerts.countDocuments(q) : FileModels.alerts.countDocuments(q)
-  },
-  incidents: {
-    find: q => useMongoose ? MongoModels.incidents.find(q).sort({ createdAt: -1 }).lean() : FileModels.incidents.find(q).then(arr => arr.reverse()),
-    findOne: q => useMongoose ? MongoModels.incidents.findOne(q).lean() : FileModels.incidents.findOne(q),
-    create: d => useMongoose ? MongoModels.incidents.create(d) : FileModels.incidents.create(d),
-    findByIdAndUpdate: (id, u) => useMongoose ? MongoModels.incidents.findByIdAndUpdate(id, u, { new: true }).lean() : FileModels.incidents.findByIdAndUpdate(id, u),
-    countDocuments: q => useMongoose ? MongoModels.incidents.countDocuments(q) : FileModels.incidents.countDocuments(q)
-  },
-  iocs: {
-    find: q => useMongoose ? MongoModels.iocs.find(q).lean() : FileModels.iocs.find(q),
-    findOne: q => useMongoose ? MongoModels.iocs.findOne(q).lean() : FileModels.iocs.findOne(q),
-    create: d => useMongoose ? MongoModels.iocs.create(d) : FileModels.iocs.create(d),
-    findByIdAndUpdate: (id, u) => useMongoose ? MongoModels.iocs.findByIdAndUpdate(id, u, { new: true }).lean() : FileModels.iocs.findByIdAndUpdate(id, u),
-    deleteOne: q => useMongoose ? MongoModels.iocs.deleteOne(q) : FileModels.iocs.deleteOne(q),
-    countDocuments: q => useMongoose ? MongoModels.iocs.countDocuments(q) : FileModels.iocs.countDocuments(q)
-  },
-  playbooks: {
-    find: q => useMongoose ? MongoModels.playbooks.find(q).lean() : FileModels.playbooks.find(q),
-    findOne: q => useMongoose ? MongoModels.playbooks.findOne(q).lean() : FileModels.playbooks.findOne(q),
-    create: d => useMongoose ? MongoModels.playbooks.create(d) : FileModels.playbooks.create(d),
-    findByIdAndUpdate: (id, u) => useMongoose ? MongoModels.playbooks.findByIdAndUpdate(id, u, { new: true }).lean() : FileModels.playbooks.findByIdAndUpdate(id, u),
-    findOneAndUpdate: (q, u) => useMongoose ? MongoModels.playbooks.findOneAndUpdate(q, u, { new: true }).lean() : FileModels.playbooks.findOneAndUpdate(q, u)
-  },
-  auditLogs: {
-    find: (q, limit = 200) => useMongoose ? MongoModels.auditLogs.find(q).sort({ timestamp: -1 }).limit(limit).lean() : FileModels.auditLogs.find(q).then(arr => arr.slice(-limit).reverse()),
-    create: d => useMongoose ? MongoModels.auditLogs.create(d) : FileModels.auditLogs.create(d)
-  },
-  reports: {
-    find: q => useMongoose ? MongoModels.reports.find(q).sort({ timestamp: -1 }).lean() : FileModels.reports.find(q).then(arr => arr.reverse()),
-    create: d => useMongoose ? MongoModels.reports.create(d) : FileModels.reports.create(d),
-    countDocuments: q => useMongoose ? MongoModels.reports.countDocuments(q) : FileModels.reports.countDocuments(q)
-  }
+  // No connection step needed for JSON storage
+  connect: async () => console.log('[DB] JSON storage ready'),
+  // Collection interfaces
+  users: collection('users'),
+  logs: collection('logs'),
+  endpoints: collection('endpoints'),
+  alerts: collection('alerts'),
+  incidents: collection('incidents'),
+  iocs: collection('iocs'),
+  playbooks: collection('playbooks'),
+  auditLogs: collection('auditLogs'),
+  reports: collection('reports')
 };
 
 module.exports = db;

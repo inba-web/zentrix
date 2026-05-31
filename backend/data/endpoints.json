@@ -4,10 +4,10 @@
     "hostname": "anonymous",
     "ip": "192.168.137.64",
     "os": "Linux 6.17.10+kali-amd64",
-    "cpuUsage": 42,
-    "ramUsage": 61,
+    "cpuUsage": 5,
+    "ramUsage": 45,
     "status": "Online",
-    "lastSeen": "2026-05-31T13:51:18.817Z",
+    "lastSeen": "2026-05-31T14:53:22.398Z",
     "processes": [
       {
         "pid": 1,
@@ -31,6 +31,6 @@
       }
     ],
     "createdAt": "2026-05-31T13:48:45.931Z",
-    "updatedAt": "2026-05-31T13:51:18.817Z"
+    "updatedAt": "2026-05-31T14:53:22.398Z"
   }
 ]
