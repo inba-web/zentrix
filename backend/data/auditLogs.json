@@ -198,5 +198,65 @@
     "ip": "127.0.0.1",
     "createdAt": "2026-05-31T14:53:15.327Z",
     "updatedAt": "2026-05-31T14:53:15.327Z"
+  },
+  {
+    "_id": "ed5gwu7",
+    "timestamp": "2026-05-31T14:53:30.323Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket nt9qzni",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-05-31T14:53:30.323Z",
+    "updatedAt": "2026-05-31T14:53:30.323Z"
+  },
+  {
+    "_id": "qo5rezr",
+    "timestamp": "2026-05-31T14:53:45.327Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket 1h494wg",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-05-31T14:53:45.327Z",
+    "updatedAt": "2026-05-31T14:53:45.327Z"
+  },
+  {
+    "_id": "qm6gm6x",
+    "timestamp": "2026-05-31T14:54:00.330Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket k4zmybx",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-05-31T14:54:00.331Z",
+    "updatedAt": "2026-05-31T14:54:00.331Z"
+  },
+  {
+    "_id": "n41p9o9",
+    "timestamp": "2026-05-31T14:54:15.334Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-WEB-APP-01 and created Incident ticket pu47iku",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-05-31T14:54:15.334Z",
+    "updatedAt": "2026-05-31T14:54:15.334Z"
+  },
+  {
+    "_id": "81fyuxs",
+    "timestamp": "2026-05-31T14:54:30.327Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket iw26x91",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-05-31T14:54:30.327Z",
+    "updatedAt": "2026-05-31T14:54:30.327Z"
+  },
+  {
+    "_id": "dh9sh16",
+    "timestamp": "2026-05-31T14:54:45.330Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket vbfkj9v",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-05-31T14:54:45.330Z",
+    "updatedAt": "2026-05-31T14:54:45.330Z"
   }
 ]
