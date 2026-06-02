@@ -1,7 +1,27 @@
 const { app, BrowserWindow } = require('electron');
-const path = require('path');
+const http = require('http');
 
 let mainWindow;
+
+// Poll until Vite dev server is ready before loading the window
+function waitForVite(url, retries = 60, intervalMs = 500) {
+  return new Promise((resolve, reject) => {
+    let attempts = 0;
+    const tryConnect = () => {
+      http.get(url, (res) => {
+        resolve();
+      }).on('error', () => {
+        attempts++;
+        if (attempts >= retries) {
+          reject(new Error(`[ELECTRON] Vite dev server at ${url} did not start after ${(retries * intervalMs) / 1000}s`));
+        } else {
+          setTimeout(tryConnect, intervalMs);
+        }
+      });
+    };
+    tryConnect();
+  });
+}
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -9,7 +29,7 @@ function createWindow() {
     height: 900,
     minWidth: 1200,
     minHeight: 800,
-    title: 'Enterprise Security Operations Center (SOC)',
+    title: 'ZENTRIX – Security Operations Center',
     backgroundColor: '#090d16',
     webPreferences: {
       nodeIntegration: true,
@@ -17,18 +37,26 @@ function createWindow() {
     }
   });
 
-  // Load from Vite local server during development
-  mainWindow.loadURL('http://localhost:3000');
-
-  // Open chrome developer inspector tools inside shell during audits if needed:
-  // mainWindow.webContents.openDevTools();
-
   mainWindow.on('closed', function () {
     mainWindow = null;
   });
 }
 
-app.on('ready', createWindow);
+app.on('ready', async () => {
+  createWindow();
+  const DEV_URL = 'http://localhost:3000';
+  console.log('[ELECTRON] Waiting for Vite dev server…');
+  try {
+    await waitForVite(DEV_URL);
+    console.log('[ELECTRON] Vite ready — loading app.');
+    mainWindow.loadURL(DEV_URL);
+    // Uncomment to open DevTools:
+    // mainWindow.webContents.openDevTools();
+  } catch (err) {
+    console.error(err.message);
+    app.quit();
+  }
+});
 
 app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') {
@@ -41,3 +69,4 @@ app.on('activate', function () {
     createWindow();
   }
 });
+

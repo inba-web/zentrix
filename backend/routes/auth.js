@@ -1,93 +1,92 @@
 const express = require('express');
 const router = express.Router();
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
 const userRepo = require('../repositories/userRepository');
-const { authenticateToken } = require('../middleware/authenticate');
 const db = require('../db');
-const JWT_SECRET = process.env.JWT_SECRET || 'soc_enterprise_secure_secret_token_100%';
 
-// Middleware removed; using shared authenticate middleware
-
-// Local Analyst Login
-router.post('/login', async (req, res) => {
-  const { email, password } = req.body;
-
-  if (!email || !password) {
-    return res.status(400).json({ error: 'Email and password are required.' });
-  }
-
+// Unified Local-First Authentication Middleware
+// Resolves the request context to the single registered user profile, bypassing password/JWT validations.
+async function authenticateToken(req, res, next) {
   try {
-    let user = await userRepo.findByEmail(email);
-    if (!user) {
-      // Automatic user creation for first-time login convenience in development
-      user = await userRepo.create({
-        email,
-        name: email.split('@')[0].toUpperCase(),
-        role: email.includes('admin') ? 'Administrator' : 'Analyst',
-        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80'
-      });
+    const list = await db.users.find({});
+    if (list && list.length > 0) {
+      req.user = list[0];
+      next();
+    } else {
+      return res.status(401).json({ error: 'Profile registration required.' });
     }
+  } catch (err) {
+    return res.status(500).json({ error: 'Database authentication verification failed.' });
+  }
+}
 
-    const token = jwt.sign({ id: user._id, email: user.email, role: user.role }, JWT_SECRET, { expiresIn: '12h' });
-    
-    // Log login to Audit logs
-    await db.auditLogs.create({
-      timestamp: new Date(),
-      user: user.name,
-      action: 'Analyst Login',
-      details: 'Local password authentication completed successfully.',
-      ip: req.ip || '127.0.0.1'
-    });
-
-    res.json({ token, user });
+// Get the current local profile
+router.get('/me', async (req, res) => {
+  try {
+    const list = await db.users.find({});
+    if (list && list.length > 0) {
+      // Update last active time
+      const user = list[0];
+      const updated = await db.users.findByIdAndUpdate(user._id, { lastActive: new Date() });
+      return res.json(updated);
+    }
+    return res.status(404).json({ error: 'Profile not registered.' });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// Google OAuth Login Mock
-router.post('/oauth', async (req, res) => {
-  const { token: oauthToken, email, name, picture } = req.body;
+// One-time Profile Registration System
+router.post('/register', async (req, res) => {
+  const { name, email, whatsapp, avatar } = req.body;
 
-  if (!email) {
-    return res.status(400).json({ error: 'OAuth email payload required.' });
+  if (!name || !email || !whatsapp) {
+    return res.status(400).json({ error: 'Full Name, Email, and WhatsApp number are required.' });
   }
 
   try {
-    let user = await userRepo.findByEmail(email);
-    if (!user) {
-      user = await userRepo.create({
-        email,
-        name: name || email.split('@')[0],
-        role: 'Analyst',
-        avatar: picture || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&q=80'
-      });
+    const list = await db.users.find({});
+    if (list && list.length > 0) {
+      return res.status(400).json({ error: 'Profile is already registered on this workstation.' });
     }
 
-    const token = jwt.sign({ id: user._id, email: user.email, role: user.role }, JWT_SECRET, { expiresIn: '12h' });
+    const defaultAvatar = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80';
+    const profile = await db.users.create({
+      name,
+      email,
+      whatsapp,
+      avatar: avatar || defaultAvatar,
+      role: 'Administrator',
+      joinedAt: new Date(),
+      lastActive: new Date()
+    });
 
-    // Log login to Audit logs
+    // Write audit log
     await db.auditLogs.create({
       timestamp: new Date(),
-      user: user.name,
-      action: 'Google OAuth Signup',
-      details: 'Google authenticated single sign-on successfully completed.',
+      user: name,
+      action: 'Profile Registered',
+      details: `One-time ZENTRIX SOC workstation profile created for ${name}.`,
       ip: req.ip || '127.0.0.1'
     });
 
-    res.json({ token, user });
+    res.status(201).json({ success: true, profile });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// Get currently logged-in Profile
-router.get('/me', authenticateToken, async (req, res) => {
+// Update Profile
+router.post('/update', authenticateToken, async (req, res) => {
+  const { name, email, whatsapp, avatar } = req.body;
+  const updates = {};
+  if (name) updates.name = name;
+  if (email) updates.email = email;
+  if (whatsapp) updates.whatsapp = whatsapp;
+  if (avatar) updates.avatar = avatar;
+
   try {
-    // req.user already contains full user object from authentication middleware
-    if (!req.user) return res.status(404).json({ error: 'User profile not found.' });
-    res.json(req.user);
+    const updated = await db.users.findByIdAndUpdate(req.user._id, updates);
+    res.json({ success: true, profile: updated });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
