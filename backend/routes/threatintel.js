@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 const { authenticateToken } = require('./auth');
+const threatIntelService = require('../services/threatIntelService');
 
-// Perform real-time external intelligence lookup (VT, AbuseIPDB, AlienVault OTX)
+// Perform real-time external intelligence lookup (VT, AbuseIPDB, AlienVault OTX, URLHaus)
 router.post('/search', authenticateToken, async (req, res) => {
   const { type, value } = req.body; // type: IP, Hash, Domain, URL
 
@@ -12,48 +13,25 @@ router.post('/search', authenticateToken, async (req, res) => {
   }
 
   try {
-    // Check if the IOC exists in local database
-    const localMatch = await db.iocs.findOne({ value });
+    // Invoke Correlated Intel Engine
+    const results = await threatIntelService.lookupReputation(type, value);
 
-    // Generate high-fidelity mockup data representing live API enrichment responses
-    const reputation = localMatch ? localMatch.reputation : Math.floor(Math.random() * 85);
-    const result = {
-      value,
-      type,
-      localMatch: !!localMatch,
-      localNotes: localMatch ? localMatch.notes : 'No local notes documented.',
-      enrichment: {
-        virusTotal: {
-          maliciousVotes: reputation > 80 ? 54 : (reputation > 50 ? 12 : 0),
-          harmlessVotes: reputation > 80 ? 4 : (reputation > 50 ? 30 : 64),
-          reputationScore: reputation,
-          lastScanDate: new Date(Date.now() - 3600000 * 4).toISOString(),
-          category: type === 'Hash' ? 'Trojan.Win32.CobaltStrike.A' : (type === 'IP' ? 'Malicious Scanner' : 'C2 Node')
-        },
-        abuseIPDB: {
-          abuseScore: type === 'IP' ? reputation : 0,
-          totalReports: type === 'IP' ? Math.floor(reputation * 3.4) : 0,
-          isp: type === 'IP' ? 'DigitalOcean LLC' : 'N/A',
-          country: type === 'IP' ? 'Netherlands' : 'N/A'
-        },
-        alienVaultOTX: {
-          pulseCount: reputation > 60 ? 18 : 0,
-          adversaries: reputation > 80 ? ['APT29 (Cozy Bear)', 'Wizard Spider'] : [],
-          industriesTargeted: reputation > 60 ? ['Finance', 'Government', 'Energy'] : []
-        }
-      }
-    };
-
-    // Audit logs
+    // Write to audit log
     await db.auditLogs.create({
       timestamp: new Date(),
-      user: req.user.email.split('@')[0],
+      user: req.user.name || 'system',
       action: 'Threat Intel Query',
-      details: `Queried ${type}: "${value}". Risk Score resolved to ${reputation}%.`,
+      details: `Queried ${type}: "${value}". Risk Score resolved to ${results.enrichment.virusTotal.reputationScore}%.`,
       ip: req.ip || '127.0.0.1'
     });
 
-    res.json(result);
+    res.json({
+      value,
+      type,
+      localMatch: results.cacheHit,
+      localNotes: results.enrichment.advisory,
+      enrichment: results.enrichment
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -84,13 +62,14 @@ router.post('/iocs', authenticateToken, async (req, res) => {
       threatType: threatType || 'Undetermined Threat',
       reputation: reputation || 50,
       source: source || 'Analyst Manual Entry',
-      notes: notes || ''
+      notes: notes || '',
+      createdAt: new Date()
     });
 
     // Write to audit log
     await db.auditLogs.create({
       timestamp: new Date(),
-      user: req.user.email.split('@')[0],
+      user: req.user.name || 'system',
       action: 'IOC Registered',
       details: `Registered IOC: ${value} (${type}) in threat database.`,
       ip: req.ip || '127.0.0.1'
@@ -111,7 +90,7 @@ router.delete('/iocs/:id', authenticateToken, async (req, res) => {
     // Write to audit log
     await db.auditLogs.create({
       timestamp: new Date(),
-      user: req.user.email.split('@')[0],
+      user: req.user.name || 'system',
       action: 'IOC Retracted',
       details: `Removed IOC entry ${req.params.id} from repository.`,
       ip: req.ip || '127.0.0.1'

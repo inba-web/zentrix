@@ -13,8 +13,9 @@ const siemRouter = require('./routes/siem');
 const edrRouter = require('./routes/edr');
 const incidentsRouter = require('./routes/incidents');
 const intelRouter = require('./routes/threatintel');
-const soarRouter = require('./routes/soar');
 const reportsRouter = require('./routes/reports');
+const malwareRouter = require('./routes/malware');
+const phishingRouter = require('./routes/phishing');
 
 const app = express();
 const server = http.createServer(app);
@@ -42,8 +43,9 @@ app.use('/api/siem', siemRouter);
 app.use('/api/edr', edrRouter);
 app.use('/api/incidents', incidentsRouter);
 app.use('/api/intel', intelRouter);
-app.use('/api/soar', soarRouter);
 app.use('/api/reports', reportsRouter);
+app.use('/api/malware', malwareRouter);
+app.use('/api/phishing', phishingRouter);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -64,34 +66,39 @@ io.on('connection', (socket) => {
   });
 });
 
-// Periodic automated report distribution scheduler (Runs every 12 hours)
-const REPORT_INTERVAL_MS = 12 * 60 * 60 * 1000;
-setInterval(async () => {
-  console.log('[SCHEDULER] Initializing 12h executive security report compiler...');
-  try {
-    // Generate report via system local controller
-    // Mock user context since it is system-scheduled
-    const mockReq = { user: { email: 'automation@enterprise.com' }, body: { recipientEmail: 'soc-directors@enterprise.com' } };
-    const mockRes = { json: (data) => console.log('[SCHEDULER] Auto-report completed:', data.report.title) };
-    
-    // We can call report compiler logic directly
-    // This executes the report compiler and logs to reports DB
-  } catch (err) {
-    console.error('[SCHEDULER] Failed to compile automated report:', err.message);
-  }
-}, REPORT_INTERVAL_MS);
+// Services imports
+const telemetryService = require('./services/telemetryService');
+const siemService = require('./services/siemService');
+const edrService = require('./services/edrService');
+const idsService = require('./services/idsService');
+const honeypotService = require('./services/honeypotService');
+const scheduler = require('./services/scheduler');
 
 // Core Startup Sequence
 async function startServer() {
   // Connect to persistence DB layer
   await db.connect();
 
-  // Initialize and spin up Cyber-Attack simulation pump
-  simulator.init(io);
+  // Initialize and spin up ZENTRIX active services
+  telemetryService.init(io);
+  siemService.init(io);
+  edrService.init(io);
+  idsService.init(io);
+  honeypotService.init(io);
+  scheduler.init(io);
 
   server.listen(PORT, () => {
-    console.log(`[SYSTEM] Unified SOC Backend services initialized on port ${PORT}`);
+    console.log(`[SYSTEM] Unified ZENTRIX SOC Backend services initialized on port ${PORT}`);
     console.log(`[SYSTEM] Socket.io WebSocket server active.`);
+  });
+
+  server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+      console.error(`[ERROR] Port ${PORT} is already in use. Kill the process with: fuser -k ${PORT}/tcp`);
+      process.exit(1);
+    } else {
+      throw err;
+    }
   });
 }
 

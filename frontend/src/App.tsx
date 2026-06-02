@@ -11,15 +11,11 @@ import {
   Compass, 
   Mail, 
   Radio, 
-  Workflow, 
   FileSpreadsheet, 
   LogOut, 
-  User, 
-  Database, 
-  AlertTriangle, 
   Clock, 
-  CheckCircle,
-  XCircle,
+  Database, 
+  AlertTriangle,
   Fingerprint
 } from 'lucide-react';
 
@@ -34,8 +30,9 @@ import ThreatIntel from './components/ThreatIntel';
 import MalwareAnalysis from './components/MalwareAnalysis';
 import PhishingAnalysis from './components/PhishingAnalysis';
 import Honeypot from './components/Honeypot';
-import SOAR from './components/SOAR';
 import Reporting from './components/Reporting';
+import NotificationSettings from './components/NotificationSettings';
+import ProfileRegistration from './components/ProfileRegistration';
 
 // Socket instance
 let socket: any = null;
@@ -43,14 +40,9 @@ let socket: any = null;
 export default function App() {
   const [token, setToken] = useState<string | null>(localStorage.getItem('soc_token'));
   const [user, setUser] = useState<any>(null);
+  const [profileLoading, setProfileLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<string>('dashboard');
   
-  // Login form state
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [authError, setAuthError] = useState('');
-  const [loading, setLoading] = useState(false);
-
   // Real-time states
   const [liveAlerts, setLiveAlerts] = useState<any[]>([]);
   const [dbStatus, setDbStatus] = useState<string>('Detecting...');
@@ -63,25 +55,53 @@ export default function App() {
   const [websocketLogs, setWebsocketLogs] = useState<any[]>([]);
   const [edrUpdates, setEdrUpdates] = useState<any>({});
   const [honeypotUpdates, setHoneypotUpdates] = useState<any[]>([]);
+  const [liveTelemetry, setLiveTelemetry] = useState<any>(null);
 
+  // UTC clock tick
   useEffect(() => {
-    // Clock tick
     const t = setInterval(() => {
       setTime(new Date().toISOString());
     }, 1000);
     return () => clearInterval(t);
   }, []);
 
+  // Fetch single-user profile on app start
+  useEffect(() => {
+    fetchProfile();
+  }, []);
+
+  const fetchProfile = async () => {
+    setProfileLoading(true);
+    try {
+      const res = await fetch('/api/auth/me');
+      if (res.ok) {
+        const data = await res.json();
+        setUser(data);
+        // Ensure dummy token is active so sockets and child components can verify it
+        if (!localStorage.getItem('soc_token')) {
+          localStorage.setItem('soc_token', 'zentrix-local-active');
+          setToken('zentrix-local-active');
+        }
+      } else {
+        // Clear user/token if not registered
+        setUser(null);
+        setToken(null);
+        localStorage.removeItem('soc_token');
+      }
+    } catch (e) {
+      setUser(null);
+    } finally {
+      setProfileLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (token) {
-      // Validate token and fetch user details
-      fetchProfile();
-      
       // Initialize WebSocket connection
       socket = io('http://localhost:5000');
 
       socket.on('connect', () => {
-        console.log('[WEBSOCKET] Real-time pipelines active.');
+        console.log('[WEBSOCKET] Active ZENTRIX pipelines successfully linked.');
       });
 
       // Handle SIEM logs
@@ -95,6 +115,11 @@ export default function App() {
           ...prev,
           [stat.hostname]: stat
         }));
+      });
+
+      // Handle telemetry updates (Executive metrics)
+      socket.on('telemetry_update', (data: any) => {
+        setLiveTelemetry(data);
       });
 
       // Handle alerts
@@ -122,22 +147,6 @@ export default function App() {
     }
   }, [token]);
 
-  const fetchProfile = async () => {
-    try {
-      const res = await fetch('/api/auth/me', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setUser(data);
-      } else {
-        handleLogout();
-      }
-    } catch {
-      handleLogout();
-    }
-  };
-
   const triggerToast = (alert: any) => {
     const id = Math.random().toString(36).substring(7);
     setToasts(prev => [...prev, { id, ...alert }]);
@@ -146,135 +155,32 @@ export default function App() {
     }, 6000);
   };
 
-  const handleLocalLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setAuthError('');
-    try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
-      const data = await res.json();
-      if (res.ok) {
-        localStorage.setItem('soc_token', data.token);
-        setToken(data.token);
-        setUser(data.user);
-      } else {
-        setAuthError(data.error || 'Authentication failed.');
-      }
-    } catch {
-      setAuthError('Unable to reach auth services.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleOAuthLogin = async () => {
-    setLoading(true);
-    try {
-      // High-Fidelity single sign on simulator
-      const res = await fetch('/api/auth/oauth', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: 'admin.director@enterprise.com',
-          name: 'ADRIAN DIRECTOR',
-          picture: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=100&q=80',
-          token: 'mock-google-oauth-payload-token-12345'
-        })
-      });
-      const data = await res.json();
-      if (res.ok) {
-        localStorage.setItem('soc_token', data.token);
-        setToken(data.token);
-        setUser(data.user);
-      }
-    } catch {
-      setAuthError('Google OAuth gateway timed out.');
-    } finally {
-      setLoading(false);
-    }
+  const handleRegisterSuccess = (profile: any) => {
+    localStorage.setItem('soc_token', 'zentrix-local-active');
+    setToken('zentrix-local-active');
+    setUser(profile);
   };
 
   const handleLogout = () => {
+    // Single local workstation setup, logout clears state to allow re-reg if needed
     localStorage.removeItem('soc_token');
     setToken(null);
     setUser(null);
   };
 
-  if (!token) {
+  if (profileLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#05080f] relative overflow-hidden font-sans">
-        {/* Background visual graphics */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-950/20 via-black to-black"></div>
-        <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(rgba(30,41,59,0.05)_1px,_transparent_1px),_linear-gradient(90deg,_rgba(30,41,59,0.05)_1px,_transparent_1px)] bg-[size:40px_40px]"></div>
-
-        <div className="relative z-10 w-full max-w-md p-8 bg-[#0d1323] border border-[#1e2e4f] rounded-lg shadow-2xl glow-blue">
-          <div className="flex flex-col items-center mb-8">
-            <div className="p-3 bg-blue-950/50 border border-blue-500/30 rounded-xl mb-3">
-              <ShieldAlert className="w-10 h-10 text-blue-500" />
-            </div>
-            <h1 className="text-xl font-bold tracking-wider font-sans text-slate-100">ZENTRIX</h1>
-            <p className="text-xs text-slate-400 mt-1 uppercase font-mono">Operations Platform Version 4.8.0</p>
-          </div>
-
-          {authError && (
-            <div className="mb-4 p-3 bg-red-950/40 border border-red-500/30 text-red-400 rounded text-xs flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 shrink-0" />
-              <span>{authError}</span>
-            </div>
-          )}
-
-          <form onSubmit={handleLocalLogin} className="space-y-4">
-            <div>
-              <label className="block text-xs uppercase font-mono text-slate-400 mb-1">Security Email</label>
-              <input 
-                type="email"
-                required
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                placeholder="analyst@enterprise.com" 
-                className="w-full bg-[#050811] border border-slate-700 px-3 py-2 text-sm text-slate-200 rounded focus:outline-none focus:border-blue-500 transition-colors"
-              />
-            </div>
-            <div>
-              <label className="block text-xs uppercase font-mono text-slate-400 mb-1">Passkey</label>
-              <input 
-                type="password"
-                required
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                placeholder="••••••••••••••" 
-                className="w-full bg-[#050811] border border-slate-700 px-3 py-2 text-sm text-slate-200 rounded focus:outline-none focus:border-blue-500 transition-colors"
-              />
-            </div>
-
-            <button 
-              type="submit"
-              disabled={loading}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded text-sm transition-colors mt-2"
-            >
-              {loading ? 'Authenticating with Vault...' : 'Access Safe Vault'}
-            </button>
-          </form>
-
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-800"></div></div>
-            <div className="relative flex justify-center text-xs uppercase font-mono"><span className="px-2 bg-[#0d1323] text-slate-500">SSO Single Sign-On</span></div>
-          </div>
-
-          <button 
-            onClick={handleOAuthLogin}
-            disabled={loading}
-            className="w-full bg-slate-900 border border-slate-700 hover:bg-slate-800 text-slate-300 font-medium py-2 rounded text-sm flex items-center justify-center gap-2 transition-colors"
-          >
-            <Fingerprint className="w-4 h-4 text-blue-500" />
-            Authenticate with Google OAuth
-          </button>
-        </div>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#05080f] text-slate-400 font-mono text-xs">
+        <span className="w-9 h-9 rounded-full border-2 border-t-blue-500 border-slate-800 animate-spin mb-3"></span>
+        <span>Awaiting ZENTRIX provisioning protocols...</span>
       </div>
+    );
+  }
+
+  // If no profile registered, present one-time Registration form
+  if (!user) {
+    return (
+      <ProfileRegistration onRegisterSuccess={handleRegisterSuccess} />
     );
   }
 
@@ -289,29 +195,29 @@ export default function App() {
     { id: 'malware', label: 'Malware Analysis', icon: Fingerprint },
     { id: 'phishing', label: 'Phishing Analyzer', icon: Mail },
     { id: 'honeypot', label: 'Honeypot Console', icon: Radio },
-    { id: 'soar', label: 'SOAR Playbooks', icon: Workflow },
     { id: 'reports', label: 'Audit & Reports', icon: FileSpreadsheet },
+    { id: 'notifications', label: 'Alerts Delivery', icon: Clock }
   ];
 
   return (
-    <div className="flex h-screen bg-[#070b13] overflow-hidden text-slate-300 font-sans">
+    <div className="flex h-screen bg-[#070b13] overflow-hidden text-slate-300 font-sans select-none">
       
       {/* 1. LEFT SIDEBAR COMPONENT */}
       <aside className="w-64 bg-[#0a0f1d] border-r border-[#1a253c] flex flex-col justify-between shrink-0">
         <div>
           {/* Logo brand */}
           <div className="flex items-center gap-3 p-5 border-b border-[#1a253c] bg-[#0c1325]">
-            <div className="p-1.5 bg-blue-950 border border-blue-500/30 rounded-lg">
-              <ShieldAlert className="w-5 h-5 text-blue-500" />
+            <div className="p-1.5 bg-blue-950 border border-blue-500/30 rounded-lg shadow-glow glow-blue">
+              <ShieldAlert className="w-5 h-5 text-blue-500 animate-pulse" />
             </div>
             <div>
-              <span className="font-bold text-slate-100 text-sm tracking-widest font-sans">ENTERPRISE SOC</span>
-              <p className="text-[10px] text-[#64748b] font-mono leading-tight">THREAT RADAR ACT.</p>
+              <span className="font-bold text-slate-100 text-sm tracking-widest font-mono">ZENTRIX</span>
+              <p className="text-[10px] text-blue-400 font-mono leading-tight">CYBER TASK FORCE</p>
             </div>
           </div>
 
           {/* Navigation drawer links */}
-          <nav className="p-3 space-y-1 overflow-y-auto max-h-[calc(100vh-140px)]">
+          <nav className="p-3 space-y-1 overflow-y-auto max-h-[calc(100vh-210px)]">
             {menuItems.map(item => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
@@ -319,9 +225,9 @@ export default function App() {
                 <button
                   key={item.id}
                   onClick={() => setActiveTab(item.id)}
-                  className={`w-full flex items-center gap-3 px-3 py-2 text-xs font-medium rounded transition-all leading-none ${
+                  className={`w-full flex items-center gap-3 px-3 py-2.5 text-xs font-semibold rounded transition-all leading-none ${
                     isActive 
-                      ? 'bg-blue-950/60 border border-blue-500/30 text-blue-400 font-bold' 
+                      ? 'bg-blue-950/60 border border-blue-500/30 text-blue-400 font-bold shadow-md shadow-blue-500/5' 
                       : 'hover:bg-slate-900 border border-transparent text-slate-400 hover:text-slate-200'
                   }`}
                 >
@@ -333,24 +239,25 @@ export default function App() {
           </nav>
         </div>
 
-        {/* User context footer */}
-        <div className="p-3 border-t border-[#1a253c] bg-[#0a0f1d]">
+        {/* User context footer - Dashboard Profile Widget */}
+        <div className="p-4 border-t border-[#1a253c] bg-[#0a0f1d] space-y-2">
           {user && (
-            <div className="flex items-center justify-between gap-2 p-2 bg-slate-950/40 border border-slate-800 rounded">
-              <div className="flex items-center gap-2 overflow-hidden">
-                <img src={user.avatar} alt="Profile" className="w-8 h-8 rounded-full border border-slate-700 shrink-0 object-cover" />
+            <div className="p-3 bg-slate-950/60 border border-slate-800 rounded-lg space-y-2 text-[10px] font-mono leading-snug">
+              <div className="flex items-center gap-2">
+                <img src={user.avatar} alt="Profile" className="w-9 h-9 rounded-full border border-blue-500/30 shrink-0 object-cover" />
                 <div className="overflow-hidden leading-tight">
-                  <p className="text-xs font-semibold text-slate-200 truncate">{user.name}</p>
-                  <p className="text-[10px] text-slate-500 truncate">{user.role}</p>
+                  <p className="text-xs font-bold text-slate-200 truncate">{user.name}</p>
+                  <p className="text-[9px] text-blue-400 truncate">{user.role}</p>
                 </div>
               </div>
-              <button 
-                onClick={handleLogout} 
-                title="Logout System"
-                className="p-1 hover:bg-slate-900 text-slate-500 hover:text-red-400 rounded transition-colors"
-              >
-                <LogOut className="w-4 h-4" />
-              </button>
+              <div className="pt-2 border-t border-slate-900 space-y-1 text-slate-400">
+                <p className="truncate">Email: <span className="text-slate-300">{user.email}</span></p>
+                <p>WhatsApp: <span className="text-slate-300">{user.whatsapp}</span></p>
+                <p>Registered: <span className="text-slate-300">{new Date(user.joinedAt).toLocaleDateString()}</span></p>
+                <p className="text-[9px] text-[#64748b] leading-none mt-1">
+                  Active: {time.substring(11, 19)}
+                </p>
+              </div>
             </div>
           )}
         </div>
@@ -362,7 +269,8 @@ export default function App() {
         {/* Core Header section */}
         <header className="h-14 bg-[#0a0f1d] border-b border-[#1a253c] px-6 flex items-center justify-between shrink-0 font-sans z-10 shadow-sm">
           <div className="flex items-center gap-6">
-            <h2 className="text-sm font-semibold tracking-wider uppercase text-slate-200">
+            <h2 className="text-xs font-bold tracking-wider uppercase text-slate-200 font-mono flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-ping"></span>
               {menuItems.find(m => m.id === activeTab)?.label} MODULE
             </h2>
             <div className="flex items-center gap-4">
@@ -372,18 +280,17 @@ export default function App() {
                 <span className="text-slate-300 font-medium">{dbStatus}</span>
               </div>
               <div className="flex items-center gap-1.5 text-xs text-[#64748b]">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-                <span>Feeds:</span>
-                <span className="text-slate-300 font-medium">REAL-TIME</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>Workstation:</span>
+                <span className="text-slate-300 font-medium uppercase font-mono">LOCAL NODE</span>
               </div>
             </div>
           </div>
 
           <div className="flex items-center gap-4 font-mono text-[10px] text-slate-400">
-            <div className="flex items-center gap-1.5 bg-[#050811] px-3 py-1.5 border border-[#1a253c] rounded">
+            <div className="flex items-center gap-1.5 bg-[#050811] px-3 py-1.5 border border-[#1a253c] rounded text-blue-400 font-bold">
               <Clock className="w-3.5 h-3.5 text-blue-500" />
-              <span>TIME (UTC):</span>
-              <span className="text-slate-200 font-bold">{time.replace('T', ' ').substring(0, 19)}</span>
+              <span>UTC: {time.replace('T', ' ').substring(0, 19)}</span>
             </div>
           </div>
         </header>
@@ -396,6 +303,7 @@ export default function App() {
               liveAlerts={liveAlerts} 
               websocketLogs={websocketLogs} 
               dbStatus={dbStatus} 
+              liveTelemetry={liveTelemetry}
             />
           )}
 
@@ -458,15 +366,17 @@ export default function App() {
             />
           )}
 
-          {activeTab === 'soar' && (
-            <SOAR 
+          {activeTab === 'reports' && (
+            <Reporting 
               token={token} 
             />
           )}
 
-          {activeTab === 'reports' && (
-            <Reporting 
-              token={token} 
+          {activeTab === 'notifications' && (
+            <NotificationSettings 
+              user={user}
+              token={token}
+              onUpdate={(updatedUser: any) => setUser(updatedUser)}
             />
           )}
 
@@ -478,7 +388,7 @@ export default function App() {
         {toasts.map(toast => (
           <div 
             key={toast.id}
-            className="p-4 bg-red-950/90 border border-red-500/50 rounded-lg text-slate-100 shadow-2xl glow-red slide-in flex gap-3 cursor-pointer"
+            className="p-4 bg-red-950/90 border border-red-500/50 rounded-lg text-slate-100 shadow-2xl glow-red slide-in flex gap-3 cursor-pointer select-text"
             onClick={() => setActiveTab('incidents')}
           >
             <AlertTriangle className="w-5 h-5 text-red-500 shrink-0 animate-bounce" />

@@ -11,5 +11,18 @@
     "fileName": "SOC_Executive_Report_1780239152200.pdf",
     "createdAt": "2026-05-31T14:52:32.267Z",
     "updatedAt": "2026-05-31T14:52:32.267Z"
+  },
+  {
+    "_id": "4u71onj",
+    "timestamp": "2026-06-02T05:55:52.806Z",
+    "title": "SOC Executive Report - Score 30%",
+    "deliveryStatus": "Delivered",
+    "recipient": "soc-director@enterprise.com",
+    "alertsCount": 162,
+    "endpointCount": 1,
+    "securityScore": 30,
+    "fileName": "SOC_Executive_Report_1780379752723.pdf",
+    "createdAt": "2026-06-02T05:55:52.807Z",
+    "updatedAt": "2026-06-02T05:55:52.807Z"
   }
 ]

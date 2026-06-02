@@ -1,52 +1,55 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { 
-  Mail, ShieldAlert, CheckCircle, XCircle, Terminal, Play, HelpCircle 
+  Mail, ShieldAlert, CheckCircle, XCircle, Terminal, Play, AlertTriangle 
 } from 'lucide-react';
 
 export default function PhishingAnalysis({ token }: any) {
-  const [headers, setHeaders] = useState(`Received: from spammer.botnet-node.com (spammer.botnet-node.com [185.220.101.5])
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=paypal-support.top;
-From: "PayPal Resolution Center" <security-alert@paypal-support.top>
-To: target-analyst@enterprise.com
-Subject: ACTION REQUIRED: Unauthorized Vault Transaction Blocked
-Date: Sun, 31 May 2026 19:15:22 +0530`);
+  const [headers, setHeaders] = useState(`From: "ZENTRIX Security Gateway" <security-alert@zentrix-spoofed.com>
+To: analyst@zentrix.local
+Subject: ACTION REQUIRED: Critical Workstation Credentials Exfiltration Blocked
+Date: Sun, 31 May 2026 19:15:22 +0530
+Received-SPF: fail
+Authentication-Results: spf=fail; dkim=fail; dmarc=fail
+
+Dear Analyst,
+Please click http://185.220.101.5/login to update your passkeys immediately. urgent attention required!`);
 
   const [analyzing, setAnalyzing] = useState(false);
   const [results, setResults] = useState<any | null>(null);
+  const [error, setError] = useState('');
 
-  const triggerPhishingAnalysis = () => {
+  const triggerPhishingAnalysis = async () => {
     setAnalyzing(true);
     setResults(null);
+    setError('');
 
-    setTimeout(() => {
-      setResults({
+    try {
+      const res = await fetch('/api/phishing/analyze', {
+        method: 'POST',
         headers: {
-          from: 'security-alert@paypal-support.top',
-          to: 'target-analyst@enterprise.com',
-          subject: 'ACTION REQUIRED: Unauthorized Vault Transaction Blocked',
-          receivedIp: '185.220.101.5',
-          spf: 'FAIL (Domain mismatch for sender IP)',
-          dkim: 'FAIL (Signature header validation failed)'
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
         },
-        urls: [
-          { value: 'http://paypal-verification-portal.top/login', reputation: 95, threatType: 'Phishing Credential Harvester' },
-          { value: 'http://c2-server-botnet.top/payload.exe', reputation: 100, threatType: 'Cobalt Strike Dropper' }
-        ],
-        attachments: [
-          { name: 'Secure_document.pdf.exe', type: 'Double-extension executable', hash: '8a9c42b5d4e87d7bcfd8e1214c000e3b', status: 'MALICIOUS' }
-        ],
-        riskScore: 98,
-        advisory: 'CRITICAL SPOOFING WARNING: This email header failed SPF authentication alignment audits. The envelope sender IP matches Tor exit node brute scanners. Block outbound gateways connectivity to matched credential harvesting domains immediately.'
+        body: JSON.stringify({ headersContent: headers })
       });
+      const data = await res.json();
+      if (res.ok) {
+        setResults(data);
+      } else {
+        setError(data.error || 'Phishing headers analysis failed.');
+      }
+    } catch {
+      setError('Phishing analyser gateway timed out.');
+    } finally {
       setAnalyzing(false);
-    }, 2000);
+    }
   };
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 font-sans">
       
       {/* 1. LEFT COLUMN: RAW HEADERS TEXTBIN */}
-      <div className="lg:col-span-1 p-5 bg-[#111625] border border-slate-800 rounded-lg h-[650px] flex flex-col justify-between">
+      <div className="lg:col-span-1 p-5 bg-[#111625] border border-slate-800 rounded-lg h-[650px] flex flex-col justify-between overflow-y-auto">
         <div className="space-y-4">
           <div className="flex items-center gap-2">
             <Mail className="w-4 h-4 text-blue-500" />
@@ -71,6 +74,12 @@ Date: Sun, 31 May 2026 19:15:22 +0530`);
             <Play className="w-3.5 h-3.5 fill-current" />
             {analyzing ? 'DISSECTING EML SECTIONS...' : 'ANALYZE EMAIL HEADERS'}
           </button>
+
+          {error && (
+            <div className="p-3 bg-red-950/40 border border-red-500/25 text-red-400 text-[10px] font-mono rounded">
+              {error}
+            </div>
+          )}
         </div>
 
         <div className="border-t border-slate-800 pt-3 text-[10px] font-mono text-slate-500">
@@ -97,10 +106,12 @@ Date: Sun, 31 May 2026 19:15:22 +0530`);
                 <ShieldAlert className="w-6 h-6 text-red-500 animate-pulse" />
                 <div>
                   <p className="text-[10px] uppercase font-mono text-slate-500">AGGREGATED RISK METRIC</p>
-                  <p className="text-lg font-bold text-red-500 font-mono mt-0.5">{results.riskScore}% PHISHING THREAT</p>
+                  <p className="text-lg font-bold text-red-500 font-mono mt-0.5">{results.score}% PHISHING THREAT</p>
                 </div>
               </div>
-              <span className="text-[9px] bg-red-950/40 border border-red-500/20 px-2 py-1 rounded text-red-400 font-mono font-bold uppercase">Spoofing Confirmed</span>
+              <span className="text-[9px] bg-red-950/40 border border-red-500/20 px-2 py-1 rounded text-red-400 font-mono font-bold uppercase">
+                {results.status.toUpperCase()}
+              </span>
             </div>
 
             {/* Header Validation fields */}
@@ -111,76 +122,90 @@ Date: Sun, 31 May 2026 19:15:22 +0530`);
               <div className="space-y-2 border-b border-slate-800/80 pb-3">
                 <div className="flex justify-between">
                   <span className="text-slate-500">ENVELOPE FROM:</span>
-                  <span className="text-slate-200 font-bold">{results.headers.from}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-500">ENVELOPE TO:</span>
-                  <span className="text-slate-200">{results.headers.to}</span>
+                  <span className="text-slate-200 font-bold">{results.sender}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-500">SUBJECT LINE:</span>
-                  <span className="text-slate-200 truncate max-w-sm font-bold">{results.headers.subject}</span>
+                  <span className="text-slate-200 truncate max-w-sm font-bold">{results.subject}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">RECEIVED IP:</span>
-                  <span className="text-slate-200 font-bold">{results.headers.receivedIp}</span>
+                  <span className="text-slate-500">SENDER REPUTATION:</span>
+                  <span className={`font-bold ${results.senderReputation === 'Dangerous' ? 'text-red-500' : 'text-slate-300'}`}>{results.senderReputation}</span>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                <div className="p-2.5 bg-red-950/20 border border-red-500/20 rounded">
-                  <p className="text-red-400 font-bold text-[10px] uppercase">SPF ALIGNMENT STATUS</p>
-                  <p className="text-slate-300 mt-1 font-bold">{results.headers.spf}</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                <div className="p-2.5 bg-slate-950/40 border border-slate-850 rounded">
+                  <p className="text-slate-500 font-bold text-[9px] uppercase">SPF STATUS</p>
+                  <p className={`mt-1 font-bold text-[10px] ${results.spfStatus === 'FAIL' ? 'text-red-400' : 'text-slate-300'}`}>{results.spfStatus}</p>
                 </div>
-                <div className="p-2.5 bg-red-950/20 border border-red-500/20 rounded">
-                  <p className="text-red-400 font-bold text-[10px] uppercase">DKIM ALIGNMENT STATUS</p>
-                  <p className="text-slate-300 mt-1 font-bold">{results.headers.dkim}</p>
+                <div className="p-2.5 bg-slate-950/40 border border-slate-850 rounded">
+                  <p className="text-slate-500 font-bold text-[9px] uppercase">DKIM STATUS</p>
+                  <p className={`mt-1 font-bold text-[10px] ${results.dkimStatus === 'FAIL' ? 'text-red-400' : 'text-slate-300'}`}>{results.dkimStatus}</p>
+                </div>
+                <div className="p-2.5 bg-slate-950/40 border border-slate-850 rounded">
+                  <p className="text-slate-500 font-bold text-[9px] uppercase">DMARC STATUS</p>
+                  <p className={`mt-1 font-bold text-[10px] ${results.dmarcStatus === 'FAIL' ? 'text-red-400' : 'text-slate-300'}`}>{results.dmarcStatus}</p>
                 </div>
               </div>
             </div>
 
-            {/* Suspicious link extractors */}
+            {/* Header Anomalies List */}
+            {results.headerAnomalies.length > 0 && (
+              <div className="p-5 bg-[#111625] border border-slate-800 rounded-lg font-mono text-xs space-y-3">
+                <span className="text-xs uppercase font-sans font-bold tracking-wider text-slate-200">Header Anomalies Logged</span>
+                <p className="text-[10px] text-[#64748b] leading-tight mb-2">CRITICAL AUDITING ANOMALIES</p>
+                
+                <div className="space-y-1.5">
+                  {results.headerAnomalies.map((anom: string, idx: number) => (
+                    <div key={idx} className="p-2.5 bg-red-950/20 border border-red-500/20 rounded text-red-400 flex items-center gap-2">
+                      <AlertTriangle className="w-3.5 h-3.5" />
+                      <span>{anom}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Extracted Hyperlinks */}
             <div className="p-5 bg-[#111625] border border-slate-800 rounded-lg font-mono text-xs space-y-4">
-              <span className="text-xs uppercase font-sans font-bold tracking-wider text-slate-200">Embedded Hyperlinks threat scans</span>
+              <span className="text-xs uppercase font-sans font-bold tracking-wider text-slate-200">Embedded Hyperlinks scans</span>
               <p className="text-[10px] text-[#64748b] leading-tight mb-2">EXTRACTED HYPERLINKS RESOLUTION</p>
 
               <div className="space-y-2">
-                {results.urls.map((u: any, idx: number) => (
-                  <div key={idx} className="p-2.5 bg-slate-950/60 border border-slate-900 rounded flex justify-between items-center select-text">
-                    <div className="min-w-0">
-                      <p className="text-slate-300 font-bold truncate max-w-sm">{u.value}</p>
-                      <p className="text-[8px] text-red-400 mt-0.5">{u.threatType}</p>
+                {results.extractedUrls.map((u: string, idx: number) => {
+                  const isSuspicious = results.suspiciousUrls.includes(u);
+                  return (
+                    <div key={idx} className="p-2.5 bg-slate-950/60 border border-slate-900 rounded flex justify-between items-center select-text">
+                      <p className="text-slate-300 font-bold truncate max-w-sm">{u}</p>
+                      <span className={`font-bold text-[10px] ${isSuspicious ? 'text-red-400 font-bold' : 'text-slate-500'}`}>
+                        {isSuspicious ? 'Suspicious Link' : 'Safe Link'}
+                      </span>
                     </div>
-                    <span className="text-red-500 font-bold text-[10px]">{u.reputation}% malicious</span>
-                  </div>
-                ))}
+                  );
+                })}
+
+                {results.extractedUrls.length === 0 && (
+                  <p className="text-xs text-slate-500 text-center font-mono p-2">No links identified in body.</p>
+                )}
               </div>
             </div>
 
-            {/* Danger attachments */}
-            <div className="p-5 bg-[#111625] border border-slate-800 rounded-lg font-mono text-xs space-y-4">
-              <span className="text-xs uppercase font-sans font-bold tracking-wider text-slate-200">Dropped attachments files scans</span>
-              <p className="text-[10px] text-[#64748b] leading-tight mb-2">ATTACHMENT STRUCTURAL THREATS</p>
-
-              <div className="space-y-2">
-                {results.attachments.map((a: any, idx: number) => (
-                  <div key={idx} className="p-2.5 bg-slate-950/60 border border-slate-900 rounded flex justify-between items-center select-text">
-                    <div>
-                      <p className="text-red-400 font-bold">{a.name}</p>
-                      <p className="text-[8px] text-slate-500 mt-0.5">SHA1 HASH: {a.hash}  |  TYPE: {a.type}</p>
-                    </div>
-                    <span className="text-[9px] bg-red-950 border border-red-500/30 px-2 py-0.5 rounded text-red-400 font-bold">{a.status}</span>
-                  </div>
+            {/* Phishing keywords matched */}
+            <div className="p-5 bg-[#111625] border border-slate-800 rounded-lg font-mono text-xs space-y-3">
+              <span className="text-xs uppercase font-sans font-bold tracking-wider text-slate-200">Urgent Keyword Detections</span>
+              <p className="text-[10px] text-[#64748b] leading-tight mb-2">HARVESTING KEYWORD MATCHES</p>
+              
+              <div className="flex gap-2 flex-wrap">
+                {results.matchedKeywords.map((word: string, idx: number) => (
+                  <span key={idx} className="px-2 py-1 bg-red-950/40 border border-red-500/20 text-red-400 font-mono font-bold rounded uppercase text-[8px]">
+                    {word}
+                  </span>
                 ))}
-              </div>
-            </div>
 
-            {/* Advisory statement */}
-            <div className="p-4 bg-[#111625] border border-slate-800 rounded-lg">
-              <span className="text-xs uppercase font-mono font-bold tracking-wider text-slate-200">Incident Remediation Advisory</span>
-              <p className="text-[10px] text-[#64748b] leading-tight font-mono mb-3">ACTION ADVICE</p>
-              <div className="p-3 bg-red-950/20 border border-red-500/20 rounded font-mono text-[10px] text-slate-300 leading-relaxed leading-snug">
-                {results.advisory}
+                {results.matchedKeywords.length === 0 && (
+                  <p className="text-xs text-slate-500 text-center font-mono w-full p-2">No phishing urgent keywords matched.</p>
+                )}
               </div>
             </div>
 

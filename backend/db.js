@@ -3,28 +3,6 @@ const fs = require('fs');
 const path = require('path');
 const jsonAdapter = require('./adapters/jsonAdapter');
 
-// Unified Database Access Layer using JSON storage only
-console.log('[DB] Using Local JSON Database');
-
-// Helper to generate collection interface
-function collection(name) {
-  return {
-    find: (query = {}) => jsonAdapter.find(name, query),
-    findOne: (query = {}) => jsonAdapter.findOne(name, query),
-    create: (doc) => jsonAdapter.create(name, doc),
-    createMany: (docs) => jsonAdapter.createMany(name, docs),
-    findByIdAndUpdate: (id, updates) => jsonAdapter.update(name, id, updates),
-    findOneAndUpdate: async (query, updates) => {
-      const doc = await jsonAdapter.findOne(name, query);
-      if (!doc) return null;
-      return jsonAdapter.update(name, doc._id, updates);
-    },
-    deleteOne: (query) => jsonAdapter.delete(name, query),
-    countDocuments: () => jsonAdapter.count(name)
-  };
-}
-
-
 // Path for fallback local storage
 const FALLBACK_DIR = path.join(__dirname, 'data');
 if (!fs.existsSync(FALLBACK_DIR)) {
@@ -35,19 +13,82 @@ let useMongoose = false;
 
 // Initialize connection
 async function connect() {
-  const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/enterprise_soc';
+  const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/zentrix';
   try {
-    console.log('[DB] Attempting MongoDB connection...');
+    console.log('[DB] Attempting MongoDB connection to:', mongoUri);
     await mongoose.connect(mongoUri, {
       serverSelectionTimeoutMS: 2000 // Quick timeout to trigger fallback
     });
     useMongoose = true;
-    console.log('[DB] Connected successfully to Enterprise MongoDB Server.');
+    console.log('[DB] Connected successfully to ZENTRIX MongoDB Server.');
   } catch (err) {
     console.warn(`[DB] MongoDB connection failed: ${err.message}`);
     console.warn('[DB] GRACEFUL FALLBACK: Initializing localized JSON File Database.');
     useMongoose = false;
   }
+}
+
+// Helper to generate collection interface (dynamically forwards to MongoDB if active, else JSON fallback)
+function collection(name) {
+  return {
+    find: async (query = {}, limit = 1000) => {
+      if (useMongoose) {
+        let q = MongoModels[name].find(query);
+        if (limit) q = q.limit(limit);
+        return q.lean();
+      }
+      return jsonAdapter.find(name, query);
+    },
+    findOne: async (query = {}) => {
+      if (useMongoose) {
+        return MongoModels[name].findOne(query).lean();
+      }
+      return jsonAdapter.findOne(name, query);
+    },
+    create: async (doc) => {
+      if (useMongoose) {
+        const created = await MongoModels[name].create(doc);
+        return created.toObject();
+      }
+      return jsonAdapter.create(name, doc);
+    },
+    createMany: async (docs) => {
+      if (useMongoose) {
+        const created = await MongoModels[name].insertMany(docs);
+        return created.map(d => d.toObject());
+      }
+      return jsonAdapter.createMany(name, docs);
+    },
+    findByIdAndUpdate: async (id, updates) => {
+      if (useMongoose) {
+        const val = await MongoModels[name].findByIdAndUpdate(id, updates, { new: true });
+        return val ? val.toObject() : null;
+      }
+      return jsonAdapter.update(name, id, updates);
+    },
+    findOneAndUpdate: async (query, updates) => {
+      if (useMongoose) {
+        const val = await MongoModels[name].findOneAndUpdate(query, updates, { new: true });
+        return val ? val.toObject() : null;
+      }
+      const doc = await jsonAdapter.findOne(name, query);
+      if (!doc) return null;
+      return jsonAdapter.update(name, doc._id, updates);
+    },
+    deleteOne: async (query) => {
+      if (useMongoose) {
+        return MongoModels[name].deleteOne(query);
+      }
+      return jsonAdapter.delete(name, query);
+    },
+    countDocuments: async (query = {}) => {
+      if (useMongoose) {
+        return MongoModels[name].countDocuments(query);
+      }
+      const list = await jsonAdapter.find(name, query);
+      return list.length;
+    }
+  };
 }
 
 // ----------------------------------------------------
@@ -59,13 +100,15 @@ const userSchema = new mongoose.Schema({
   name: String,
   role: { type: String, default: 'Analyst' },
   avatar: String,
-  joinedAt: { type: Date, default: Date.now }
+  whatsapp: String,
+  joinedAt: { type: Date, default: Date.now },
+  lastActive: { type: Date, default: Date.now }
 });
 
 const logSchema = new mongoose.Schema({
   timestamp: { type: Date, default: Date.now },
-  source: String,     // 'WinEvent', 'Sysmon', 'AuthLog', 'AppLog', 'Suricata'
-  severity: String,   // 'INFO', 'WARNING', 'ERROR', 'CRITICAL'
+  source: String,
+  severity: String,
   message: String,
   host: String,
   user: String,
@@ -80,7 +123,7 @@ const endpointSchema = new mongoose.Schema({
   hostname: String,
   ip: String,
   os: String,
-  status: { type: String, default: 'Online' }, // 'Online', 'Offline', 'Isolated'
+  status: { type: String, default: 'Online' },
   cpuUsage: Number,
   ramUsage: Number,
   lastSeen: { type: Date, default: Date.now },
@@ -93,7 +136,7 @@ const alertSchema = new mongoose.Schema({
   severity: { type: String, enum: ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW'], default: 'MEDIUM' },
   title: String,
   description: String,
-  category: String, // 'Malware', 'Credential Theft', 'IDS Intrusion', 'Honeypot Trigger', etc.
+  category: String,
   host: String,
   status: { type: String, enum: ['NEW', 'ACKNOWLEDGED', 'INVESTIGATING', 'RESOLVED'], default: 'NEW' },
   assignedTo: String,
@@ -122,7 +165,7 @@ const iocSchema = new mongoose.Schema({
   type: { type: String, enum: ['Domain', 'IP', 'Hash', 'URL', 'Registry Key'], required: true },
   value: { type: String, required: true, unique: true },
   threatType: String,
-  reputation: { type: Number, default: 0 }, // 0 to 100
+  reputation: { type: Number, default: 0 },
   source: String,
   createdAt: { type: Date, default: Date.now },
   notes: String
@@ -130,11 +173,11 @@ const iocSchema = new mongoose.Schema({
 
 const soarPlaybookSchema = new mongoose.Schema({
   name: String,
-  trigger: String, // 'AlertCritical', 'MalwareDetected', 'HoneypotTrigger'
+  trigger: String,
   status: { type: String, default: 'Active' },
   steps: [{
     order: Number,
-    action: String, // 'EnrichIOC', 'NotifyAnalyst', 'IsolateEndpoint', 'BlockIP'
+    action: String,
     params: Object
   }],
   executions: [{
@@ -163,6 +206,15 @@ const reportSchema = new mongoose.Schema({
   fileName: String
 });
 
+const deliveryLogSchema = new mongoose.Schema({
+  reportId: String,
+  emailStatus: String,
+  whatsAppStatus: String,
+  deliveryTimestamp: { type: Date, default: Date.now },
+  failureReason: String,
+  retryCount: { type: Number, default: 0 }
+});
+
 // Compile Mongoose models
 const MongoModels = {
   users: mongoose.model('User', userSchema),
@@ -173,132 +225,8 @@ const MongoModels = {
   iocs: mongoose.model('IOC', iocSchema),
   playbooks: mongoose.model('SOARPlaybook', soarPlaybookSchema),
   auditLogs: mongoose.model('AuditLog', auditLogSchema),
-  reports: mongoose.model('Report', reportSchema)
-};
-
-// ----------------------------------------------------
-// Local File Storage Engine (Fallback Layer)
-// ----------------------------------------------------
-
-class FileCollection {
-  constructor(name) {
-    this.name = name;
-    this.filePath = path.join(FALLBACK_DIR, `${name}.json`);
-    if (!fs.existsSync(this.filePath)) {
-      fs.writeFileSync(this.filePath, JSON.stringify([], null, 2));
-    }
-  }
-
-  _read() {
-    try {
-      const data = fs.readFileSync(this.filePath, 'utf8');
-      return JSON.parse(data);
-    } catch {
-      return [];
-    }
-  }
-
-  _write(data) {
-    fs.writeFileSync(this.filePath, JSON.stringify(data, null, 2));
-  }
-
-  async find(query = {}) {
-    const list = this._read();
-    return list.filter(item => {
-      for (let key in query) {
-        if (query[key] && typeof query[key] === 'object' && query[key].$regex) {
-          const reg = new RegExp(query[key].$regex, query[key].$options || 'i');
-          if (!reg.test(item[key])) return false;
-        } else if (item[key] !== query[key]) {
-          return false;
-        }
-      }
-      return true;
-    });
-  }
-
-  async findOne(query = {}) {
-    const list = await this.find(query);
-    return list[0] || null;
-  }
-
-  async create(doc) {
-    const list = this._read();
-    const newDoc = {
-      _id: doc._id || Math.random().toString(36).substring(2, 9),
-      ...doc,
-      createdAt: doc.createdAt || new Date().toISOString(),
-      updatedAt: doc.updatedAt || new Date().toISOString()
-    };
-    list.push(newDoc);
-    this._write(list);
-    return newDoc;
-  }
-
-  async insertMany(docs) {
-    const list = this._read();
-    const createdDocs = docs.map(doc => ({
-      _id: doc._id || Math.random().toString(36).substring(2, 9),
-      ...doc,
-      createdAt: doc.createdAt || new Date().toISOString(),
-      updatedAt: doc.updatedAt || new Date().toISOString()
-    }));
-    list.push(...createdDocs);
-    this._write(list);
-    return createdDocs;
-  }
-
-  async findByIdAndUpdate(id, update, options = {}) {
-    const list = this._read();
-    const idx = list.findIndex(item => item._id === id);
-    if (idx === -1) return null;
-    const item = list[idx];
-    const updated = {
-      ...item,
-      ...(update.$set || update),
-      updatedAt: new Date().toISOString()
-    };
-    list[idx] = updated;
-    this._write(list);
-    return updated;
-  }
-
-  async findOneAndUpdate(query, update, options = {}) {
-    const item = await this.findOne(query);
-    if (!item) return null;
-    return this.findByIdAndUpdate(item._id, update, options);
-  }
-
-  async deleteOne(query) {
-    const list = this._read();
-    const idx = list.findIndex(item => {
-      for (let key in query) {
-        if (item[key] !== query[key]) return false;
-      }
-      return true;
-    });
-    if (idx === -1) return false;
-    list.splice(idx, 1);
-    this._write(list);
-    return { deletedCount: 1 };
-  }
-
-  async countDocuments(query = {}) {
-    const items = await this.find(query);
-    return items.length;
-  }
-}
-
-const FileModels = {
-  users: new FileCollection('users'),
-  logs: new FileCollection('logs'),
-  endpoints: new FileCollection('endpoints'),
-  alerts: new FileCollection('alerts'),
-  incidents: new FileCollection('incidents'),
-  iocs: new FileCollection('iocs'),
-  playbooks: new FileCollection('playbooks'),
-  auditLogs: new FileCollection('auditLogs'),
-  reports: new FileCollection('reports')
+  reports: mongoose.model('Report', reportSchema),
+  deliveryLogs: mongoose.model('DeliveryLog', deliveryLogSchema)
 };
 
 // ----------------------------------------------------
@@ -306,9 +234,8 @@ const FileModels = {
 // ----------------------------------------------------
 
 const db = {
-  // No connection step needed for JSON storage
-  connect: async () => console.log('[DB] JSON storage ready'),
-  // Collection interfaces
+  connect,
+  isMongoose: () => useMongoose,
   users: collection('users'),
   logs: collection('logs'),
   endpoints: collection('endpoints'),
@@ -317,7 +244,8 @@ const db = {
   iocs: collection('iocs'),
   playbooks: collection('playbooks'),
   auditLogs: collection('auditLogs'),
-  reports: collection('reports')
+  reports: collection('reports'),
+  deliveryLogs: collection('deliveryLogs')
 };
 
 module.exports = db;

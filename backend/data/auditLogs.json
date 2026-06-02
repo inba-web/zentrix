@@ -278,5 +278,2585 @@
     "ip": "127.0.0.1",
     "createdAt": "2026-05-31T14:55:15.329Z",
     "updatedAt": "2026-05-31T14:55:15.329Z"
+  },
+  {
+    "_id": "clu298t",
+    "timestamp": "2026-06-02T01:57:19.613Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket 4lz64tc",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T01:57:19.613Z",
+    "updatedAt": "2026-06-02T01:57:19.613Z"
+  },
+  {
+    "_id": "kxzwhtj",
+    "timestamp": "2026-06-02T01:57:29.521Z",
+    "user": "INBAFREAKZ",
+    "action": "Analyst Login",
+    "details": "Local password authentication completed successfully.",
+    "ip": "::1",
+    "createdAt": "2026-06-02T01:57:29.522Z",
+    "updatedAt": "2026-06-02T01:57:29.522Z"
+  },
+  {
+    "_id": "u93ongy",
+    "timestamp": "2026-06-02T01:57:34.620Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket 52m3c4c",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T01:57:34.620Z",
+    "updatedAt": "2026-06-02T01:57:34.620Z"
+  },
+  {
+    "_id": "7360c86",
+    "timestamp": "2026-06-02T01:57:49.617Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-WEB-APP-01 and created Incident ticket fnvl3wu",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T01:57:49.617Z",
+    "updatedAt": "2026-06-02T01:57:49.617Z"
+  },
+  {
+    "_id": "37vflzq",
+    "timestamp": "2026-06-02T01:58:04.617Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket og5t7ca",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T01:58:04.618Z",
+    "updatedAt": "2026-06-02T01:58:04.618Z"
+  },
+  {
+    "_id": "9iw99gm",
+    "timestamp": "2026-06-02T01:58:19.619Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket uldu7vr",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T01:58:19.619Z",
+    "updatedAt": "2026-06-02T01:58:19.619Z"
+  },
+  {
+    "_id": "fu26vfu",
+    "timestamp": "2026-06-02T01:58:34.617Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-PROD-01 and created Incident ticket 61rbn5m",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T01:58:34.617Z",
+    "updatedAt": "2026-06-02T01:58:34.617Z"
+  },
+  {
+    "_id": "j78ff1y",
+    "timestamp": "2026-06-02T01:58:35.532Z",
+    "user": "inbafreakz",
+    "action": "SIEM Query Executed",
+    "details": "Search Query: \"source=\"AuthLog\" | stats count by user\". Returned 206 results.",
+    "ip": "::1",
+    "createdAt": "2026-06-02T01:58:35.533Z",
+    "updatedAt": "2026-06-02T01:58:35.533Z"
+  },
+  {
+    "_id": "2iysc41",
+    "timestamp": "2026-06-02T01:58:39.148Z",
+    "user": "inbafreakz",
+    "action": "SIEM Query Executed",
+    "details": "Search Query: \"source=\"AuthLog\" | where severity=\"CRITICAL\" | stats count by user\". Returned 4 results.",
+    "ip": "::1",
+    "createdAt": "2026-06-02T01:58:39.149Z",
+    "updatedAt": "2026-06-02T01:58:39.149Z"
+  },
+  {
+    "_id": "0xdew53",
+    "timestamp": "2026-06-02T01:58:49.625Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-WEB-APP-01 and created Incident ticket j1pf8df",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T01:58:49.626Z",
+    "updatedAt": "2026-06-02T01:58:49.626Z"
+  },
+  {
+    "_id": "dlf79pd",
+    "timestamp": "2026-06-02T01:58:51.263Z",
+    "user": "inbafreakz",
+    "action": "Threat Intel Query",
+    "details": "Queried IP: \"185.220.101.5\". Risk Score resolved to 98%.",
+    "ip": "::1",
+    "createdAt": "2026-06-02T01:58:51.263Z",
+    "updatedAt": "2026-06-02T01:58:51.263Z"
+  },
+  {
+    "_id": "8clq52q",
+    "timestamp": "2026-06-02T01:59:04.624Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket 64wn0yv",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T01:59:04.625Z",
+    "updatedAt": "2026-06-02T01:59:04.625Z"
+  },
+  {
+    "_id": "dqld0wm",
+    "timestamp": "2026-06-02T01:59:19.630Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket v7heswp",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T01:59:19.631Z",
+    "updatedAt": "2026-06-02T01:59:19.631Z"
+  },
+  {
+    "_id": "ql2655e",
+    "timestamp": "2026-06-02T01:59:34.623Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket dd2rj6c",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T01:59:34.623Z",
+    "updatedAt": "2026-06-02T01:59:34.623Z"
+  },
+  {
+    "_id": "o71qwjp",
+    "timestamp": "2026-06-02T01:59:49.631Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-WEB-APP-01 and created Incident ticket 2ujiv7l",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T01:59:49.631Z",
+    "updatedAt": "2026-06-02T01:59:49.631Z"
+  },
+  {
+    "_id": "tr87yhi",
+    "timestamp": "2026-06-02T02:00:04.626Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket n3cb5dj",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T02:00:04.627Z",
+    "updatedAt": "2026-06-02T02:00:04.627Z"
+  },
+  {
+    "_id": "r89wnum",
+    "timestamp": "2026-06-02T02:00:19.625Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-WEB-APP-01 and created Incident ticket 2jmrh9m",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T02:00:19.626Z",
+    "updatedAt": "2026-06-02T02:00:19.626Z"
+  },
+  {
+    "_id": "ys4yhdu",
+    "timestamp": "2026-06-02T02:00:34.636Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-WEB-APP-01 and created Incident ticket eu6i0j9",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T02:00:34.636Z",
+    "updatedAt": "2026-06-02T02:00:34.636Z"
+  },
+  {
+    "_id": "we6vmr3",
+    "timestamp": "2026-06-02T02:00:49.634Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket x084quj",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T02:00:49.634Z",
+    "updatedAt": "2026-06-02T02:00:49.634Z"
+  },
+  {
+    "_id": "dgwjkci",
+    "timestamp": "2026-06-02T02:01:04.632Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket pecltti",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T02:01:04.632Z",
+    "updatedAt": "2026-06-02T02:01:04.632Z"
+  },
+  {
+    "_id": "m619g8n",
+    "timestamp": "2026-06-02T02:01:19.638Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket uwyueyr",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T02:01:19.638Z",
+    "updatedAt": "2026-06-02T02:01:19.638Z"
+  },
+  {
+    "_id": "l3dep0q",
+    "timestamp": "2026-06-02T02:01:34.636Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket k9s1yyz",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T02:01:34.636Z",
+    "updatedAt": "2026-06-02T02:01:34.636Z"
+  },
+  {
+    "_id": "wyqaeti",
+    "timestamp": "2026-06-02T05:44:05.282Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-WEB-APP-01 and created Incident ticket 76cmpy4",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:44:05.282Z",
+    "updatedAt": "2026-06-02T05:44:05.283Z"
+  },
+  {
+    "_id": "nwu5hqa",
+    "timestamp": "2026-06-02T05:44:06.073Z",
+    "user": "ADRIAN DIRECTOR",
+    "action": "Google OAuth Signup",
+    "details": "Google authenticated single sign-on successfully completed.",
+    "ip": "::1",
+    "createdAt": "2026-06-02T05:44:06.074Z",
+    "updatedAt": "2026-06-02T05:44:06.074Z"
+  },
+  {
+    "_id": "rzm98gd",
+    "timestamp": "2026-06-02T05:44:20.280Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-PROD-01 and created Incident ticket ubq0rar",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:44:20.281Z",
+    "updatedAt": "2026-06-02T05:44:20.281Z"
+  },
+  {
+    "_id": "rnc9fbp",
+    "timestamp": "2026-06-02T05:44:35.297Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-WEB-APP-01 and created Incident ticket gokuuig",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:44:35.298Z",
+    "updatedAt": "2026-06-02T05:44:35.298Z"
+  },
+  {
+    "_id": "w5soh1s",
+    "timestamp": "2026-06-02T05:44:50.295Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-PROD-01 and created Incident ticket yc1tq8s",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:44:50.296Z",
+    "updatedAt": "2026-06-02T05:44:50.296Z"
+  },
+  {
+    "_id": "3h25bb6",
+    "timestamp": "2026-06-02T05:45:05.278Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-PROD-01 and created Incident ticket zdt3n27",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:45:05.278Z",
+    "updatedAt": "2026-06-02T05:45:05.278Z"
+  },
+  {
+    "_id": "g8f1k6a",
+    "timestamp": "2026-06-02T05:45:17.412Z",
+    "user": "admin.director",
+    "action": "SIEM Query Executed",
+    "details": "Search Query: \"source=\"AuthLog\" | where severity=\"CRITICAL\" | stats count by user\". Returned 5 results.",
+    "ip": "::1",
+    "createdAt": "2026-06-02T05:45:17.413Z",
+    "updatedAt": "2026-06-02T05:45:17.413Z"
+  },
+  {
+    "_id": "o41dfxe",
+    "timestamp": "2026-06-02T05:45:20.293Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket w8o2ulu",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:45:20.294Z",
+    "updatedAt": "2026-06-02T05:45:20.294Z"
+  },
+  {
+    "_id": "xtb5a4f",
+    "timestamp": "2026-06-02T05:45:21.205Z",
+    "user": "admin.director",
+    "action": "SIEM Query Executed",
+    "details": "Search Query: \"source=\"AuthLog\" | where severity=\"CRITICAL\" | stats count by user\". Returned 5 results.",
+    "ip": "::1",
+    "createdAt": "2026-06-02T05:45:21.207Z",
+    "updatedAt": "2026-06-02T05:45:21.207Z"
+  },
+  {
+    "_id": "66fjzt1",
+    "timestamp": "2026-06-02T05:45:22.554Z",
+    "user": "admin.director",
+    "action": "SIEM Query Executed",
+    "details": "Search Query: \"message=\"RunKey\" | stats count by host\". Returned 0 results.",
+    "ip": "::1",
+    "createdAt": "2026-06-02T05:45:22.555Z",
+    "updatedAt": "2026-06-02T05:45:22.555Z"
+  },
+  {
+    "_id": "9d8qqrr",
+    "timestamp": "2026-06-02T05:45:23.556Z",
+    "user": "admin.director",
+    "action": "SIEM Query Executed",
+    "details": "Search Query: \"message=\"vssadmin\" | limit 10\". Returned 0 results.",
+    "ip": "::1",
+    "createdAt": "2026-06-02T05:45:23.557Z",
+    "updatedAt": "2026-06-02T05:45:23.557Z"
+  },
+  {
+    "_id": "8zt2axw",
+    "timestamp": "2026-06-02T05:45:35.312Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket qg0qiy1",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:45:35.314Z",
+    "updatedAt": "2026-06-02T05:45:35.314Z"
+  },
+  {
+    "_id": "5wo42pr",
+    "timestamp": "2026-06-02T05:45:50.301Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket uowkxx2",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:45:50.302Z",
+    "updatedAt": "2026-06-02T05:45:50.302Z"
+  },
+  {
+    "_id": "947o6fd",
+    "timestamp": "2026-06-02T05:46:05.289Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket 8fvcx7d",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:46:05.291Z",
+    "updatedAt": "2026-06-02T05:46:05.291Z"
+  },
+  {
+    "_id": "uxpuzf0",
+    "timestamp": "2026-06-02T05:46:20.294Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-WEB-APP-01 and created Incident ticket v8fr9mk",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:46:20.295Z",
+    "updatedAt": "2026-06-02T05:46:20.295Z"
+  },
+  {
+    "_id": "7z5j62h",
+    "timestamp": "2026-06-02T05:46:35.288Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket i5tx00r",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:46:35.289Z",
+    "updatedAt": "2026-06-02T05:46:35.289Z"
+  },
+  {
+    "_id": "ctzvgf6",
+    "timestamp": "2026-06-02T05:46:50.295Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket n5zm51v",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:46:50.295Z",
+    "updatedAt": "2026-06-02T05:46:50.295Z"
+  },
+  {
+    "_id": "15nz1o5",
+    "timestamp": "2026-06-02T05:47:05.296Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket 8s0qo07",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:47:05.296Z",
+    "updatedAt": "2026-06-02T05:47:05.296Z"
+  },
+  {
+    "_id": "a69uvab",
+    "timestamp": "2026-06-02T05:47:20.298Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket 3kvjh40",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:47:20.299Z",
+    "updatedAt": "2026-06-02T05:47:20.299Z"
+  },
+  {
+    "_id": "1ewokiu",
+    "timestamp": "2026-06-02T05:47:35.298Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket bnl3i8y",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:47:35.298Z",
+    "updatedAt": "2026-06-02T05:47:35.298Z"
+  },
+  {
+    "_id": "zipb6i7",
+    "timestamp": "2026-06-02T05:47:50.300Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket wgz29rx",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:47:50.301Z",
+    "updatedAt": "2026-06-02T05:47:50.301Z"
+  },
+  {
+    "_id": "k501hdu",
+    "timestamp": "2026-06-02T05:48:05.288Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket wmywqhv",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:48:05.289Z",
+    "updatedAt": "2026-06-02T05:48:05.289Z"
+  },
+  {
+    "_id": "lg05pm4",
+    "timestamp": "2026-06-02T05:48:20.301Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket gttaes7",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:48:20.301Z",
+    "updatedAt": "2026-06-02T05:48:20.301Z"
+  },
+  {
+    "_id": "bgttzb3",
+    "timestamp": "2026-06-02T05:48:35.298Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket m4hmrov",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:48:35.299Z",
+    "updatedAt": "2026-06-02T05:48:35.299Z"
+  },
+  {
+    "_id": "of3taxu",
+    "timestamp": "2026-06-02T05:48:50.303Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket dsuw7v1",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:48:50.303Z",
+    "updatedAt": "2026-06-02T05:48:50.304Z"
+  },
+  {
+    "_id": "9oftl6u",
+    "timestamp": "2026-06-02T05:49:05.295Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-PROD-01 and created Incident ticket i40da5t",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:49:05.295Z",
+    "updatedAt": "2026-06-02T05:49:05.295Z"
+  },
+  {
+    "_id": "n0kfq9z",
+    "timestamp": "2026-06-02T05:49:20.299Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket xegyas1",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:49:20.300Z",
+    "updatedAt": "2026-06-02T05:49:20.300Z"
+  },
+  {
+    "_id": "tqvbvvi",
+    "timestamp": "2026-06-02T05:49:35.297Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-WEB-APP-01 and created Incident ticket x2dtfd1",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:49:35.297Z",
+    "updatedAt": "2026-06-02T05:49:35.297Z"
+  },
+  {
+    "_id": "k6j2pug",
+    "timestamp": "2026-06-02T05:49:50.312Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket vf1q52y",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:49:50.313Z",
+    "updatedAt": "2026-06-02T05:49:50.313Z"
+  },
+  {
+    "_id": "fpxuobe",
+    "timestamp": "2026-06-02T05:50:05.300Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-PROD-01 and created Incident ticket zg8arwr",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:50:05.301Z",
+    "updatedAt": "2026-06-02T05:50:05.301Z"
+  },
+  {
+    "_id": "bul0y5e",
+    "timestamp": "2026-06-02T05:50:20.309Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-WEB-APP-01 and created Incident ticket 9nbhjd0",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:50:20.310Z",
+    "updatedAt": "2026-06-02T05:50:20.310Z"
+  },
+  {
+    "_id": "rycddr3",
+    "timestamp": "2026-06-02T05:50:35.305Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket ft5ir96",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:50:35.305Z",
+    "updatedAt": "2026-06-02T05:50:35.305Z"
+  },
+  {
+    "_id": "te9dkv1",
+    "timestamp": "2026-06-02T05:50:50.305Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket svhgcrw",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:50:50.306Z",
+    "updatedAt": "2026-06-02T05:50:50.306Z"
+  },
+  {
+    "_id": "v9jiv16",
+    "timestamp": "2026-06-02T05:51:05.330Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-WEB-APP-01 and created Incident ticket lyohwxq",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:51:05.331Z",
+    "updatedAt": "2026-06-02T05:51:05.331Z"
+  },
+  {
+    "_id": "7ef0ck0",
+    "timestamp": "2026-06-02T05:51:20.304Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket shi24qb",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:51:20.305Z",
+    "updatedAt": "2026-06-02T05:51:20.305Z"
+  },
+  {
+    "_id": "y1rqedr",
+    "timestamp": "2026-06-02T05:51:35.324Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket f764p5f",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:51:35.325Z",
+    "updatedAt": "2026-06-02T05:51:35.325Z"
+  },
+  {
+    "_id": "safqmib",
+    "timestamp": "2026-06-02T05:51:50.317Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket p0k0dyw",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:51:50.317Z",
+    "updatedAt": "2026-06-02T05:51:50.317Z"
+  },
+  {
+    "_id": "5cbi6zw",
+    "timestamp": "2026-06-02T05:52:05.316Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket jcyhuwd",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:52:05.317Z",
+    "updatedAt": "2026-06-02T05:52:05.317Z"
+  },
+  {
+    "_id": "nrxtwsg",
+    "timestamp": "2026-06-02T05:52:20.314Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket f7rdmlk",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:52:20.315Z",
+    "updatedAt": "2026-06-02T05:52:20.315Z"
+  },
+  {
+    "_id": "sbt1hnj",
+    "timestamp": "2026-06-02T05:52:35.312Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-PROD-01 and created Incident ticket 3m6qecd",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:52:35.313Z",
+    "updatedAt": "2026-06-02T05:52:35.313Z"
+  },
+  {
+    "_id": "g6qmsc2",
+    "timestamp": "2026-06-02T05:52:50.321Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket a1pure6",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:52:50.322Z",
+    "updatedAt": "2026-06-02T05:52:50.322Z"
+  },
+  {
+    "_id": "u58volv",
+    "timestamp": "2026-06-02T05:53:05.317Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket pbu0agi",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:53:05.317Z",
+    "updatedAt": "2026-06-02T05:53:05.317Z"
+  },
+  {
+    "_id": "ueyg0y7",
+    "timestamp": "2026-06-02T05:53:20.328Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-PROD-01 and created Incident ticket uzo3tqb",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:53:20.328Z",
+    "updatedAt": "2026-06-02T05:53:20.328Z"
+  },
+  {
+    "_id": "3jl7hvj",
+    "timestamp": "2026-06-02T05:53:35.318Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket sig8w3v",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:53:35.318Z",
+    "updatedAt": "2026-06-02T05:53:35.318Z"
+  },
+  {
+    "_id": "14416oq",
+    "timestamp": "2026-06-02T05:53:50.324Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-PROD-01 and created Incident ticket pr6qm5j",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:53:50.324Z",
+    "updatedAt": "2026-06-02T05:53:50.324Z"
+  },
+  {
+    "_id": "sz5knby",
+    "timestamp": "2026-06-02T05:54:05.329Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-WEB-APP-01 and created Incident ticket ohjwm1d",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:54:05.329Z",
+    "updatedAt": "2026-06-02T05:54:05.329Z"
+  },
+  {
+    "_id": "irw4to8",
+    "timestamp": "2026-06-02T05:54:20.327Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-WEB-APP-01 and created Incident ticket rz3jahg",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:54:20.328Z",
+    "updatedAt": "2026-06-02T05:54:20.328Z"
+  },
+  {
+    "_id": "ncn7hdk",
+    "timestamp": "2026-06-02T05:54:35.333Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket 31vtw9i",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:54:35.334Z",
+    "updatedAt": "2026-06-02T05:54:35.334Z"
+  },
+  {
+    "_id": "pjavdz7",
+    "timestamp": "2026-06-02T05:54:50.328Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket 9hhafym",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:54:50.328Z",
+    "updatedAt": "2026-06-02T05:54:50.328Z"
+  },
+  {
+    "_id": "ie9gizk",
+    "timestamp": "2026-06-02T05:55:05.326Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-WEB-APP-01 and created Incident ticket 3cvsvuh",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:55:05.327Z",
+    "updatedAt": "2026-06-02T05:55:05.327Z"
+  },
+  {
+    "_id": "wehemvz",
+    "timestamp": "2026-06-02T05:55:13.945Z",
+    "user": "admin.director",
+    "action": "SOAR Manual Execution",
+    "details": "Orchestrated execution for playbook: Critical Malware Containment Playbook",
+    "ip": "::1",
+    "createdAt": "2026-06-02T05:55:13.946Z",
+    "updatedAt": "2026-06-02T05:55:13.946Z"
+  },
+  {
+    "_id": "yq6usa2",
+    "timestamp": "2026-06-02T05:55:14.674Z",
+    "user": "admin.director",
+    "action": "SOAR Manual Execution",
+    "details": "Orchestrated execution for playbook: Critical Malware Containment Playbook",
+    "ip": "::1",
+    "createdAt": "2026-06-02T05:55:14.675Z",
+    "updatedAt": "2026-06-02T05:55:14.675Z"
+  },
+  {
+    "_id": "nst9g3e",
+    "timestamp": "2026-06-02T05:55:15.034Z",
+    "user": "admin.director",
+    "action": "SOAR Manual Execution",
+    "details": "Orchestrated execution for playbook: Critical Malware Containment Playbook",
+    "ip": "::1",
+    "createdAt": "2026-06-02T05:55:15.035Z",
+    "updatedAt": "2026-06-02T05:55:15.035Z"
+  },
+  {
+    "_id": "0rsiv9q",
+    "timestamp": "2026-06-02T05:55:20.325Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket lpluqb1",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:55:20.326Z",
+    "updatedAt": "2026-06-02T05:55:20.326Z"
+  },
+  {
+    "_id": "a3yiymi",
+    "timestamp": "2026-06-02T05:55:35.330Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket fzx0k3e",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:55:35.331Z",
+    "updatedAt": "2026-06-02T05:55:35.331Z"
+  },
+  {
+    "_id": "yslli7m",
+    "timestamp": "2026-06-02T05:55:50.339Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-WEB-APP-01 and created Incident ticket k904kbv",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:55:50.339Z",
+    "updatedAt": "2026-06-02T05:55:50.339Z"
+  },
+  {
+    "_id": "xylov0d",
+    "timestamp": "2026-06-02T05:55:52.808Z",
+    "user": "admin.director",
+    "action": "Report Generated",
+    "details": "Dispatched enterprise security assessment PDF to soc-director@enterprise.com (Score: 30%)",
+    "ip": "::1",
+    "createdAt": "2026-06-02T05:55:52.809Z",
+    "updatedAt": "2026-06-02T05:55:52.809Z"
+  },
+  {
+    "_id": "41udbq1",
+    "timestamp": "2026-06-02T05:56:05.351Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-PROD-01 and created Incident ticket w7f2w5t",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:56:05.353Z",
+    "updatedAt": "2026-06-02T05:56:05.353Z"
+  },
+  {
+    "_id": "bxmfmht",
+    "timestamp": "2026-06-02T05:56:20.341Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket yu6bt8k",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:56:20.342Z",
+    "updatedAt": "2026-06-02T05:56:20.342Z"
+  },
+  {
+    "_id": "f59oamn",
+    "timestamp": "2026-06-02T05:56:35.333Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-WEB-APP-01 and created Incident ticket uf584l2",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:56:35.334Z",
+    "updatedAt": "2026-06-02T05:56:35.334Z"
+  },
+  {
+    "_id": "7g5t2fq",
+    "timestamp": "2026-06-02T05:56:50.334Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket ovp1ma2",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:56:50.334Z",
+    "updatedAt": "2026-06-02T05:56:50.334Z"
+  },
+  {
+    "_id": "mbx41pv",
+    "timestamp": "2026-06-02T05:57:05.331Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket 0pwhsif",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:57:05.331Z",
+    "updatedAt": "2026-06-02T05:57:05.331Z"
+  },
+  {
+    "_id": "ketxwg5",
+    "timestamp": "2026-06-02T05:57:20.333Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket j4bwdtc",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:57:20.334Z",
+    "updatedAt": "2026-06-02T05:57:20.334Z"
+  },
+  {
+    "_id": "aw6351b",
+    "timestamp": "2026-06-02T05:57:35.335Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-WEB-APP-01 and created Incident ticket qojrqzd",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:57:35.336Z",
+    "updatedAt": "2026-06-02T05:57:35.336Z"
+  },
+  {
+    "_id": "yfyarbd",
+    "timestamp": "2026-06-02T05:57:43.158Z",
+    "user": "admin.director",
+    "action": "SOAR Manual Execution",
+    "details": "Orchestrated execution for playbook: Brute Force Auto-Mitigation Playbook",
+    "ip": "::1",
+    "createdAt": "2026-06-02T05:57:43.159Z",
+    "updatedAt": "2026-06-02T05:57:43.159Z"
+  },
+  {
+    "_id": "mhdz65x",
+    "timestamp": "2026-06-02T05:57:50.336Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-PROD-01 and created Incident ticket yjrdbem",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:57:50.336Z",
+    "updatedAt": "2026-06-02T05:57:50.336Z"
+  },
+  {
+    "_id": "ix14bxm",
+    "timestamp": "2026-06-02T05:58:05.338Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket 5pp5hqx",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:58:05.339Z",
+    "updatedAt": "2026-06-02T05:58:05.339Z"
+  },
+  {
+    "_id": "2c8t6bf",
+    "timestamp": "2026-06-02T05:58:20.339Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket es6qh82",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:58:20.340Z",
+    "updatedAt": "2026-06-02T05:58:20.340Z"
+  },
+  {
+    "_id": "7x0tlwu",
+    "timestamp": "2026-06-02T05:58:35.336Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket vfow9sa",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:58:35.337Z",
+    "updatedAt": "2026-06-02T05:58:35.337Z"
+  },
+  {
+    "_id": "oauwh8h",
+    "timestamp": "2026-06-02T05:58:50.342Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-WEB-APP-01 and created Incident ticket 631t1yl",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:58:50.343Z",
+    "updatedAt": "2026-06-02T05:58:50.343Z"
+  },
+  {
+    "_id": "b9ee6i1",
+    "timestamp": "2026-06-02T05:59:05.343Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket 959cftf",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:59:05.344Z",
+    "updatedAt": "2026-06-02T05:59:05.344Z"
+  },
+  {
+    "_id": "hy6coz8",
+    "timestamp": "2026-06-02T05:59:20.341Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket 2tknmqp",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:59:20.341Z",
+    "updatedAt": "2026-06-02T05:59:20.341Z"
+  },
+  {
+    "_id": "qeo7m0r",
+    "timestamp": "2026-06-02T05:59:35.343Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket rl86hwm",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:59:35.344Z",
+    "updatedAt": "2026-06-02T05:59:35.344Z"
+  },
+  {
+    "_id": "g2knr5a",
+    "timestamp": "2026-06-02T05:59:50.342Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket k0jvbuq",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T05:59:50.342Z",
+    "updatedAt": "2026-06-02T05:59:50.342Z"
+  },
+  {
+    "_id": "h8bt2ro",
+    "timestamp": "2026-06-02T06:00:05.343Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket 9b71ozk",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:00:05.344Z",
+    "updatedAt": "2026-06-02T06:00:05.344Z"
+  },
+  {
+    "_id": "93r9n1d",
+    "timestamp": "2026-06-02T06:00:20.345Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket 5t0orhh",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:00:20.346Z",
+    "updatedAt": "2026-06-02T06:00:20.346Z"
+  },
+  {
+    "_id": "3rj04m1",
+    "timestamp": "2026-06-02T06:00:35.363Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket 7fcfxsi",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:00:35.363Z",
+    "updatedAt": "2026-06-02T06:00:35.363Z"
+  },
+  {
+    "_id": "cvnrnuv",
+    "timestamp": "2026-06-02T06:00:50.347Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-PROD-01 and created Incident ticket n6lze5p",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:00:50.348Z",
+    "updatedAt": "2026-06-02T06:00:50.348Z"
+  },
+  {
+    "_id": "9jr89pv",
+    "timestamp": "2026-06-02T06:01:05.362Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket j3o55ke",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:01:05.363Z",
+    "updatedAt": "2026-06-02T06:01:05.363Z"
+  },
+  {
+    "_id": "1pwxp79",
+    "timestamp": "2026-06-02T06:01:20.339Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket a3xfzws",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:01:20.339Z",
+    "updatedAt": "2026-06-02T06:01:20.339Z"
+  },
+  {
+    "_id": "pcex8yk",
+    "timestamp": "2026-06-02T06:01:35.371Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket kurd4wx",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:01:35.372Z",
+    "updatedAt": "2026-06-02T06:01:35.372Z"
+  },
+  {
+    "_id": "wtvll9o",
+    "timestamp": "2026-06-02T06:01:50.363Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket fx3x3br",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:01:50.364Z",
+    "updatedAt": "2026-06-02T06:01:50.364Z"
+  },
+  {
+    "_id": "rv6nwpf",
+    "timestamp": "2026-06-02T06:02:05.353Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket 7kpclwb",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:02:05.354Z",
+    "updatedAt": "2026-06-02T06:02:05.354Z"
+  },
+  {
+    "_id": "boau6i0",
+    "timestamp": "2026-06-02T06:02:20.351Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-PROD-01 and created Incident ticket 4njmvc3",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:02:20.352Z",
+    "updatedAt": "2026-06-02T06:02:20.352Z"
+  },
+  {
+    "_id": "gzml0to",
+    "timestamp": "2026-06-02T06:02:35.356Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-PROD-01 and created Incident ticket urhqb0v",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:02:35.356Z",
+    "updatedAt": "2026-06-02T06:02:35.356Z"
+  },
+  {
+    "_id": "d9ii0zz",
+    "timestamp": "2026-06-02T06:02:50.388Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket 0rr3ne9",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:02:50.389Z",
+    "updatedAt": "2026-06-02T06:02:50.389Z"
+  },
+  {
+    "_id": "du9m2oy",
+    "timestamp": "2026-06-02T06:03:05.372Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket q95g35y",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:03:05.374Z",
+    "updatedAt": "2026-06-02T06:03:05.374Z"
+  },
+  {
+    "_id": "9i45zs2",
+    "timestamp": "2026-06-02T06:03:20.377Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket bulmz86",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:03:20.379Z",
+    "updatedAt": "2026-06-02T06:03:20.379Z"
+  },
+  {
+    "_id": "55gfp7g",
+    "timestamp": "2026-06-02T06:03:35.363Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-WEB-APP-01 and created Incident ticket ajpoziw",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:03:35.363Z",
+    "updatedAt": "2026-06-02T06:03:35.363Z"
+  },
+  {
+    "_id": "dyj54w9",
+    "timestamp": "2026-06-02T06:03:50.384Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket ot1cfw9",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:03:50.385Z",
+    "updatedAt": "2026-06-02T06:03:50.385Z"
+  },
+  {
+    "_id": "j5ibyb2",
+    "timestamp": "2026-06-02T06:04:05.388Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket lpdl3qh",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:04:05.389Z",
+    "updatedAt": "2026-06-02T06:04:05.389Z"
+  },
+  {
+    "_id": "j8psjvm",
+    "timestamp": "2026-06-02T06:04:20.377Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-PROD-01 and created Incident ticket x8sdr5g",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:04:20.378Z",
+    "updatedAt": "2026-06-02T06:04:20.378Z"
+  },
+  {
+    "_id": "p85h2j1",
+    "timestamp": "2026-06-02T06:04:35.363Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket 5gqa0wr",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:04:35.364Z",
+    "updatedAt": "2026-06-02T06:04:35.364Z"
+  },
+  {
+    "_id": "xw90qac",
+    "timestamp": "2026-06-02T06:04:50.366Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket 8i7uub0",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:04:50.368Z",
+    "updatedAt": "2026-06-02T06:04:50.368Z"
+  },
+  {
+    "_id": "bd25zud",
+    "timestamp": "2026-06-02T06:05:05.372Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket tdi77s3",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:05:05.373Z",
+    "updatedAt": "2026-06-02T06:05:05.373Z"
+  },
+  {
+    "_id": "v4435qw",
+    "timestamp": "2026-06-02T06:05:20.387Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket aahiedk",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:05:20.388Z",
+    "updatedAt": "2026-06-02T06:05:20.388Z"
+  },
+  {
+    "_id": "3b45h22",
+    "timestamp": "2026-06-02T06:05:35.369Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-WEB-APP-01 and created Incident ticket ogesxc8",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:05:35.370Z",
+    "updatedAt": "2026-06-02T06:05:35.370Z"
+  },
+  {
+    "_id": "6uhzq50",
+    "timestamp": "2026-06-02T06:05:50.392Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-WEB-APP-01 and created Incident ticket ftoplew",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:05:50.393Z",
+    "updatedAt": "2026-06-02T06:05:50.393Z"
+  },
+  {
+    "_id": "8fkwa5o",
+    "timestamp": "2026-06-02T06:06:05.377Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-WEB-APP-01 and created Incident ticket nyb6is8",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:06:05.378Z",
+    "updatedAt": "2026-06-02T06:06:05.378Z"
+  },
+  {
+    "_id": "qg97gf9",
+    "timestamp": "2026-06-02T06:06:20.385Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket lvaz19l",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:06:20.386Z",
+    "updatedAt": "2026-06-02T06:06:20.386Z"
+  },
+  {
+    "_id": "ow4ro1x",
+    "timestamp": "2026-06-02T06:06:35.390Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-WEB-APP-01 and created Incident ticket 4y8ziga",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:06:35.391Z",
+    "updatedAt": "2026-06-02T06:06:35.391Z"
+  },
+  {
+    "_id": "oyc1y2i",
+    "timestamp": "2026-06-02T06:06:50.400Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-WEB-APP-01 and created Incident ticket j5od15i",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:06:50.401Z",
+    "updatedAt": "2026-06-02T06:06:50.401Z"
+  },
+  {
+    "_id": "uf8wbjd",
+    "timestamp": "2026-06-02T06:07:05.391Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket 015ghn0",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:07:05.393Z",
+    "updatedAt": "2026-06-02T06:07:05.393Z"
+  },
+  {
+    "_id": "sy6djx5",
+    "timestamp": "2026-06-02T06:07:20.381Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket dq4fflc",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:07:20.382Z",
+    "updatedAt": "2026-06-02T06:07:20.382Z"
+  },
+  {
+    "_id": "gdvdlno",
+    "timestamp": "2026-06-02T06:07:35.404Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-PROD-01 and created Incident ticket fje0s2q",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:07:35.405Z",
+    "updatedAt": "2026-06-02T06:07:35.405Z"
+  },
+  {
+    "_id": "1v3iu4c",
+    "timestamp": "2026-06-02T06:07:50.394Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket u8j0hy2",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:07:50.396Z",
+    "updatedAt": "2026-06-02T06:07:50.396Z"
+  },
+  {
+    "_id": "90vr1fw",
+    "timestamp": "2026-06-02T06:08:05.392Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket p7fyouh",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:08:05.394Z",
+    "updatedAt": "2026-06-02T06:08:05.394Z"
+  },
+  {
+    "_id": "hfy3cyt",
+    "timestamp": "2026-06-02T06:08:20.387Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket 2pjpt9a",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:08:20.389Z",
+    "updatedAt": "2026-06-02T06:08:20.389Z"
+  },
+  {
+    "_id": "643v5hv",
+    "timestamp": "2026-06-02T06:08:35.389Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket 7ds2dr8",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:08:35.390Z",
+    "updatedAt": "2026-06-02T06:08:35.390Z"
+  },
+  {
+    "_id": "as0msyn",
+    "timestamp": "2026-06-02T06:08:50.379Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket 6g8do0l",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:08:50.380Z",
+    "updatedAt": "2026-06-02T06:08:50.380Z"
+  },
+  {
+    "_id": "nwr8nsw",
+    "timestamp": "2026-06-02T06:09:05.381Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket ot2h7eb",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:09:05.382Z",
+    "updatedAt": "2026-06-02T06:09:05.382Z"
+  },
+  {
+    "_id": "63xotlj",
+    "timestamp": "2026-06-02T06:09:20.383Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-PROD-01 and created Incident ticket 4c93con",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:09:20.384Z",
+    "updatedAt": "2026-06-02T06:09:20.385Z"
+  },
+  {
+    "_id": "jsb6wgl",
+    "timestamp": "2026-06-02T06:09:35.389Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-WEB-APP-01 and created Incident ticket ijywmjw",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:09:35.390Z",
+    "updatedAt": "2026-06-02T06:09:35.390Z"
+  },
+  {
+    "_id": "0utdr71",
+    "timestamp": "2026-06-02T06:10:18.947Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-PROD-01 and created Incident ticket ylajwzj",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:10:18.949Z",
+    "updatedAt": "2026-06-02T06:10:18.949Z"
+  },
+  {
+    "_id": "owqscly",
+    "timestamp": "2026-06-02T06:10:33.963Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-WEB-APP-01 and created Incident ticket 64hbvwl",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:10:33.970Z",
+    "updatedAt": "2026-06-02T06:10:33.970Z"
+  },
+  {
+    "_id": "q5e1pp0",
+    "timestamp": "2026-06-02T06:10:48.920Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket odcl257",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:10:48.921Z",
+    "updatedAt": "2026-06-02T06:10:48.921Z"
+  },
+  {
+    "_id": "xbgx0mg",
+    "timestamp": "2026-06-02T06:11:03.943Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket 3bn6th2",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:11:03.945Z",
+    "updatedAt": "2026-06-02T06:11:03.945Z"
+  },
+  {
+    "_id": "s4fzys4",
+    "timestamp": "2026-06-02T06:11:18.915Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket cade3cw",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:11:18.916Z",
+    "updatedAt": "2026-06-02T06:11:18.916Z"
+  },
+  {
+    "_id": "y42di7f",
+    "timestamp": "2026-06-02T06:11:33.944Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-PROD-01 and created Incident ticket d109cwe",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:11:33.946Z",
+    "updatedAt": "2026-06-02T06:11:33.946Z"
+  },
+  {
+    "_id": "5texcru",
+    "timestamp": "2026-06-02T06:11:48.925Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket 8a9fktz",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:11:48.927Z",
+    "updatedAt": "2026-06-02T06:11:48.927Z"
+  },
+  {
+    "_id": "97xhafk",
+    "timestamp": "2026-06-02T06:12:03.928Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket 8wiqbgd",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:12:03.929Z",
+    "updatedAt": "2026-06-02T06:12:03.929Z"
+  },
+  {
+    "_id": "s2x841r",
+    "timestamp": "2026-06-02T06:12:18.942Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-PROD-01 and created Incident ticket kwkdi3s",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:12:18.944Z",
+    "updatedAt": "2026-06-02T06:12:18.944Z"
+  },
+  {
+    "_id": "6hmdlwf",
+    "timestamp": "2026-06-02T06:12:33.972Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket t54yyyw",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:12:33.975Z",
+    "updatedAt": "2026-06-02T06:12:33.975Z"
+  },
+  {
+    "_id": "ofxvl1g",
+    "timestamp": "2026-06-02T06:12:48.926Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket hcp98kt",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:12:48.927Z",
+    "updatedAt": "2026-06-02T06:12:48.927Z"
+  },
+  {
+    "_id": "o7rdh72",
+    "timestamp": "2026-06-02T06:13:03.934Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-PROD-01 and created Incident ticket zpt8tks",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:13:03.936Z",
+    "updatedAt": "2026-06-02T06:13:03.936Z"
+  },
+  {
+    "_id": "et657vu",
+    "timestamp": "2026-06-02T06:13:18.933Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-PROD-01 and created Incident ticket 3ey63p5",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:13:18.935Z",
+    "updatedAt": "2026-06-02T06:13:18.935Z"
+  },
+  {
+    "_id": "erbu4t9",
+    "timestamp": "2026-06-02T06:13:33.936Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-PROD-01 and created Incident ticket tig3nnf",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:13:33.936Z",
+    "updatedAt": "2026-06-02T06:13:33.937Z"
+  },
+  {
+    "_id": "hkytg18",
+    "timestamp": "2026-06-02T06:13:48.965Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket 00bik2b",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:13:48.966Z",
+    "updatedAt": "2026-06-02T06:13:48.966Z"
+  },
+  {
+    "_id": "4ot3if7",
+    "timestamp": "2026-06-02T06:14:03.953Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket goh4w1y",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:14:03.954Z",
+    "updatedAt": "2026-06-02T06:14:03.954Z"
+  },
+  {
+    "_id": "ohzbmaw",
+    "timestamp": "2026-06-02T06:14:18.936Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket 027bupi",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:14:18.937Z",
+    "updatedAt": "2026-06-02T06:14:18.937Z"
+  },
+  {
+    "_id": "2jqqqa3",
+    "timestamp": "2026-06-02T06:14:33.970Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket tiu7u8j",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:14:33.971Z",
+    "updatedAt": "2026-06-02T06:14:33.971Z"
+  },
+  {
+    "_id": "kbekz89",
+    "timestamp": "2026-06-02T06:14:48.961Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-WEB-APP-01 and created Incident ticket 342lfst",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:14:48.962Z",
+    "updatedAt": "2026-06-02T06:14:48.962Z"
+  },
+  {
+    "_id": "oizpqcd",
+    "timestamp": "2026-06-02T06:15:03.938Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket agkxcrj",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:15:03.939Z",
+    "updatedAt": "2026-06-02T06:15:03.939Z"
+  },
+  {
+    "_id": "sm3ozdf",
+    "timestamp": "2026-06-02T06:15:18.942Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket ls1z2fs",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:15:18.943Z",
+    "updatedAt": "2026-06-02T06:15:18.943Z"
+  },
+  {
+    "_id": "4vtupy3",
+    "timestamp": "2026-06-02T06:15:33.964Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket aikjpwp",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:15:33.966Z",
+    "updatedAt": "2026-06-02T06:15:33.966Z"
+  },
+  {
+    "_id": "issb6ko",
+    "timestamp": "2026-06-02T06:15:48.949Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket ykjduh4",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:15:48.950Z",
+    "updatedAt": "2026-06-02T06:15:48.950Z"
+  },
+  {
+    "_id": "90hk6mb",
+    "timestamp": "2026-06-02T06:16:03.948Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-WEB-APP-01 and created Incident ticket ke3vz8n",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:16:03.950Z",
+    "updatedAt": "2026-06-02T06:16:03.950Z"
+  },
+  {
+    "_id": "301estw",
+    "timestamp": "2026-06-02T06:16:18.944Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket hjputgj",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:16:18.945Z",
+    "updatedAt": "2026-06-02T06:16:18.945Z"
+  },
+  {
+    "_id": "1cwro4i",
+    "timestamp": "2026-06-02T06:16:33.961Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket hd0n0wd",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:16:33.962Z",
+    "updatedAt": "2026-06-02T06:16:33.962Z"
+  },
+  {
+    "_id": "lqqg6r9",
+    "timestamp": "2026-06-02T06:16:48.951Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket dpoz9sr",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:16:48.953Z",
+    "updatedAt": "2026-06-02T06:16:48.953Z"
+  },
+  {
+    "_id": "unfor4h",
+    "timestamp": "2026-06-02T06:17:03.951Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-PROD-01 and created Incident ticket ybgj6ca",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:17:03.952Z",
+    "updatedAt": "2026-06-02T06:17:03.952Z"
+  },
+  {
+    "_id": "pspl6rj",
+    "timestamp": "2026-06-02T06:17:18.963Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-WEB-APP-01 and created Incident ticket 20e5swb",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:17:18.965Z",
+    "updatedAt": "2026-06-02T06:17:18.965Z"
+  },
+  {
+    "_id": "j694pul",
+    "timestamp": "2026-06-02T06:17:33.993Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket 7sj2fvt",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:17:33.994Z",
+    "updatedAt": "2026-06-02T06:17:33.994Z"
+  },
+  {
+    "_id": "anjrjna",
+    "timestamp": "2026-06-02T06:17:48.978Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-PROD-01 and created Incident ticket tbrwlnl",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:17:48.979Z",
+    "updatedAt": "2026-06-02T06:17:48.979Z"
+  },
+  {
+    "_id": "jo12hi2",
+    "timestamp": "2026-06-02T06:18:03.965Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-PROD-01 and created Incident ticket dibstze",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:18:03.966Z",
+    "updatedAt": "2026-06-02T06:18:03.966Z"
+  },
+  {
+    "_id": "j92bz10",
+    "timestamp": "2026-06-02T06:18:18.956Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket wwl5o5l",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:18:18.958Z",
+    "updatedAt": "2026-06-02T06:18:18.958Z"
+  },
+  {
+    "_id": "uu4izel",
+    "timestamp": "2026-06-02T06:18:33.969Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket blpzi5e",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:18:33.969Z",
+    "updatedAt": "2026-06-02T06:18:33.969Z"
+  },
+  {
+    "_id": "vuzfvr7",
+    "timestamp": "2026-06-02T06:18:48.956Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket ruxkvk2",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:18:48.957Z",
+    "updatedAt": "2026-06-02T06:18:48.957Z"
+  },
+  {
+    "_id": "kpfw6q9",
+    "timestamp": "2026-06-02T06:19:03.969Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket s9dlclq",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:19:03.970Z",
+    "updatedAt": "2026-06-02T06:19:03.970Z"
+  },
+  {
+    "_id": "rb5sf7t",
+    "timestamp": "2026-06-02T06:19:18.964Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-WEB-APP-01 and created Incident ticket wkkc142",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:19:18.965Z",
+    "updatedAt": "2026-06-02T06:19:18.965Z"
+  },
+  {
+    "_id": "for2syk",
+    "timestamp": "2026-06-02T06:19:33.970Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket q40eog1",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:19:33.971Z",
+    "updatedAt": "2026-06-02T06:19:33.971Z"
+  },
+  {
+    "_id": "4u3leq0",
+    "timestamp": "2026-06-02T06:19:48.976Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket ybcrpnx",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:19:48.977Z",
+    "updatedAt": "2026-06-02T06:19:48.977Z"
+  },
+  {
+    "_id": "0m3t42z",
+    "timestamp": "2026-06-02T06:20:03.969Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-PROD-01 and created Incident ticket mzah9kj",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:20:03.971Z",
+    "updatedAt": "2026-06-02T06:20:03.971Z"
+  },
+  {
+    "_id": "89v3zbm",
+    "timestamp": "2026-06-02T06:20:18.964Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-WEB-APP-01 and created Incident ticket 7awv6co",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:20:18.965Z",
+    "updatedAt": "2026-06-02T06:20:18.965Z"
+  },
+  {
+    "_id": "4g75dq9",
+    "timestamp": "2026-06-02T06:20:33.985Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket ca5tro2",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:20:33.986Z",
+    "updatedAt": "2026-06-02T06:20:33.986Z"
+  },
+  {
+    "_id": "kln7406",
+    "timestamp": "2026-06-02T06:20:48.969Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket 6pfsini",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:20:48.969Z",
+    "updatedAt": "2026-06-02T06:20:48.969Z"
+  },
+  {
+    "_id": "iwq6uvr",
+    "timestamp": "2026-06-02T06:21:03.970Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket j5cm3mr",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:21:03.971Z",
+    "updatedAt": "2026-06-02T06:21:03.971Z"
+  },
+  {
+    "_id": "g3lhpfl",
+    "timestamp": "2026-06-02T06:21:18.977Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket n2hqlqz",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:21:18.978Z",
+    "updatedAt": "2026-06-02T06:21:18.978Z"
+  },
+  {
+    "_id": "9081iff",
+    "timestamp": "2026-06-02T06:21:33.980Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket 4gpvqo5",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:21:33.981Z",
+    "updatedAt": "2026-06-02T06:21:33.981Z"
+  },
+  {
+    "_id": "yksjk13",
+    "timestamp": "2026-06-02T06:21:48.996Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-WEB-APP-01 and created Incident ticket 0bffejl",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:21:48.997Z",
+    "updatedAt": "2026-06-02T06:21:48.997Z"
+  },
+  {
+    "_id": "gjwcv5g",
+    "timestamp": "2026-06-02T06:22:03.990Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket 6tyrrnb",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:22:03.992Z",
+    "updatedAt": "2026-06-02T06:22:03.992Z"
+  },
+  {
+    "_id": "ypyqcoe",
+    "timestamp": "2026-06-02T06:22:18.970Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket k038d8z",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:22:18.971Z",
+    "updatedAt": "2026-06-02T06:22:18.971Z"
+  },
+  {
+    "_id": "zet2v7r",
+    "timestamp": "2026-06-02T06:22:33.978Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-PROD-01 and created Incident ticket ru0ihvq",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:22:33.979Z",
+    "updatedAt": "2026-06-02T06:22:33.979Z"
+  },
+  {
+    "_id": "85k053o",
+    "timestamp": "2026-06-02T06:22:49.008Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-WEB-APP-01 and created Incident ticket 2rm7h3e",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:22:49.009Z",
+    "updatedAt": "2026-06-02T06:22:49.009Z"
+  },
+  {
+    "_id": "g1kvw70",
+    "timestamp": "2026-06-02T06:23:03.973Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-PROD-01 and created Incident ticket 5ymgyjy",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:23:03.974Z",
+    "updatedAt": "2026-06-02T06:23:03.974Z"
+  },
+  {
+    "_id": "0xcai45",
+    "timestamp": "2026-06-02T06:23:18.976Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket gahiqlf",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:23:18.977Z",
+    "updatedAt": "2026-06-02T06:23:18.977Z"
+  },
+  {
+    "_id": "p6apvjc",
+    "timestamp": "2026-06-02T06:23:33.993Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket cihriwa",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:23:33.994Z",
+    "updatedAt": "2026-06-02T06:23:33.994Z"
+  },
+  {
+    "_id": "ngwde6h",
+    "timestamp": "2026-06-02T06:23:48.989Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket cdbkrsw",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:23:48.991Z",
+    "updatedAt": "2026-06-02T06:23:48.991Z"
+  },
+  {
+    "_id": "9rinowi",
+    "timestamp": "2026-06-02T06:24:03.994Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket w7224tj",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:24:03.996Z",
+    "updatedAt": "2026-06-02T06:24:03.996Z"
+  },
+  {
+    "_id": "wxihb9h",
+    "timestamp": "2026-06-02T06:24:19.024Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket o21diym",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:24:19.026Z",
+    "updatedAt": "2026-06-02T06:24:19.026Z"
+  },
+  {
+    "_id": "4xijtrj",
+    "timestamp": "2026-06-02T06:24:34.004Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket oowwjq5",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:24:34.005Z",
+    "updatedAt": "2026-06-02T06:24:34.005Z"
+  },
+  {
+    "_id": "9slqggd",
+    "timestamp": "2026-06-02T06:24:48.946Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket 9er2coy",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:24:48.948Z",
+    "updatedAt": "2026-06-02T06:24:48.948Z"
+  },
+  {
+    "_id": "52f4ewv",
+    "timestamp": "2026-06-02T06:25:03.939Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket ff6ph05",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:25:03.939Z",
+    "updatedAt": "2026-06-02T06:25:03.939Z"
+  },
+  {
+    "_id": "8x7zb8s",
+    "timestamp": "2026-06-02T06:25:18.935Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-PROD-01 and created Incident ticket 6sixcj1",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:25:18.936Z",
+    "updatedAt": "2026-06-02T06:25:18.936Z"
+  },
+  {
+    "_id": "dvy80af",
+    "timestamp": "2026-06-02T06:25:33.938Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket 33pxn2d",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:25:33.940Z",
+    "updatedAt": "2026-06-02T06:25:33.940Z"
+  },
+  {
+    "_id": "hmaxlt4",
+    "timestamp": "2026-06-02T06:25:48.941Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket hdx67n5",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:25:48.943Z",
+    "updatedAt": "2026-06-02T06:25:48.943Z"
+  },
+  {
+    "_id": "ksxdaim",
+    "timestamp": "2026-06-02T06:26:03.943Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket 0ofdaln",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:26:03.944Z",
+    "updatedAt": "2026-06-02T06:26:03.945Z"
+  },
+  {
+    "_id": "qppz1jp",
+    "timestamp": "2026-06-02T06:26:18.944Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket g1vmptf",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:26:18.945Z",
+    "updatedAt": "2026-06-02T06:26:18.945Z"
+  },
+  {
+    "_id": "9xym7jv",
+    "timestamp": "2026-06-02T06:26:33.945Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket rqofwij",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:26:33.947Z",
+    "updatedAt": "2026-06-02T06:26:33.947Z"
+  },
+  {
+    "_id": "63ogw7u",
+    "timestamp": "2026-06-02T06:26:48.946Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket 584f75l",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:26:48.949Z",
+    "updatedAt": "2026-06-02T06:26:48.949Z"
+  },
+  {
+    "_id": "9wtvqic",
+    "timestamp": "2026-06-02T06:27:03.947Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-PROD-01 and created Incident ticket jhmf7rb",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:27:03.950Z",
+    "updatedAt": "2026-06-02T06:27:03.950Z"
+  },
+  {
+    "_id": "xuhvsus",
+    "timestamp": "2026-06-02T06:27:18.946Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket gusqlgc",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:27:18.947Z",
+    "updatedAt": "2026-06-02T06:27:18.947Z"
+  },
+  {
+    "_id": "k9wefrr",
+    "timestamp": "2026-06-02T06:27:33.951Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket dpxt721",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:27:33.952Z",
+    "updatedAt": "2026-06-02T06:27:33.952Z"
+  },
+  {
+    "_id": "sdgv5cj",
+    "timestamp": "2026-06-02T06:27:48.952Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket 55d79wu",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:27:48.953Z",
+    "updatedAt": "2026-06-02T06:27:48.953Z"
+  },
+  {
+    "_id": "l1wqxj4",
+    "timestamp": "2026-06-02T06:28:03.956Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-WEB-APP-01 and created Incident ticket q4nutft",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:28:03.957Z",
+    "updatedAt": "2026-06-02T06:28:03.957Z"
+  },
+  {
+    "_id": "yet2xsd",
+    "timestamp": "2026-06-02T06:28:18.958Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket bg7nbgu",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:28:18.959Z",
+    "updatedAt": "2026-06-02T06:28:18.959Z"
+  },
+  {
+    "_id": "2i5rt6p",
+    "timestamp": "2026-06-02T06:28:33.953Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket vss4cly",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:28:33.954Z",
+    "updatedAt": "2026-06-02T06:28:33.954Z"
+  },
+  {
+    "_id": "05rhov5",
+    "timestamp": "2026-06-02T06:28:48.956Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket 7ayykau",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:28:48.958Z",
+    "updatedAt": "2026-06-02T06:28:48.958Z"
+  },
+  {
+    "_id": "ixujbv2",
+    "timestamp": "2026-06-02T06:29:03.962Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket q1dmo9g",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:29:03.963Z",
+    "updatedAt": "2026-06-02T06:29:03.963Z"
+  },
+  {
+    "_id": "hm6sism",
+    "timestamp": "2026-06-02T06:29:18.958Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket 3zwy91m",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:29:18.959Z",
+    "updatedAt": "2026-06-02T06:29:18.959Z"
+  },
+  {
+    "_id": "ojgdavn",
+    "timestamp": "2026-06-02T06:29:33.963Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-PROD-01 and created Incident ticket yzbkubk",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:29:33.964Z",
+    "updatedAt": "2026-06-02T06:29:33.964Z"
+  },
+  {
+    "_id": "dmtxr2u",
+    "timestamp": "2026-06-02T06:29:48.963Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-PROD-01 and created Incident ticket a75d1n2",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:29:48.965Z",
+    "updatedAt": "2026-06-02T06:29:48.965Z"
+  },
+  {
+    "_id": "vv6rizb",
+    "timestamp": "2026-06-02T06:30:03.962Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-WEB-APP-01 and created Incident ticket 3qfpsnh",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:30:03.963Z",
+    "updatedAt": "2026-06-02T06:30:03.963Z"
+  },
+  {
+    "_id": "vvza8np",
+    "timestamp": "2026-06-02T06:30:18.962Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-PROD-01 and created Incident ticket z16g4dn",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:30:18.963Z",
+    "updatedAt": "2026-06-02T06:30:18.963Z"
+  },
+  {
+    "_id": "ry55bmv",
+    "timestamp": "2026-06-02T06:30:33.964Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket 27hjyuu",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:30:33.966Z",
+    "updatedAt": "2026-06-02T06:30:33.966Z"
+  },
+  {
+    "_id": "s1wwp5u",
+    "timestamp": "2026-06-02T06:30:48.966Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket lebboim",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:30:48.967Z",
+    "updatedAt": "2026-06-02T06:30:48.967Z"
+  },
+  {
+    "_id": "tun37fn",
+    "timestamp": "2026-06-02T06:31:03.968Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket 6ncoz55",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:31:03.969Z",
+    "updatedAt": "2026-06-02T06:31:03.970Z"
+  },
+  {
+    "_id": "ce57fuy",
+    "timestamp": "2026-06-02T06:31:18.970Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-WEB-APP-01 and created Incident ticket jojm9dz",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:31:18.971Z",
+    "updatedAt": "2026-06-02T06:31:18.971Z"
+  },
+  {
+    "_id": "zl0ib6r",
+    "timestamp": "2026-06-02T06:31:33.968Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket a9hq9kv",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:31:33.969Z",
+    "updatedAt": "2026-06-02T06:31:33.969Z"
+  },
+  {
+    "_id": "wkqz01e",
+    "timestamp": "2026-06-02T06:31:48.970Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-WEB-APP-01 and created Incident ticket p82thzs",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:31:48.971Z",
+    "updatedAt": "2026-06-02T06:31:48.971Z"
+  },
+  {
+    "_id": "1d89frn",
+    "timestamp": "2026-06-02T06:32:03.970Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket 13blh6t",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:32:03.971Z",
+    "updatedAt": "2026-06-02T06:32:03.971Z"
+  },
+  {
+    "_id": "wrd82lw",
+    "timestamp": "2026-06-02T06:32:18.972Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket 1ho36t1",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:32:18.973Z",
+    "updatedAt": "2026-06-02T06:32:18.973Z"
+  },
+  {
+    "_id": "hdf1wfv",
+    "timestamp": "2026-06-02T06:32:33.976Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket yipcjau",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:32:33.977Z",
+    "updatedAt": "2026-06-02T06:32:33.977Z"
+  },
+  {
+    "_id": "47suomb",
+    "timestamp": "2026-06-02T06:32:48.978Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-PROD-01 and created Incident ticket 84rcfw9",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:32:48.979Z",
+    "updatedAt": "2026-06-02T06:32:48.979Z"
+  },
+  {
+    "_id": "zr92uol",
+    "timestamp": "2026-06-02T06:33:03.975Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-PROD-01 and created Incident ticket yytmrmh",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:33:03.976Z",
+    "updatedAt": "2026-06-02T06:33:03.976Z"
+  },
+  {
+    "_id": "9ej1gr1",
+    "timestamp": "2026-06-02T06:33:18.976Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-PROD-01 and created Incident ticket ao7cmil",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:33:18.978Z",
+    "updatedAt": "2026-06-02T06:33:18.978Z"
+  },
+  {
+    "_id": "2d7q4ye",
+    "timestamp": "2026-06-02T06:33:33.983Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket ocro88s",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:33:33.986Z",
+    "updatedAt": "2026-06-02T06:33:33.986Z"
+  },
+  {
+    "_id": "ggta9cl",
+    "timestamp": "2026-06-02T06:33:48.981Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket op27fwi",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:33:48.982Z",
+    "updatedAt": "2026-06-02T06:33:48.982Z"
+  },
+  {
+    "_id": "bm0oxzj",
+    "timestamp": "2026-06-02T06:34:03.983Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket dusjrml",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:34:03.984Z",
+    "updatedAt": "2026-06-02T06:34:03.984Z"
+  },
+  {
+    "_id": "s8z95xw",
+    "timestamp": "2026-06-02T06:34:18.981Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket wmy9cpq",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:34:18.982Z",
+    "updatedAt": "2026-06-02T06:34:18.982Z"
+  },
+  {
+    "_id": "me8blax",
+    "timestamp": "2026-06-02T06:34:33.987Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-PROD-01 and created Incident ticket ima1rli",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:34:33.990Z",
+    "updatedAt": "2026-06-02T06:34:33.990Z"
+  },
+  {
+    "_id": "ec651dj",
+    "timestamp": "2026-06-02T06:34:48.985Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-PROD-01 and created Incident ticket 68csbi6",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:34:48.986Z",
+    "updatedAt": "2026-06-02T06:34:48.986Z"
+  },
+  {
+    "_id": "sd975p2",
+    "timestamp": "2026-06-02T06:35:03.984Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket cln63ec",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:35:03.986Z",
+    "updatedAt": "2026-06-02T06:35:03.986Z"
+  },
+  {
+    "_id": "wfgaqku",
+    "timestamp": "2026-06-02T06:35:18.985Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket uglzbw9",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:35:18.986Z",
+    "updatedAt": "2026-06-02T06:35:18.986Z"
+  },
+  {
+    "_id": "1us4rui",
+    "timestamp": "2026-06-02T06:35:33.988Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket i8asdpd",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:35:33.990Z",
+    "updatedAt": "2026-06-02T06:35:33.990Z"
+  },
+  {
+    "_id": "0o1w1c1",
+    "timestamp": "2026-06-02T06:35:48.989Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket 7juudxl",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:35:48.990Z",
+    "updatedAt": "2026-06-02T06:35:48.990Z"
+  },
+  {
+    "_id": "vghut8r",
+    "timestamp": "2026-06-02T06:36:03.990Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket 4z3oz70",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:36:03.991Z",
+    "updatedAt": "2026-06-02T06:36:03.991Z"
+  },
+  {
+    "_id": "t67q6e7",
+    "timestamp": "2026-06-02T06:36:18.993Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket g84agc6",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:36:18.994Z",
+    "updatedAt": "2026-06-02T06:36:18.994Z"
+  },
+  {
+    "_id": "gg3wqci",
+    "timestamp": "2026-06-02T06:36:33.992Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket rlql0fm",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:36:33.993Z",
+    "updatedAt": "2026-06-02T06:36:33.993Z"
+  },
+  {
+    "_id": "66unefb",
+    "timestamp": "2026-06-02T06:36:48.999Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket 5imspz2",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:36:49.000Z",
+    "updatedAt": "2026-06-02T06:36:49.000Z"
+  },
+  {
+    "_id": "41gvay6",
+    "timestamp": "2026-06-02T06:37:04.001Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket fkh6wn1",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:37:04.003Z",
+    "updatedAt": "2026-06-02T06:37:04.003Z"
+  },
+  {
+    "_id": "ps4wruy",
+    "timestamp": "2026-06-02T06:37:18.995Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-WEB-APP-01 and created Incident ticket rrtlwex",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:37:18.997Z",
+    "updatedAt": "2026-06-02T06:37:18.997Z"
+  },
+  {
+    "_id": "dx0l0up",
+    "timestamp": "2026-06-02T06:37:33.996Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket etlw7le",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:37:33.998Z",
+    "updatedAt": "2026-06-02T06:37:33.998Z"
+  },
+  {
+    "_id": "lwg7smg",
+    "timestamp": "2026-06-02T06:37:48.997Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-PROD-01 and created Incident ticket r5wj274",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:37:48.998Z",
+    "updatedAt": "2026-06-02T06:37:48.998Z"
+  },
+  {
+    "_id": "xy5f0xg",
+    "timestamp": "2026-06-02T06:38:03.996Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket xzpi8rf",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:38:03.996Z",
+    "updatedAt": "2026-06-02T06:38:03.996Z"
+  },
+  {
+    "_id": "dl1qp98",
+    "timestamp": "2026-06-02T06:38:18.995Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket od3dxfr",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:38:18.998Z",
+    "updatedAt": "2026-06-02T06:38:18.998Z"
+  },
+  {
+    "_id": "aegkpjf",
+    "timestamp": "2026-06-02T06:38:33.999Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-WEB-APP-01 and created Incident ticket ds9ews1",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:38:34.000Z",
+    "updatedAt": "2026-06-02T06:38:34.000Z"
+  },
+  {
+    "_id": "vsaopbr",
+    "timestamp": "2026-06-02T06:38:49.000Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-WEB-APP-01 and created Incident ticket en0z5d5",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:38:49.001Z",
+    "updatedAt": "2026-06-02T06:38:49.001Z"
+  },
+  {
+    "_id": "d1lzorn",
+    "timestamp": "2026-06-02T06:39:04.004Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-DEV-05 and created Incident ticket cxavr74",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:39:04.005Z",
+    "updatedAt": "2026-06-02T06:39:04.005Z"
+  },
+  {
+    "_id": "r9jtw0p",
+    "timestamp": "2026-06-02T06:39:19.001Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket amreuy0",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:39:19.003Z",
+    "updatedAt": "2026-06-02T06:39:19.003Z"
+  },
+  {
+    "_id": "56sczr1",
+    "timestamp": "2026-06-02T06:39:34.003Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-WEB-APP-01 and created Incident ticket 5yvn8rl",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:39:34.004Z",
+    "updatedAt": "2026-06-02T06:39:34.004Z"
+  },
+  {
+    "_id": "8l72of2",
+    "timestamp": "2026-06-02T06:39:49.008Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-WEB-APP-01 and created Incident ticket evr5obw",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:39:49.010Z",
+    "updatedAt": "2026-06-02T06:39:49.010Z"
+  },
+  {
+    "_id": "77zu9jo",
+    "timestamp": "2026-06-02T06:40:05.384Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket ty7b2fa",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:40:05.386Z",
+    "updatedAt": "2026-06-02T06:40:05.386Z"
+  },
+  {
+    "_id": "4emj7nc",
+    "timestamp": "2026-06-02T06:40:20.368Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-WEB-APP-01 and created Incident ticket 6wjlex8",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:40:20.370Z",
+    "updatedAt": "2026-06-02T06:40:20.370Z"
+  },
+  {
+    "_id": "fom2qrp",
+    "timestamp": "2026-06-02T06:40:35.359Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system LINUX-SOC-DB-02 and created Incident ticket 45sbmut",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:40:35.360Z",
+    "updatedAt": "2026-06-02T06:40:35.360Z"
+  },
+  {
+    "_id": "cvvka1o",
+    "timestamp": "2026-06-02T06:40:50.373Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system WIN-SOC-AD-02 and created Incident ticket owo2sut",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-02T06:40:50.374Z",
+    "updatedAt": "2026-06-02T06:40:50.374Z"
   }
 ]
