@@ -8,16 +8,16 @@ export default {
     extend: {
       colors: {
         cyber: {
-          bg: '#090d16',        // Deep Space Black
-          card: '#111625',      // Sleek Charcoal Card
-          border: '#1e293b',    // Fine Slate Border
-          primary: '#3b82f6',   // High-Fidelity Blue
-          accent: '#6366f1',    // Cyber Indigo
-          success: '#10b981',   // Threat Safe Green
-          warning: '#f59e0b',   // Threat Medium Orange
-          danger: '#ef4444',    // Threat Critical Red
-          info: '#06b6d4',      // Info Cyan
-          muted: '#64748b'      // Slate Gray Muted
+          bg: '#000000',        // Pure Black
+          card: '#0a0a0c',      // Dark Graphite Panel
+          border: '#141418',    // Fine Graphite Border
+          primary: '#00ff66',   // High-Fidelity Neon Green
+          accent: '#39ff14',    // Bright Neon Green Accent
+          success: '#00ff66',   // Safe
+          warning: '#f59e0b',   // Warning
+          danger: '#ef4444',    // Danger
+          info: '#00e5ff',      // Info
+          muted: '#71717a'      // Zinc Gray Muted
         }
       },
       fontFamily: {

@@ -16,6 +16,8 @@ const intelRouter = require('./routes/threatintel');
 const reportsRouter = require('./routes/reports');
 const malwareRouter = require('./routes/malware');
 const phishingRouter = require('./routes/phishing');
+const soarRouter = require('./routes/soar');
+const scannerRouter = require('./routes/scanner');
 
 const app = express();
 const server = http.createServer(app);
@@ -46,6 +48,8 @@ app.use('/api/intel', intelRouter);
 app.use('/api/reports', reportsRouter);
 app.use('/api/malware', malwareRouter);
 app.use('/api/phishing', phishingRouter);
+app.use('/api/soar', soarRouter);
+app.use('/api/scan', scannerRouter);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -73,6 +77,8 @@ const edrService = require('./services/edrService');
 const idsService = require('./services/idsService');
 const honeypotService = require('./services/honeypotService');
 const scheduler = require('./services/scheduler');
+const scannerService = require('./services/scannerService');
+const packetCaptureService = require('./services/packetCaptureService');
 
 // Core Startup Sequence
 async function startServer() {
@@ -86,6 +92,8 @@ async function startServer() {
   idsService.init(io);
   honeypotService.init(io);
   scheduler.init(io);
+  scannerService.init(io);
+  packetCaptureService.init(io);
 
   server.listen(PORT, () => {
     console.log(`[SYSTEM] Unified ZENTRIX SOC Backend services initialized on port ${PORT}`);

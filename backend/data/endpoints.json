@@ -2,35 +2,227 @@
   {
     "_id": "6zksvem",
     "hostname": "anonymous",
-    "ip": "127.0.0.1",
+    "ip": "10.99.146.69",
     "os": "Linux 6.17.10+kali-amd64",
-    "cpuUsage": 32,
-    "ramUsage": 66,
+    "cpuUsage": 53,
+    "ramUsage": 45,
     "status": "Online",
-    "lastSeen": "2026-06-02T06:40:59.413Z",
+    "lastSeen": "2026-06-04T12:45:08.319Z",
     "processes": [
       {
         "pid": 1,
-        "name": "systemd",
-        "path": "/sbin/init",
+        "name": "init",
+        "path": "/sbin",
         "parent": 0
       },
       {
-        "pid": 512,
-        "name": "python3",
-        "path": "/usr/bin/python3",
-        "parent": 1
+        "pid": 2,
+        "name": "kthreadd",
+        "path": "system",
+        "parent": 0
+      },
+      {
+        "pid": 3,
+        "name": "pool_workqueue_release",
+        "path": "system",
+        "parent": 0
+      },
+      {
+        "pid": 4,
+        "name": "R-rcu_gp",
+        "path": "system",
+        "parent": 0
+      },
+      {
+        "pid": 5,
+        "name": "R-sync_wq",
+        "path": "system",
+        "parent": 0
+      },
+      {
+        "pid": 6,
+        "name": "R-kvfree_rcu_reclaim",
+        "path": "system",
+        "parent": 0
+      },
+      {
+        "pid": 7,
+        "name": "R-slub_flushwq",
+        "path": "system",
+        "parent": 0
+      },
+      {
+        "pid": 8,
+        "name": "R-netns",
+        "path": "system",
+        "parent": 0
+      },
+      {
+        "pid": 10,
+        "name": "kworker",
+        "path": "system",
+        "parent": 0
+      },
+      {
+        "pid": 11,
+        "name": "kworker",
+        "path": "system",
+        "parent": 0
+      },
+      {
+        "pid": 13,
+        "name": "R-mm_percpu_wq",
+        "path": "system",
+        "parent": 0
+      },
+      {
+        "pid": 14,
+        "name": "ksoftirqd",
+        "path": "system",
+        "parent": 0
+      },
+      {
+        "pid": 15,
+        "name": "rcu_preempt",
+        "path": "system",
+        "parent": 0
+      },
+      {
+        "pid": 16,
+        "name": "rcu_exp_par_gp_kthread_worker",
+        "path": "system",
+        "parent": 0
+      },
+      {
+        "pid": 17,
+        "name": "rcu_exp_gp_kthread_worker",
+        "path": "system",
+        "parent": 0
+      },
+      {
+        "pid": 18,
+        "name": "migration",
+        "path": "system",
+        "parent": 0
+      },
+      {
+        "pid": 19,
+        "name": "idle_inject",
+        "path": "system",
+        "parent": 0
+      },
+      {
+        "pid": 20,
+        "name": "cpuhp",
+        "path": "system",
+        "parent": 0
+      },
+      {
+        "pid": 21,
+        "name": "cpuhp",
+        "path": "system",
+        "parent": 0
+      },
+      {
+        "pid": 22,
+        "name": "idle_inject",
+        "path": "system",
+        "parent": 0
       }
     ],
     "networkConnections": [
       {
-        "localPort": 22,
+        "localPort": "35707",
         "remoteAddress": "0.0.0.0",
-        "remotePort": 0,
-        "state": "LISTENING"
+        "remotePort": "*",
+        "state": "LISTEN"
+      },
+      {
+        "localPort": "43847",
+        "remoteAddress": "0.0.0.0",
+        "remotePort": "*",
+        "state": "LISTEN"
+      },
+      {
+        "localPort": "38961",
+        "remoteAddress": "0.0.0.0",
+        "remotePort": "*",
+        "state": "LISTEN"
+      },
+      {
+        "localPort": "2222",
+        "remoteAddress": "0.0.0.0",
+        "remotePort": "*",
+        "state": "LISTEN"
+      },
+      {
+        "localPort": "39147",
+        "remoteAddress": "0.0.0.0",
+        "remotePort": "*",
+        "state": "LISTEN"
+      },
+      {
+        "localPort": "43361",
+        "remoteAddress": "0.0.0.0",
+        "remotePort": "*",
+        "state": "LISTEN"
+      },
+      {
+        "localPort": "8080",
+        "remoteAddress": "0.0.0.0",
+        "remotePort": "*",
+        "state": "LISTEN"
+      },
+      {
+        "localPort": "40183",
+        "remoteAddress": "0.0.0.0",
+        "remotePort": "*",
+        "state": "LISTEN"
+      },
+      {
+        "localPort": "44305",
+        "remoteAddress": "0.0.0.0",
+        "remotePort": "*",
+        "state": "LISTEN"
+      },
+      {
+        "localPort": "45841",
+        "remoteAddress": "0.0.0.0",
+        "remotePort": "*",
+        "state": "LISTEN"
+      },
+      {
+        "localPort": "41279",
+        "remoteAddress": "0.0.0.0",
+        "remotePort": "*",
+        "state": "LISTEN"
+      },
+      {
+        "localPort": "35707",
+        "remoteAddress": "127.0.0.1",
+        "remotePort": "41588",
+        "state": "ESTABLISHED"
+      },
+      {
+        "localPort": "45841",
+        "remoteAddress": "127.0.0.1",
+        "remotePort": "42964",
+        "state": "ESTABLISHED"
+      },
+      {
+        "localPort": "47648",
+        "remoteAddress": "142.251.222.163",
+        "remotePort": "443",
+        "state": "ESTABLISHED"
+      },
+      {
+        "localPort": "40183",
+        "remoteAddress": "127.0.0.1",
+        "remotePort": "49462",
+        "state": "ESTABLISHED"
       }
     ],
     "createdAt": "2026-05-31T13:48:45.931Z",
-    "updatedAt": "2026-06-02T15:22:36.371Z"
+    "updatedAt": "2026-06-04T12:45:08.319Z"
   }
 ]

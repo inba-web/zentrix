@@ -18,7 +18,7 @@ function setupFileWatcher(io) {
 
   try {
     fileWatcher = fs.watch(watchDir, (eventType, filename) => {
-      if (!filename) return;
+      if (!filename || filename.endsWith('.json')) return;
       const changeMsg = `EDR File Monitor: Event [${eventType}] triggered on file: ${filename} inside monitored workspace directory.`;
       
       const alert = {
