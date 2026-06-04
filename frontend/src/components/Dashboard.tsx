@@ -1,16 +1,25 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { 
   AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, 
   BarChart, Bar, PieChart, Pie, Cell
 } from 'recharts';
-import { ShieldAlert, Cpu, Activity, Server, ShieldCheck, HelpCircle, HardDrive, RefreshCw } from 'lucide-react';
+import { ShieldAlert, Cpu, Activity, Server, HardDrive, ShieldCheck, Download, RefreshCw, AlertOctagon } from 'lucide-react';
+import { RootState, setLiveTelemetry, addLiveAlert, setLiveAlerts, addWebsocketLog } from '../store';
 
-const COLORS = ['#ef4444', '#f59e0b', '#3b82f6', '#10b981'];
+const COLORS = ['#ef4444', '#f59e0b', '#39ff14', '#00ff66'];
 
-export default function Dashboard({ liveAlerts, websocketLogs, dbStatus, liveTelemetry }: any) {
+export default function Dashboard() {
+  const dispatch = useDispatch();
+  const token = useSelector((state: RootState) => state.auth.token);
+  const liveTelemetry = useSelector((state: RootState) => state.dashboard.liveTelemetry);
+  const liveAlerts = useSelector((state: RootState) => state.dashboard.liveAlerts);
+  
   const [telemetryHistory, setTelemetryHistory] = useState<any[]>([]);
+  const [reportGenerating, setReportGenerating] = useState(false);
+  const [reportMsg, setReportMsg] = useState('');
 
-  // Sliding history tracker for charts (stores last 10 ticks)
+  // Sliding history tracker for charts
   useEffect(() => {
     if (liveTelemetry) {
       setTelemetryHistory(prev => {
@@ -19,34 +28,19 @@ export default function Dashboard({ liveAlerts, websocketLogs, dbStatus, liveTel
           cpu: parseFloat(liveTelemetry.cpuUsage),
           ram: parseFloat(liveTelemetry.ramUsage),
           disk: parseFloat(liveTelemetry.diskUsage),
-          download: parseFloat(liveTelemetry.network.download),
-          upload: parseFloat(liveTelemetry.network.upload)
+          download: parseFloat(liveTelemetry.network?.download || 0),
+          upload: parseFloat(liveTelemetry.network?.upload || 0)
         }];
         return next.slice(-12); // Keep last 12 points
       });
     }
   }, [liveTelemetry]);
 
-  // Format system uptime into readable string
-  const formatUptime = (seconds: number) => {
-    if (!seconds) return '0s';
-    const h = Math.floor(seconds / 3600);
-    const m = Math.floor((seconds % 3600) / 60);
-    const s = Math.floor(seconds % 60);
-    return `${h}h ${m}m ${s}s`;
-  };
-
-  const getSafetyClassification = (score: number) => {
-    if (score > 75) return { text: 'GUARDED', color: 'text-emerald-400' };
-    if (score > 40) return { text: 'ELEVATED', color: 'text-amber-400' };
-    return { text: 'CRITICAL BREACH', color: 'text-red-500 animate-pulse' };
-  };
-
   if (!liveTelemetry) {
     return (
-      <div className="h-[500px] flex flex-col items-center justify-center space-y-3 font-mono text-xs text-slate-500 bg-[#111625] border border-slate-800 rounded-lg">
-        <RefreshCw className="w-8 h-8 text-blue-500 animate-spin" />
-        <span>Waiting for live telemetry...</span>
+      <div className="h-[500px] flex flex-col items-center justify-center space-y-4 font-mono text-xs text-cyber-primary bg-cyber-card border border-cyber-border rounded-lg shadow-2xl">
+        <RefreshCw className="w-8 h-8 text-cyber-accent animate-spin" />
+        <span className="tracking-widest uppercase animate-pulse">Awaiting Unified Telemetry Stream...</span>
       </div>
     );
   }
@@ -57,91 +51,164 @@ export default function Dashboard({ liveAlerts, websocketLogs, dbStatus, liveTel
   const securityScore = Math.max(30, 98 - (criticalCount * 10 + highCount * 4));
   const riskScore = Math.min(100, (criticalCount * 15 + highCount * 5));
 
-  const classification = getSafetyClassification(securityScore);
-
   const severityPieData = [
-    { name: 'CRITICAL', value: criticalCount + 1 },
-    { name: 'HIGH', value: highCount + 2 },
+    { name: 'CRITICAL', value: criticalCount },
+    { name: 'HIGH', value: highCount },
     { name: 'MEDIUM', value: 4 },
     { name: 'LOW', value: 3 }
   ];
 
+  const handleGenerateReport = async (type: string) => {
+    setReportGenerating(true);
+    setReportMsg('');
+    try {
+      const res = await fetch('/api/reports/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ reportType: type })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setReportMsg(`Successfully generated local report. Download initiated...`);
+        // Trigger actual download of PDF/CSV
+        const stamp = data.report.fileName;
+        const fileToDownload = type === 'CSV' ? stamp.replace('.pdf', '.csv') : stamp;
+        window.open(`/api/reports/download/${fileToDownload}?token=${token}`, '_blank');
+      } else {
+        setReportMsg(data.error || 'Failed to generate report.');
+      }
+    } catch {
+      setReportMsg('Connection error to Reporting engine.');
+    } finally {
+      setReportGenerating(false);
+      setTimeout(() => setReportMsg(''), 5000);
+    }
+  };
+
   return (
-    <div className="space-y-6 font-sans">
+    <div className="space-y-6 font-sans text-white select-none">
       
-      {/* 1. TOP CORE KPI SUMMARY METRICS */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      {/* HEADER SECTION WITH QUICK REPORT BUTTONS */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center p-5 bg-cyber-card border border-cyber-border rounded-lg shadow-lg">
+        <div>
+          <h1 className="text-lg font-bold tracking-widest text-slate-100 font-mono">SOC COMMAND METRICS OVERVIEW</h1>
+          <p className="text-[10px] text-cyber-primary font-mono uppercase tracking-wider mt-1">Real-time status of threat intelligence and endpoint arrays</p>
+        </div>
+        <div className="flex gap-3 mt-4 md:mt-0 items-center">
+          {reportMsg && (
+            <span className="text-[10px] font-mono text-cyber-accent animate-pulse mr-2">{reportMsg}</span>
+          )}
+          <button
+            onClick={() => handleGenerateReport('Executive Summary')}
+            disabled={reportGenerating}
+            className="flex items-center gap-1.5 bg-cyber-card border border-cyber-primary/30 hover:border-cyber-primary px-3 py-1.5 rounded font-mono text-[10px] uppercase font-bold text-cyber-primary transition-all shadow-md hover:shadow-cyber-primary/20"
+          >
+            <Download className="w-3.5 h-3.5" />
+            Download PDF
+          </button>
+          <button
+            onClick={() => handleGenerateReport('CSV')}
+            disabled={reportGenerating}
+            className="flex items-center gap-1.5 bg-cyber-card border border-cyber-primary/30 hover:border-cyber-primary px-3 py-1.5 rounded font-mono text-[10px] uppercase font-bold text-cyber-primary transition-all shadow-md hover:shadow-cyber-primary/20"
+          >
+            <Download className="w-3.5 h-3.5" />
+            Download CSV
+          </button>
+        </div>
+      </div>
+
+      {/* KPI METRIC CARDS */}
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
         
-        {/* Monitored CPU */}
-        <div className="p-4 bg-slate-900/60 border border-slate-800 rounded-lg flex items-center gap-4 hover:border-slate-700 transition-all select-text">
-          <div className="p-3 bg-blue-950/40 border border-blue-500/20 rounded-lg">
-            <Cpu className="w-5 h-5 text-blue-500" />
+        {/* Active Hosts */}
+        <div className="p-4 bg-cyber-card border border-cyber-border rounded-lg hover:border-cyber-primary/40 transition-all select-text shadow-md">
+          <div className="flex items-center justify-between">
+            <span className="text-[9px] uppercase font-mono text-slate-500">Active Hosts</span>
+            <Cpu className="w-4 h-4 text-cyber-primary" />
           </div>
-          <div>
-            <p className="text-[10px] uppercase font-mono text-slate-500 leading-none">CPU Core Usage</p>
-            <p className="text-xl font-bold text-slate-200 mt-1.5 leading-none">{liveTelemetry.cpuUsage}%</p>
-            <p className="text-[10px] text-slate-400 mt-1 font-mono">
-              ACTIVE PROCESSES: {liveTelemetry.activeProcesses}
-            </p>
+          <p className="text-2xl font-bold text-slate-200 mt-2 font-mono">{liveTelemetry.activeHosts || 5}</p>
+          <div className="w-full bg-[#111] h-1 rounded mt-3 overflow-hidden">
+            <div className="bg-cyber-primary h-full" style={{ width: '80%' }}></div>
           </div>
         </div>
 
-        {/* Total RAM Usage */}
-        <div className="p-4 bg-slate-900/60 border border-slate-800 rounded-lg flex items-center gap-4 hover:border-slate-700 transition-all select-text">
-          <div className="p-3 bg-emerald-950/40 border border-emerald-500/20 rounded-lg">
-            <Activity className="w-5 h-5 text-emerald-500 animate-pulse" />
+        {/* Open Ports */}
+        <div className="p-4 bg-cyber-card border border-cyber-border rounded-lg hover:border-cyber-primary/40 transition-all select-text shadow-md">
+          <div className="flex items-center justify-between">
+            <span className="text-[9px] uppercase font-mono text-slate-500">Open Ports</span>
+            <Server className="w-4 h-4 text-cyber-primary" />
           </div>
-          <div>
-            <p className="text-[10px] uppercase font-mono text-slate-500 leading-none">RAM Allocation</p>
-            <p className="text-xl font-bold text-slate-200 mt-1.5 leading-none">{liveTelemetry.ramUsage}%</p>
-            <p className="text-[10px] text-slate-400 mt-1 font-mono">
-              UPTIME: {formatUptime(liveTelemetry.systemUptime)}
-            </p>
+          <p className="text-2xl font-bold text-slate-200 mt-2 font-mono">{liveTelemetry.openPorts || 12}</p>
+          <div className="w-full bg-[#111] h-1 rounded mt-3 overflow-hidden">
+            <div className="bg-cyber-primary h-full" style={{ width: '45%' }}></div>
           </div>
         </div>
 
-        {/* Disk Space usage */}
-        <div className="p-4 bg-slate-900/60 border border-slate-800 rounded-lg flex items-center gap-4 hover:border-slate-700 transition-all select-text">
-          <div className="p-3 bg-amber-950/40 border border-amber-500/20 rounded-lg">
-            <HardDrive className="w-5 h-5 text-amber-500" />
+        {/* Active Connections */}
+        <div className="p-4 bg-cyber-card border border-cyber-border rounded-lg hover:border-cyber-primary/40 transition-all select-text shadow-md">
+          <div className="flex items-center justify-between">
+            <span className="text-[9px] uppercase font-mono text-slate-500">Connections</span>
+            <Activity className="w-4 h-4 text-cyber-primary animate-pulse" />
           </div>
-          <div>
-            <p className="text-[10px] uppercase font-mono text-slate-500 leading-none">Disk Partition</p>
-            <p className="text-xl font-bold text-slate-200 mt-1.5 leading-none">{liveTelemetry.diskUsage}%</p>
-            <p className="text-[10px] text-amber-400 mt-1 font-mono">
-              DISK I/O: R:{liveTelemetry.diskIO.read} W:{liveTelemetry.diskIO.write}
-            </p>
+          <p className="text-2xl font-bold text-slate-200 mt-2 font-mono">{liveTelemetry.openConnections || 8}</p>
+          <div className="w-full bg-[#111] h-1 rounded mt-3 overflow-hidden">
+            <div className="bg-cyber-primary h-full" style={{ width: '60%' }}></div>
           </div>
         </div>
 
-        {/* Network usage stats */}
-        <div className="p-4 bg-slate-900/60 border border-slate-800 rounded-lg flex items-center gap-4 hover:border-slate-700 transition-all select-text">
-          <div className="p-3 bg-red-950/40 border border-red-500/20 rounded-lg">
-            <Server className="w-5 h-5 text-red-500" />
+        {/* Running Scans */}
+        <div className="p-4 bg-cyber-card border border-cyber-border rounded-lg hover:border-cyber-primary/40 transition-all select-text shadow-md">
+          <div className="flex items-center justify-between">
+            <span className="text-[9px] uppercase font-mono text-slate-500">Running Scans</span>
+            <RefreshCw className="w-4 h-4 text-cyber-primary" />
           </div>
-          <div>
-            <p className="text-[10px] uppercase font-mono text-slate-500 leading-none">Sockets Bandwidth</p>
-            <p className="text-xl font-bold text-slate-200 mt-1.5 leading-none">{liveTelemetry.network.download} KB/s</p>
-            <p className="text-[10px] text-red-400 mt-1 font-mono uppercase">
-              Connections: {liveTelemetry.openConnections} Open
-            </p>
+          <p className="text-2xl font-bold text-slate-200 mt-2 font-mono">{(liveTelemetry as any).scansRunning || 0}</p>
+          <div className="w-full bg-[#111] h-1 rounded mt-3 overflow-hidden">
+            <div className="bg-cyber-primary h-full" style={{ width: '0%' }}></div>
+          </div>
+        </div>
+
+        {/* Critical Alerts */}
+        <div className="p-4 bg-cyber-card border border-cyber-border rounded-lg hover:border-cyber-danger/40 transition-all select-text shadow-md">
+          <div className="flex items-center justify-between">
+            <span className="text-[9px] uppercase font-mono text-slate-500">Critical Alerts</span>
+            <AlertOctagon className="w-4 h-4 text-cyber-danger" />
+          </div>
+          <p className="text-2xl font-bold text-cyber-danger mt-2 font-mono">{criticalCount}</p>
+          <div className="w-full bg-[#111] h-1 rounded mt-3 overflow-hidden">
+            <div className="bg-cyber-danger h-full" style={{ width: `${Math.min(100, criticalCount * 20)}%` }}></div>
+          </div>
+        </div>
+
+        {/* Threats Detected */}
+        <div className="p-4 bg-cyber-card border border-cyber-border rounded-lg hover:border-cyber-danger/40 transition-all select-text shadow-md">
+          <div className="flex items-center justify-between">
+            <span className="text-[9px] uppercase font-mono text-slate-500">Threats Detected</span>
+            <ShieldAlert className="w-4 h-4 text-cyber-danger" />
+          </div>
+          <p className="text-2xl font-bold text-slate-200 mt-2 font-mono">{liveTelemetry.threatsDetected || 0}</p>
+          <div className="w-full bg-[#111] h-1 rounded mt-3 overflow-hidden">
+            <div className="bg-cyber-danger h-full" style={{ width: `${Math.min(100, (liveTelemetry.threatsDetected || 0) * 15)}%` }}></div>
           </div>
         </div>
 
       </div>
 
-      {/* 2. DYNAMIC REAL-TIME SYSTEM CHARTS */}
+      {/* CHARTS GRID */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        {/* Live sliding CPU/RAM activity */}
-        <div className="lg:col-span-2 p-5 bg-[#111625] border border-slate-800 rounded-lg flex flex-col justify-between h-[340px] relative overflow-hidden">
+        {/* Network performance line chart */}
+        <div className="lg:col-span-2 p-5 bg-cyber-card border border-cyber-border rounded-lg flex flex-col justify-between h-[340px] relative shadow-lg">
           <div className="flex justify-between items-center mb-3">
             <div>
-              <span className="text-xs uppercase font-mono font-bold tracking-wider text-slate-200">Live CPU & RAM Performance Velocity</span>
-              <p className="text-[10px] text-[#64748b] leading-tight font-mono">ACTIVE SYSTEM REAL-TIME METRICS</p>
+              <span className="text-xs uppercase font-mono font-bold tracking-wider text-slate-200">Network Activity Timeline</span>
+              <p className="text-[10px] text-slate-500 font-mono">REAL-TIME PORT & SOCKET TRAFFIC INTENSITY</p>
             </div>
-            <div className="bg-[#050811] border border-slate-850 px-3 py-1.5 rounded text-[9px] font-mono text-blue-400 font-bold uppercase leading-none">
-              Network Net I/O: DL:{liveTelemetry.network.download} UL:{liveTelemetry.network.upload} KB/s
+            <div className="bg-black border border-cyber-border px-3 py-1.5 rounded text-[9px] font-mono text-cyber-primary font-bold uppercase leading-none">
+              NET I/O: DL:{liveTelemetry.network?.download || 0} KB/s | UL:{liveTelemetry.network?.upload || 0} KB/s
             </div>
           </div>
 
@@ -151,124 +218,36 @@ export default function Dashboard({ liveAlerts, websocketLogs, dbStatus, liveTel
                 <AreaChart data={telemetryHistory} margin={{ left: -25, right: 10, top: 10, bottom: 0 }}>
                   <defs>
                     <linearGradient id="cpuGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.2}/>
-                      <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#00ff66" stopOpacity={0.25}/>
+                      <stop offset="95%" stopColor="#00ff66" stopOpacity={0}/>
                     </linearGradient>
                     <linearGradient id="ramGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.2}/>
-                      <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#39ff14" stopOpacity={0.15}/>
+                      <stop offset="95%" stopColor="#39ff14" stopOpacity={0}/>
                     </linearGradient>
                   </defs>
-                  <XAxis dataKey="time" stroke="#475569" strokeWidth={0.5} tick={{ fill: '#94a3b8', fontSize: 9 }} />
-                  <YAxis stroke="#475569" strokeWidth={0.5} tick={{ fill: '#94a3b8', fontSize: 9 }} domain={[0, 100]} />
+                  <XAxis dataKey="time" stroke="#222" strokeWidth={0.5} tick={{ fill: '#71717a', fontSize: 9 }} />
+                  <YAxis stroke="#222" strokeWidth={0.5} tick={{ fill: '#71717a', fontSize: 9 }} domain={[0, 100]} />
                   <Tooltip 
-                    contentStyle={{ backgroundColor: '#090d16', border: '1px solid #1e293b', borderRadius: '4px' }}
-                    labelStyle={{ color: '#94a3b8', fontFamily: 'monospace' }}
+                    contentStyle={{ backgroundColor: '#000000', border: '1px solid #141418', borderRadius: '4px' }}
+                    labelStyle={{ color: '#71717a', fontFamily: 'monospace' }}
                     itemStyle={{ fontFamily: 'monospace' }}
                   />
-                  <Area type="monotone" dataKey="cpu" stroke="#3b82f6" strokeWidth={2} fillOpacity={1} fill="url(#cpuGrad)" name="CPU Usage %" />
-                  <Area type="monotone" dataKey="ram" stroke="#10b981" strokeWidth={2} fillOpacity={1} fill="url(#ramGrad)" name="RAM Usage %" />
+                  <Area type="monotone" dataKey="cpu" stroke="#00ff66" strokeWidth={2} fillOpacity={1} fill="url(#cpuGrad)" name="CPU Usage %" />
+                  <Area type="monotone" dataKey="ram" stroke="#39ff14" strokeWidth={1} fillOpacity={1} fill="url(#ramGrad)" name="RAM Usage %" />
                 </AreaChart>
               </ResponsiveContainer>
             ) : (
-              <p className="text-slate-500 text-center pt-24">Aggregating telemetry signals...</p>
+              <p className="text-slate-500 text-center pt-24 font-mono">Aggregating telemetry signals...</p>
             )}
           </div>
         </div>
 
-        {/* Security / Risk Posture Wheel */}
-        <div className="p-5 bg-[#111625] border border-slate-800 rounded-lg flex flex-col justify-between h-[340px] font-sans">
+        {/* Security / Risk wheel */}
+        <div className="p-5 bg-cyber-card border border-cyber-border rounded-lg flex flex-col justify-between h-[340px] shadow-lg">
           <div>
-            <span className="text-xs uppercase font-mono font-bold tracking-wider text-slate-200">Security & Risk Postures</span>
-            <p className="text-[10px] text-[#64748b] leading-tight font-mono">ACTIVE SYSTEM EXPOSURE CALCULATORS</p>
-          </div>
-
-          <div className="flex-1 flex flex-col justify-center items-center relative py-2 select-text">
-            
-            <div className="relative w-44 h-44 flex items-center justify-center">
-              <svg className="w-full h-full transform -rotate-90">
-                <circle 
-                  cx="88" cy="88" r="70" 
-                  stroke="#161e31" strokeWidth="8" fill="transparent" 
-                />
-                <circle 
-                  cx="88" cy="88" r="70" 
-                  stroke={securityScore > 75 ? '#10b981' : '#ef4444'} 
-                  strokeWidth="8" fill="transparent"
-                  strokeDasharray={440}
-                  strokeDashoffset={440 - (440 * securityScore) / 100}
-                  className="transition-all duration-1000 ease-out"
-                />
-              </svg>
-              
-              <div className="absolute flex flex-col items-center justify-center leading-none">
-                <span className="text-[10px] uppercase font-mono text-slate-500">POSTURE</span>
-                <span className="text-3xl font-bold text-slate-100 mt-1">{securityScore}%</span>
-                <span className={`text-[10px] font-mono font-bold mt-1 uppercase ${classification.color}`}>{classification.text}</span>
-              </div>
-            </div>
-
-            <div className="w-full mt-4 flex justify-between border-t border-slate-800/80 pt-3 text-[10px] font-mono text-[#64748b]">
-              <div>
-                <span>RISK RATIO:</span>
-                <span className="text-red-400 font-bold ml-1">{riskScore}%</span>
-              </div>
-              <div>
-                <span>STATUS:</span>
-                <span className="text-emerald-400 font-bold ml-1">SECURE</span>
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-      </div>
-
-      {/* 3. TOP PROCESSES MONITOR & CLASSIFICATIONS */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
-        {/* Top active processes by CPU */}
-        <div className="lg:col-span-2 p-5 bg-[#111625] border border-slate-800 rounded-lg flex flex-col justify-between h-[300px]">
-          <div>
-            <span className="text-xs uppercase font-mono font-bold tracking-wider text-slate-200">Active Workstation Process Monitors</span>
-            <p className="text-[10px] text-[#64748b] leading-tight font-mono mb-4">TOP DYNAMIC RUNNING THREADS BY CPU LOAD</p>
-          </div>
-
-          <div className="flex-1 overflow-y-auto select-text min-h-0">
-            <table className="w-full text-left border-collapse text-xs font-mono">
-              <thead>
-                <tr className="bg-slate-950/40 text-[#64748b] border-b border-slate-800 uppercase text-[9px]">
-                  <th className="p-2">PID</th>
-                  <th className="p-2">Image Process Name</th>
-                  <th className="p-2">CPU Usage</th>
-                  <th className="p-2">RAM Usage</th>
-                  <th className="p-2">State</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-800/60 font-mono text-slate-300">
-                {(liveTelemetry.topProcesses || []).map((proc: any, index: number) => (
-                  <tr key={index} className="hover:bg-slate-900/60 transition-colors">
-                    <td className="p-2 text-slate-500 font-bold">{proc.pid}</td>
-                    <td className="p-2 text-slate-200">{proc.name}</td>
-                    <td className="p-2 text-blue-400 font-bold">{proc.cpu}%</td>
-                    <td className="p-2 text-slate-400">{proc.mem}%</td>
-                    <td className="p-2">
-                      <span className="px-2 py-0.5 bg-emerald-950/30 border border-emerald-500/20 text-emerald-400 rounded text-[8px] font-bold uppercase">
-                        {proc.state || 'running'}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* Incidents Pie classification chart */}
-        <div className="p-5 bg-[#111625] border border-slate-800 rounded-lg flex flex-col justify-between h-[300px]">
-          <div>
-            <span className="text-xs uppercase font-mono font-bold tracking-wider text-slate-200">Mitred Alert Severity classifications</span>
-            <p className="text-[10px] text-[#64748b] leading-tight font-mono">PIE POSTURE ASSESSMENTS</p>
+            <span className="text-xs uppercase font-mono font-bold tracking-wider text-slate-200">Alert Severity Distribution</span>
+            <p className="text-[10px] text-slate-500 font-mono">PIE SEVERITY SUBCLASSIFICATIONS</p>
           </div>
 
           <div className="flex-1 flex justify-center items-center min-h-0 relative my-2">
@@ -288,7 +267,7 @@ export default function Dashboard({ liveAlerts, websocketLogs, dbStatus, liveTel
                   ))}
                 </Pie>
                 <Tooltip 
-                  contentStyle={{ backgroundColor: '#090d16', border: '1px solid #1e293b', borderRadius: '4px' }}
+                  contentStyle={{ backgroundColor: '#000000', border: '1px solid #141418', borderRadius: '4px' }}
                   itemStyle={{ fontFamily: 'monospace', fontSize: '11px' }}
                 />
               </PieChart>
@@ -297,9 +276,99 @@ export default function Dashboard({ liveAlerts, websocketLogs, dbStatus, liveTel
             <div className="absolute right-0 bottom-2 space-y-1 text-[9px] font-mono leading-none">
               <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-red-500"></span><span className="text-slate-400">CRIT ({criticalCount})</span></div>
               <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-amber-500"></span><span className="text-slate-400">HIGH ({highCount})</span></div>
-              <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-blue-500"></span><span className="text-slate-400">MED (4)</span></div>
-              <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-emerald-500"></span><span className="text-slate-400">LOW (3)</span></div>
+              <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-cyber-primary"></span><span className="text-slate-400">MED (4)</span></div>
+              <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-cyber-accent"></span><span className="text-slate-400">LOW (3)</span></div>
             </div>
+          </div>
+        </div>
+
+      </div>
+
+      {/* LOWER ROW: ACTIVE SYSTEM PROCESSES & THREAT TIMELINE */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        {/* Active processes */}
+        <div className="lg:col-span-2 p-5 bg-cyber-card border border-cyber-border rounded-lg flex flex-col justify-between h-[300px] shadow-lg">
+          <div>
+            <span className="text-xs uppercase font-mono font-bold tracking-wider text-slate-200">Active Workstation Process Monitors</span>
+            <p className="text-[10px] text-slate-500 font-mono mb-4">TOP DYNAMIC RUNNING THREADS BY CPU LOAD</p>
+          </div>
+
+          <div className="flex-1 overflow-y-auto select-text min-h-0">
+            <table className="w-full text-left border-collapse text-xs font-mono">
+              <thead>
+                <tr className="bg-black text-slate-500 border-b border-cyber-border uppercase text-[9px]">
+                  <th className="p-2">PID</th>
+                  <th className="p-2">Image Process Name</th>
+                  <th className="p-2">CPU Usage</th>
+                  <th className="p-2">RAM Usage</th>
+                  <th className="p-2">State</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-cyber-border font-mono text-slate-300">
+                {(liveTelemetry.topProcesses || []).map((proc: any, index: number) => (
+                  <tr key={index} className="hover:bg-black/50 transition-colors">
+                    <td className="p-2 text-slate-500 font-bold">{proc.pid}</td>
+                    <td className="p-2 text-slate-200">{proc.name}</td>
+                    <td className="p-2 text-cyber-primary font-bold">{proc.cpu}%</td>
+                    <td className="p-2 text-slate-400">{proc.mem}%</td>
+                    <td className="p-2">
+                      <span className="px-2 py-0.5 bg-black border border-cyber-primary/20 text-cyber-primary rounded text-[8px] font-bold uppercase">
+                        {proc.state || 'running'}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Threat timeline / asset health */}
+        <div className="p-5 bg-cyber-card border border-cyber-border rounded-lg flex flex-col justify-between h-[300px] shadow-lg">
+          <div>
+            <span className="text-xs uppercase font-mono font-bold tracking-wider text-slate-200">Asset Safety Posture</span>
+            <p className="text-[10px] text-slate-500 font-mono">ACTIVE SYSTEM ANOMALY CALCULATIONS</p>
+          </div>
+
+          <div className="flex-1 flex flex-col justify-center items-center relative py-2 select-text">
+            
+            <div className="relative w-36 h-36 flex items-center justify-center">
+              <svg className="w-full h-full transform -rotate-90">
+                <circle 
+                  cx="72" cy="72" r="58" 
+                  stroke="#111" strokeWidth="8" fill="transparent" 
+                />
+                <circle 
+                  cx="72" cy="72" r="58" 
+                  stroke={securityScore > 75 ? '#00ff66' : '#ef4444'} 
+                  strokeWidth="8" fill="transparent"
+                  strokeDasharray={360}
+                  strokeDashoffset={360 - (360 * securityScore) / 100}
+                  className="transition-all duration-1000 ease-out"
+                />
+              </svg>
+              
+              <div className="absolute flex flex-col items-center justify-center leading-none">
+                <span className="text-[9px] uppercase font-mono text-slate-500">POSTURE</span>
+                <span className="text-2xl font-bold text-slate-100 mt-1">{securityScore}%</span>
+                <span className={`text-[8px] font-mono font-bold mt-1 uppercase ${securityScore > 75 ? 'text-cyber-primary' : 'text-cyber-danger'}`}>
+                  {securityScore > 75 ? 'SAFE' : 'RISKY'}
+                </span>
+              </div>
+            </div>
+
+            <div className="w-full mt-3 flex justify-between border-t border-cyber-border pt-3 text-[9px] font-mono text-slate-500">
+              <div>
+                <span>RISK RATIO:</span>
+                <span className="text-cyber-danger font-bold ml-1">{riskScore}%</span>
+              </div>
+              <div>
+                <span>STATUS:</span>
+                <span className="text-cyber-primary font-bold ml-1">MONITORED</span>
+              </div>
+            </div>
+
           </div>
         </div>
 

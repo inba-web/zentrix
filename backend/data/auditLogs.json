@@ -2858,5 +2858,25 @@
     "ip": "127.0.0.1",
     "createdAt": "2026-06-02T06:40:50.374Z",
     "updatedAt": "2026-06-02T06:40:50.374Z"
+  },
+  {
+    "_id": "exsbegv",
+    "timestamp": "2026-06-04T12:22:41.321Z",
+    "user": "System Scanner",
+    "action": "Network Scan Executed",
+    "details": "Nmap scan completed for target 10.99.146.69 using profile Quick Scan.",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-04T12:22:41.326Z",
+    "updatedAt": "2026-06-04T12:22:41.326Z"
+  },
+  {
+    "_id": "xq616iv",
+    "timestamp": "2026-06-04T12:23:00.873Z",
+    "user": "System Scanner",
+    "action": "Network Scan Executed",
+    "details": "Nmap scan completed for target 10.99.146.69 using profile Quick Scan.",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-04T12:23:00.874Z",
+    "updatedAt": "2026-06-04T12:23:00.875Z"
   }
 ]
