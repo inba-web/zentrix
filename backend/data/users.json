@@ -1,30 +1,14 @@
 [
   {
-    "_id": "728leb0",
-    "email": "admin.director@enterprise.com",
-    "name": "ADRIAN DIRECTOR",
-    "role": "Analyst",
-    "avatar": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=100&q=80",
-    "createdAt": "2026-05-31T14:26:14.971Z",
-    "updatedAt": "2026-06-04T12:27:33.153Z",
-    "lastActive": "2026-06-04T12:27:33.153Z"
-  },
-  {
-    "_id": "t0mj7m6",
+    "_id": "4eknrjk",
+    "name": "inbavarunan",
     "email": "inbavarunans@gmail.com",
-    "name": "INBAVARUNANS",
-    "role": "Analyst",
+    "whatsapp": "9361292420",
     "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80",
-    "createdAt": "2026-05-31T14:29:47.292Z",
-    "updatedAt": "2026-05-31T14:29:47.292Z"
-  },
-  {
-    "_id": "hjviuvf",
-    "email": "inbafreakz@gmail.com",
-    "name": "INBAFREAKZ",
-    "role": "Analyst",
-    "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80",
-    "createdAt": "2026-05-31T14:52:56.338Z",
-    "updatedAt": "2026-05-31T14:52:56.338Z"
+    "role": "Administrator",
+    "joinedAt": "2026-06-05T05:12:23.977Z",
+    "lastActive": "2026-06-05T06:13:57.576Z",
+    "createdAt": "2026-06-05T05:12:23.977Z",
+    "updatedAt": "2026-06-05T06:13:57.576Z"
   }
 ]

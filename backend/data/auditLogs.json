@@ -2878,5 +2878,65 @@
     "ip": "127.0.0.1",
     "createdAt": "2026-06-04T12:23:00.874Z",
     "updatedAt": "2026-06-04T12:23:00.875Z"
+  },
+  {
+    "_id": "ddfnv8d",
+    "timestamp": "2026-06-05T04:50:18.484Z",
+    "user": "inbavarunan",
+    "action": "Profile Registered",
+    "details": "One-time ZENTRIX SOC workstation profile created for inbavarunan.",
+    "ip": "::1",
+    "createdAt": "2026-06-05T04:50:18.485Z",
+    "updatedAt": "2026-06-05T04:50:18.485Z"
+  },
+  {
+    "_id": "lz9nm1x",
+    "timestamp": "2026-06-05T04:50:56.386Z",
+    "user": "System Scanner",
+    "action": "Network Scan Executed",
+    "details": "Nmap scan completed for target 192.168.1.1/24 using profile Quick Scan.",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-05T04:50:56.388Z",
+    "updatedAt": "2026-06-05T04:50:56.388Z"
+  },
+  {
+    "_id": "0miho3w",
+    "timestamp": "2026-06-05T05:12:23.977Z",
+    "user": "inbavarunan",
+    "action": "Profile Registered",
+    "details": "One-time ZENTRIX SOC workstation profile created for inbavarunan.",
+    "ip": "::1",
+    "createdAt": "2026-06-05T05:12:23.989Z",
+    "updatedAt": "2026-06-05T05:12:23.989Z"
+  },
+  {
+    "_id": "u3s3v0i",
+    "timestamp": "2026-06-05T05:19:35.454Z",
+    "user": "System Scanner",
+    "action": "Network Scan Executed",
+    "details": "Nmap scan completed for target 10.99.112.121  using profile Full Scan.",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-05T05:19:35.455Z",
+    "updatedAt": "2026-06-05T05:19:35.455Z"
+  },
+  {
+    "_id": "rz52z2v",
+    "timestamp": "2026-06-05T05:20:12.482Z",
+    "user": "System Scanner",
+    "action": "Network Scan Executed",
+    "details": "Nmap scan completed for target 10.99.112.121  using profile Full Scan.",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-05T05:20:12.483Z",
+    "updatedAt": "2026-06-05T05:20:12.483Z"
+  },
+  {
+    "_id": "yz0qwf0",
+    "timestamp": "2026-06-05T05:46:43.610Z",
+    "user": "inbavarunan",
+    "action": "Threat Intel Query",
+    "details": "Queried IP: \"185.220.101.5\". Risk Score resolved to 98%.",
+    "ip": "::1",
+    "createdAt": "2026-06-05T05:46:43.613Z",
+    "updatedAt": "2026-06-05T05:46:43.613Z"
   }
 ]
