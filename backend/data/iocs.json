@@ -3,12 +3,46 @@
     "_id": "3jbbarn",
     "type": "IP",
     "value": "185.220.101.5",
-    "threatType": "Tor Exit Node / Brute Force Scanner",
+    "threatType": "Malicious SSH Scanner",
     "reputation": 98,
-    "source": "AbuseIPDB",
-    "notes": "Frequently scanned network endpoints.",
-    "createdAt": "2026-05-31T14:49:30.296Z",
-    "updatedAt": "2026-05-31T14:49:30.296Z"
+    "source": "Correlated Intel Engine",
+    "notes": "Lookup target matching indicators of active security compromises. Risk Index registered at 98%.",
+    "createdAt": "2026-06-05T05:46:43.610Z",
+    "updatedAt": "2026-06-05T05:46:43.610Z",
+    "enrichment": {
+      "category": "Malicious SSH Scanner",
+      "advisory": "Lookup target matching indicators of active security compromises. Risk Index registered at 98%.",
+      "virusTotal": {
+        "maliciousVotes": 54,
+        "harmlessVotes": 4,
+        "reputationScore": 98,
+        "lastScanDate": "2026-06-05T05:46:43.609Z",
+        "category": "Tor Exit Node"
+      },
+      "abuseIPDB": {
+        "abuseScore": 98,
+        "totalReports": 411,
+        "isp": "DigitalOcean LLC",
+        "country": "Netherlands"
+      },
+      "alienVaultOTX": {
+        "pulseCount": 24,
+        "adversaries": [
+          "APT29 (Cozy Bear)",
+          "Wizard Spider"
+        ],
+        "industriesTargeted": [
+          "Finance",
+          "Government",
+          "Energy"
+        ]
+      },
+      "urlHaus": {
+        "status": "online",
+        "threatType": "N/A",
+        "reporter": "ZENTRIX Scanner"
+      }
+    }
   },
   {
     "_id": "crcly69",

@@ -3,10 +3,10 @@
     "_id": "ff6ph05",
     "title": "[AUTO-CONTAINED] Incident Case: Lateral Movement Attempted",
     "severity": "HIGH",
-    "status": "INVESTIGATING",
+    "status": "CONTAINED",
     "assignedTo": "SOAR Automation Engine",
     "createdAt": "2026-06-02T06:25:03.938Z",
-    "updatedAt": "2026-06-04T12:27:30.073Z",
+    "updatedAt": "2026-06-05T05:14:01.583Z",
     "impact": "Endpoint systems affected. Compromised binaries isolated.",
     "rootCause": "WMI Win32_Process creation detected targeting remote admin shares.",
     "recommendations": [
@@ -50,9 +50,9 @@
     ],
     "$push": {
       "timeline": {
-        "timestamp": "2026-06-04T12:27:30.072Z",
-        "activity": "Case updated: status->INVESTIGATING, assignee->NoChange",
-        "actor": "admin.director"
+        "timestamp": "2026-06-05T05:14:01.581Z",
+        "activity": "Case updated: status->CONTAINED, assignee->NoChange",
+        "actor": "inbavarunans"
       }
     }
   },

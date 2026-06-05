@@ -1,1 +1,13 @@
-[]
+[
+  {
+    "_id": "5ht48ic",
+    "reportId": "2t83mgk",
+    "emailStatus": "Delivered",
+    "whatsAppStatus": "Delivered",
+    "deliveryTimestamp": "2026-06-05T05:14:26.741Z",
+    "failureReason": "Manual generation simulated successfully.",
+    "retryCount": 0,
+    "createdAt": "2026-06-05T05:14:26.741Z",
+    "updatedAt": "2026-06-05T05:14:26.741Z"
+  }
+]

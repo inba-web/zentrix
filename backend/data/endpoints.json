@@ -2,12 +2,12 @@
   {
     "_id": "6zksvem",
     "hostname": "anonymous",
-    "ip": "10.99.146.69",
+    "ip": "10.99.112.121",
     "os": "Linux 6.17.10+kali-amd64",
-    "cpuUsage": 53,
+    "cpuUsage": 51,
     "ramUsage": 45,
     "status": "Online",
-    "lastSeen": "2026-06-04T12:45:08.319Z",
+    "lastSeen": "2026-06-05T06:14:05.538Z",
     "processes": [
       {
         "pid": 1,
@@ -64,8 +64,8 @@
         "parent": 0
       },
       {
-        "pid": 11,
-        "name": "kworker",
+        "pid": 12,
+        "name": "u32:0-flush-259:0",
         "path": "system",
         "parent": 0
       },
@@ -132,19 +132,43 @@
     ],
     "networkConnections": [
       {
-        "localPort": "35707",
+        "localPort": "40737",
         "remoteAddress": "0.0.0.0",
         "remotePort": "*",
         "state": "LISTEN"
       },
       {
-        "localPort": "43847",
+        "localPort": "44093",
         "remoteAddress": "0.0.0.0",
         "remotePort": "*",
         "state": "LISTEN"
       },
       {
-        "localPort": "38961",
+        "localPort": "39637",
+        "remoteAddress": "0.0.0.0",
+        "remotePort": "*",
+        "state": "LISTEN"
+      },
+      {
+        "localPort": "34541",
+        "remoteAddress": "0.0.0.0",
+        "remotePort": "*",
+        "state": "LISTEN"
+      },
+      {
+        "localPort": "38157",
+        "remoteAddress": "0.0.0.0",
+        "remotePort": "*",
+        "state": "LISTEN"
+      },
+      {
+        "localPort": "46461",
+        "remoteAddress": "0.0.0.0",
+        "remotePort": "*",
+        "state": "LISTEN"
+      },
+      {
+        "localPort": "46129",
         "remoteAddress": "0.0.0.0",
         "remotePort": "*",
         "state": "LISTEN"
@@ -156,73 +180,49 @@
         "state": "LISTEN"
       },
       {
-        "localPort": "39147",
-        "remoteAddress": "0.0.0.0",
-        "remotePort": "*",
-        "state": "LISTEN"
-      },
-      {
-        "localPort": "43361",
-        "remoteAddress": "0.0.0.0",
-        "remotePort": "*",
-        "state": "LISTEN"
-      },
-      {
         "localPort": "8080",
         "remoteAddress": "0.0.0.0",
         "remotePort": "*",
         "state": "LISTEN"
       },
       {
-        "localPort": "40183",
+        "localPort": "41623",
         "remoteAddress": "0.0.0.0",
         "remotePort": "*",
         "state": "LISTEN"
       },
       {
-        "localPort": "44305",
+        "localPort": "41699",
         "remoteAddress": "0.0.0.0",
         "remotePort": "*",
         "state": "LISTEN"
       },
       {
-        "localPort": "45841",
+        "localPort": "45207",
         "remoteAddress": "0.0.0.0",
         "remotePort": "*",
         "state": "LISTEN"
       },
       {
-        "localPort": "41279",
-        "remoteAddress": "0.0.0.0",
-        "remotePort": "*",
-        "state": "LISTEN"
-      },
-      {
-        "localPort": "35707",
-        "remoteAddress": "127.0.0.1",
-        "remotePort": "41588",
-        "state": "ESTABLISHED"
-      },
-      {
-        "localPort": "45841",
-        "remoteAddress": "127.0.0.1",
-        "remotePort": "42964",
-        "state": "ESTABLISHED"
-      },
-      {
-        "localPort": "47648",
-        "remoteAddress": "142.251.222.163",
+        "localPort": "36212",
+        "remoteAddress": "142.251.106.94",
         "remotePort": "443",
+        "state": "TIME_WAIT"
+      },
+      {
+        "localPort": "52786",
+        "remoteAddress": "127.0.0.1",
+        "remotePort": "34541",
         "state": "ESTABLISHED"
       },
       {
-        "localPort": "40183",
+        "localPort": "52788",
         "remoteAddress": "127.0.0.1",
-        "remotePort": "49462",
+        "remotePort": "34541",
         "state": "ESTABLISHED"
       }
     ],
     "createdAt": "2026-05-31T13:48:45.931Z",
-    "updatedAt": "2026-06-04T12:45:08.319Z"
+    "updatedAt": "2026-06-05T06:14:05.538Z"
   }
 ]
