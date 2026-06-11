@@ -1,5 +1,10 @@
+const { spawn, execSync } = require('child_process');
+const si = require('systeminformation');
+const { PLATFORM } = require('../utils/platform');
+
 let ioInstance = null;
-let captureInterval = null;
+let captureProcess = null;
+let simulatedInterval = null;
 
 const SOURCE_IPS = [
   '192.168.1.104', '192.168.1.105', '10.100.12.20', '10.100.12.21', '10.100.12.22', 
@@ -105,40 +110,190 @@ const PACKETS_SIM = [
   }
 ];
 
-function init(io) {
-  ioInstance = io;
+function checkTshark() {
+  try {
+    execSync(PLATFORM === 'win32' ? 'where tshark' : 'which tshark', { stdio: 'ignore' });
+    return true;
+  } catch {
+    return false;
+  }
+}
 
-  // Stream raw simulated packet telemetry every 800ms
-  captureInterval = setInterval(() => {
-    if (!ioInstance) return;
+async function getDefaultInterface() {
+  try {
+    const ifaces = await si.networkInterfaces();
+    const active = ifaces.find(i => !i.internal && i.ip4 && i.operstate === 'up') ||
+                   ifaces.find(i => !i.internal && i.ip4) ||
+                   ifaces[0];
+    return active ? active.iface : 'any';
+  } catch (e) {
+    return 'any';
+  }
+}
 
+function parseTsharkPacket(raw) {
+  const layers = raw._source?.layers || {};
+  const frame = layers.frame || {};
+  const ip = layers.ip || {};
+  const tcp = layers.tcp || {};
+  const udp = layers.udp || {};
+  const icmp = layers.icmp || {};
+  const arp = layers.arp || {};
+  
+  let protocol = 'OTHER';
+  let srcPort = 0;
+  let dstPort = 0;
+  let ttl = parseInt(ip['ip.ttl'] || 0);
+  let flags = tcp['tcp.flags'] || '0x00';
+  let payloadHex = layers.data?.['data.data'] || '';
+  
+  if (layers.tcp) {
+    protocol = 'TCP';
+    srcPort = parseInt(tcp['tcp.srcport'] || 0);
+    dstPort = parseInt(tcp['tcp.dstport'] || 0);
+    if (layers.http) protocol = 'HTTP';
+    else if (layers.tls || dstPort === 443 || srcPort === 443) protocol = 'HTTPS';
+  } else if (layers.udp) {
+    protocol = 'UDP';
+    srcPort = parseInt(udp['udp.srcport'] || 0);
+    dstPort = parseInt(udp['udp.dstport'] || 0);
+    if (layers.dns || dstPort === 53 || srcPort === 53) {
+      protocol = 'DNS';
+    }
+  } else if (layers.icmp) {
+    protocol = 'ICMP';
+  } else if (layers.arp) {
+    protocol = 'ARP';
+  }
+
+  let info = frame['frame.protocols'] || 'Unknown Packet';
+  if (protocol === 'TCP') {
+    info = `${srcPort} -> ${dstPort} [TCP] len=${frame['frame.len'] || 0}`;
+  } else if (protocol === 'UDP') {
+    info = `${srcPort} -> ${dstPort} [UDP] len=${frame['frame.len'] || 0}`;
+  } else if (protocol === 'DNS') {
+    info = `DNS standard query lookup`;
+  } else if (protocol === 'ICMP') {
+    info = `ICMP ping request/reply`;
+  } else if (protocol === 'ARP') {
+    info = `ARP address resolution request`;
+  } else if (protocol === 'HTTP') {
+    info = `HTTP web request`;
+  } else if (protocol === 'HTTPS') {
+    info = `HTTPS secure handshake`;
+  }
+
+  const details = {};
+  if (frame) details["Frame"] = frame;
+  if (ip) details["Internet Protocol Version 4"] = ip;
+  if (tcp) details["Transmission Control Protocol"] = tcp;
+  if (udp) details["User Datagram Protocol"] = udp;
+  if (icmp) details["Internet Control Message Protocol"] = icmp;
+  if (arp) details["Address Resolution Protocol"] = arp;
+
+  return {
+    id: frame['frame.number'] || Math.random().toString(36).substring(2, 9),
+    timestamp: frame['frame.time'] || new Date().toISOString(),
+    srcIp: ip['ip.src'] || arp['arp.src.proto_ipv4'] || '0.0.0.0',
+    dstIp: ip['ip.dst'] || arp['arp.dst.proto_ipv4'] || '0.0.0.0',
+    srcPort,
+    dstPort,
+    protocol,
+    length: parseInt(frame['frame.len'] || 0),
+    ttl,
+    flags,
+    payload: payloadHex,
+    payloadHex,
+    info,
+    details
+  };
+}
+
+function startSimulatedCapture(io) {
+  console.log('[PACKET] Running simulated packet stream loop.');
+  if (simulatedInterval) clearInterval(simulatedInterval);
+  
+  simulatedInterval = setInterval(() => {
     const base = PACKETS_SIM[Math.floor(Math.random() * PACKETS_SIM.length)];
     const srcIp = SOURCE_IPS[Math.floor(Math.random() * SOURCE_IPS.length)];
-    const destIp = DEST_IPS[Math.floor(Math.random() * DEST_IPS.length)];
+    const dstIp = DEST_IPS[Math.floor(Math.random() * DEST_IPS.length)];
 
     const packet = {
-      id: Math.random().toString(36).substring(2, 9),
-      timestamp: new Date().toISOString(),
-      srcIp,
-      destIp,
-      protocol: base.protocol,
-      srcPort: base.srcPort,
-      destPort: base.destPort,
-      length: base.length + Math.floor(Math.random() * 50) - 25,
-      info: base.info.replace('192.168.1.104', srcIp).replace('8.8.8.8', destIp),
-      details: {
-        ...base.details,
-        "Internet Protocol Version 4": {
-          ...base.details["Internet Protocol Version 4"],
-          "Source": srcIp,
-          "Destination": destIp
-        }
-      },
-      payload: base.payload
-    };
+        id: Math.random().toString(36).substring(2, 9),
+        timestamp: new Date().toISOString(),
+        srcIp,
+        dstIp,
+        protocol: base.protocol,
+        srcPort: base.srcPort,
+        dstPort: base.destPort,
+        length: base.length + Math.floor(Math.random() * 50) - 25,
+        info: base.info.replace('192.168.1.104', srcIp).replace('8.8.8.8', dstIp),
+        details: {
+          ...base.details,
+          "Internet Protocol Version 4": {
+            ...base.details["Internet Protocol Version 4"],
+            "Source": srcIp,
+            "Destination": dstIp
+          }
+        },
+        payload: base.payload,
+        payloadHex: base.payload
+      };
 
-    ioInstance.emit('packet_captured', packet);
+    io.emit('packet_captured', packet);
+    io.emit('packet:captured', packet);
   }, 800);
+}
+
+async function init(io) {
+  ioInstance = io;
+
+  if (checkTshark()) {
+    try {
+      const iface = await getDefaultInterface();
+      console.log(`[PACKET] Spawning tshark capture on interface: ${iface}`);
+      
+      const args = ['-i', iface, '-T', 'json', '-l', '--no-promiscuous-mode', '-c', '0'];
+      captureProcess = spawn('tshark', args);
+      
+      let buffer = '';
+      captureProcess.stdout.on('data', chunk => {
+        buffer += chunk.toString();
+        let parts = buffer.split(/  \},\n|  \}\n/);
+        buffer = parts.pop();
+        parts.forEach(part => {
+          let cleaned = part.trim();
+          if (cleaned.startsWith('[')) cleaned = cleaned.substring(1).trim();
+          if (cleaned.startsWith(',')) cleaned = cleaned.substring(1).trim();
+          if (!cleaned.startsWith('{')) cleaned = '{' + cleaned;
+          if (!cleaned.endsWith('}')) cleaned = cleaned + '}';
+          try {
+            const raw = JSON.parse(cleaned);
+            const parsed = parseTsharkPacket(raw);
+            io.emit('packet_captured', parsed);
+            io.emit('packet:captured', parsed);
+          } catch (e) {
+            // Ignore parse errors for partial chunks
+          }
+        });
+      });
+
+      captureProcess.stderr.on('data', () => {
+        // Suppress logs
+      });
+
+      captureProcess.on('close', code => {
+        console.log(`[PACKET] tshark exited with code ${code}. Falling back to simulation.`);
+        startSimulatedCapture(io);
+      });
+    } catch (err) {
+      console.error('[PACKET] Failed starting tshark capture:', err.message);
+      startSimulatedCapture(io);
+    }
+  } else {
+    console.log('[PACKET] tshark not found. Initializing simulation mode.');
+    startSimulatedCapture(io);
+  }
 }
 
 module.exports = {

@@ -245,23 +245,45 @@ async function triggerImmediateWhatsAppAlert(alertTitle, alertDetails) {
 
 // Main Scheduler configuration
 function init(io) {
-  // Read user-defined scheduler interval on load
-  // Cron syntax default is: every 12 hours (0 */12 * * *)
-  // To allow dynamic config, we will poll profile frequency every minute and reschedule if it changes
-  let currentFreqHours = 12;
+  // Prune logs job: daily at 02:00 AM
+  cron.schedule('0 2 * * *', async () => {
+    try {
+      const cutoff = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000); // 3 days ago
+      const prunedLogs = await db.logs.deleteMany({ timestamp: { $lt: cutoff.toISOString() } });
+      const prunedAudits = await db.auditLogs.deleteMany({ timestamp: { $lt: cutoff.toISOString() } });
+      console.log(`[Scheduler] Auto-pruned ${prunedLogs.deletedCount || 0} logs and ${prunedAudits.deletedCount || 0} audit logs older than 3 days.`);
+    } catch (err) {
+      console.error('[Scheduler] Auto-pruning error:', err.message);
+    }
+  });
 
-  const scheduleJob = (hours) => {
+  // Read user-defined scheduler interval on load
+  let currentFreq = 12;
+
+  const scheduleJob = (freq) => {
     if (activeCronJob) {
       activeCronJob.stop();
     }
-    const cronStr = `0 */${hours} * * *`;
+    if (freq === 'Disabled' || freq === 0 || freq === '0') {
+      console.log(`[SCHEDULER] Automated report generation is disabled.`);
+      return;
+    }
+
+    let cronStr = '';
+    if (freq === 1 || freq === '1') cronStr = '0 * * * *';
+    else if (freq === 2 || freq === '2') cronStr = '0 */2 * * *';
+    else if (freq === 6 || freq === '6') cronStr = '0 */6 * * *';
+    else if (freq === 12 || freq === '12') cronStr = '0 */12 * * *';
+    else if (freq === 24 || freq === '24') cronStr = '0 8 * * *';
+    else cronStr = `0 */${freq} * * *`; // Fallback
+
     activeCronJob = cron.schedule(cronStr, () => {
       runScheduledReportGeneration();
     });
-    console.log(`[SCHEDULER] Successfully scheduled automated executive reports every ${hours} hours.`);
+    console.log(`[SCHEDULER] Successfully scheduled automated executive reports with cron: "${cronStr}" (frequency: ${freq}).`);
   };
 
-  scheduleJob(currentFreqHours);
+  scheduleJob(currentFreq);
 
   // Poll user settings profile to handle dynamic frequency changes
   setInterval(async () => {
@@ -270,10 +292,10 @@ function init(io) {
       if (uList && uList.length > 0) {
         const user = uList[0];
         const userFreq = user.reportFrequency || 12;
-        if (userFreq !== currentFreqHours) {
-          console.log(`[SCHEDULER] Setting frequency modified by administrator from ${currentFreqHours}h to ${userFreq}h.`);
-          currentFreqHours = userFreq;
-          scheduleJob(currentFreqHours);
+        if (userFreq !== currentFreq) {
+          console.log(`[SCHEDULER] Setting frequency modified by administrator from ${currentFreq} to ${userFreq}.`);
+          currentFreq = userFreq;
+          scheduleJob(currentFreq);
         }
       }
     } catch (e) {

@@ -2938,5 +2938,75 @@
     "ip": "::1",
     "createdAt": "2026-06-05T05:46:43.613Z",
     "updatedAt": "2026-06-05T05:46:43.613Z"
+  },
+  {
+    "_id": "3ueq8st",
+    "timestamp": "2026-06-05T06:39:28.996Z",
+    "user": "inbavarunan",
+    "action": "Profile Registered",
+    "details": "One-time ZENTRIX SOC workstation profile created for inbavarunan.",
+    "ip": "::1",
+    "createdAt": "2026-06-05T06:39:28.999Z",
+    "updatedAt": "2026-06-05T06:39:28.999Z"
+  },
+  {
+    "_id": "h6x4ajx",
+    "timestamp": "2026-06-05T06:41:17.258Z",
+    "user": "System Scanner",
+    "action": "Network Scan Executed",
+    "details": "Nmap scan completed with code 0 for target 10.99.112.121 using profile Full Scan. Discovered 1 hosts and 2 ports.",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-05T06:41:17.262Z",
+    "updatedAt": "2026-06-05T06:41:17.262Z"
+  },
+  {
+    "_id": "emuudtx",
+    "timestamp": "2026-06-05T08:24:42.815Z",
+    "user": "inbavarunans",
+    "action": "SOAR Manual Execution",
+    "details": "Orchestrated execution for playbook: Critical Malware Containment Playbook",
+    "ip": "::1",
+    "createdAt": "2026-06-05T08:24:42.819Z",
+    "updatedAt": "2026-06-05T08:24:42.819Z"
+  },
+  {
+    "_id": "99tfg5h",
+    "timestamp": "2026-06-05T08:24:44.782Z",
+    "user": "inbavarunans",
+    "action": "SOAR Manual Execution",
+    "details": "Orchestrated execution for playbook: Critical Malware Containment Playbook",
+    "ip": "::1",
+    "createdAt": "2026-06-05T08:24:44.784Z",
+    "updatedAt": "2026-06-05T08:24:44.784Z"
+  },
+  {
+    "_id": "ca8uy7h",
+    "timestamp": "2026-06-05T09:09:39.051Z",
+    "user": "System Scanner",
+    "action": "Network Scan Executed",
+    "details": "Nmap scan completed with code 0 for target 10.99.112.121 using profile Quick Scan. Discovered 1 hosts and 2 ports.",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-05T09:09:39.054Z",
+    "updatedAt": "2026-06-05T09:09:39.054Z"
+  },
+  {
+    "_id": "sy7gifv",
+    "timestamp": "2026-06-11T09:51:54.802Z",
+    "user": "System Scanner",
+    "action": "Network Scan Executed",
+    "details": "Nmap scan completed with code 0 for target 192.168.1.1/24 using profile Full Scan. Discovered 255 hosts and 0 ports.",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-11T09:51:54.807Z",
+    "updatedAt": "2026-06-11T09:51:54.807Z"
+  },
+  {
+    "_id": "lb5kz49",
+    "timestamp": "2026-06-11T10:33:26.687Z",
+    "user": "inbavarunans",
+    "action": "SOAR Manual Execution",
+    "details": "Orchestrated execution for playbook: Critical Malware Containment Playbook",
+    "ip": "::1",
+    "createdAt": "2026-06-11T10:33:26.690Z",
+    "updatedAt": "2026-06-11T10:33:26.690Z"
   }
 ]

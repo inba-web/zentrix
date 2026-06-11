@@ -2,12 +2,12 @@
   {
     "_id": "6zksvem",
     "hostname": "anonymous",
-    "ip": "10.99.112.121",
-    "os": "Linux 6.17.10+kali-amd64",
-    "cpuUsage": 51,
-    "ramUsage": 45,
+    "ip": "127.0.0.1",
+    "os": "Linux 6.17.10+kali-amd64 (x64)",
+    "cpuUsage": 15,
+    "ramUsage": 47,
     "status": "Online",
-    "lastSeen": "2026-06-05T06:14:05.538Z",
+    "lastSeen": "2026-06-11T16:37:51.346Z",
     "processes": [
       {
         "pid": 1,
@@ -60,12 +60,6 @@
       {
         "pid": 10,
         "name": "kworker",
-        "path": "system",
-        "parent": 0
-      },
-      {
-        "pid": 12,
-        "name": "u32:0-flush-259:0",
         "path": "system",
         "parent": 0
       },
@@ -128,53 +122,35 @@
         "name": "idle_inject",
         "path": "system",
         "parent": 0
+      },
+      {
+        "pid": 23,
+        "name": "migration",
+        "path": "system",
+        "parent": 0
       }
     ],
     "networkConnections": [
       {
-        "localPort": "40737",
+        "localPort": "40591",
         "remoteAddress": "0.0.0.0",
         "remotePort": "*",
         "state": "LISTEN"
       },
       {
-        "localPort": "44093",
+        "localPort": "40595",
         "remoteAddress": "0.0.0.0",
         "remotePort": "*",
         "state": "LISTEN"
       },
       {
-        "localPort": "39637",
+        "localPort": "36595",
         "remoteAddress": "0.0.0.0",
         "remotePort": "*",
         "state": "LISTEN"
       },
       {
-        "localPort": "34541",
-        "remoteAddress": "0.0.0.0",
-        "remotePort": "*",
-        "state": "LISTEN"
-      },
-      {
-        "localPort": "38157",
-        "remoteAddress": "0.0.0.0",
-        "remotePort": "*",
-        "state": "LISTEN"
-      },
-      {
-        "localPort": "46461",
-        "remoteAddress": "0.0.0.0",
-        "remotePort": "*",
-        "state": "LISTEN"
-      },
-      {
-        "localPort": "46129",
-        "remoteAddress": "0.0.0.0",
-        "remotePort": "*",
-        "state": "LISTEN"
-      },
-      {
-        "localPort": "2222",
+        "localPort": "40477",
         "remoteAddress": "0.0.0.0",
         "remotePort": "*",
         "state": "LISTEN"
@@ -186,43 +162,67 @@
         "state": "LISTEN"
       },
       {
-        "localPort": "41623",
+        "localPort": "36691",
         "remoteAddress": "0.0.0.0",
         "remotePort": "*",
         "state": "LISTEN"
       },
       {
-        "localPort": "41699",
+        "localPort": "2222",
         "remoteAddress": "0.0.0.0",
         "remotePort": "*",
         "state": "LISTEN"
       },
       {
-        "localPort": "45207",
+        "localPort": "38347",
         "remoteAddress": "0.0.0.0",
         "remotePort": "*",
         "state": "LISTEN"
       },
       {
-        "localPort": "36212",
-        "remoteAddress": "142.251.106.94",
-        "remotePort": "443",
-        "state": "TIME_WAIT"
+        "localPort": "37205",
+        "remoteAddress": "0.0.0.0",
+        "remotePort": "*",
+        "state": "LISTEN"
       },
       {
-        "localPort": "52786",
+        "localPort": "37397",
+        "remoteAddress": "0.0.0.0",
+        "remotePort": "*",
+        "state": "LISTEN"
+      },
+      {
+        "localPort": "33341",
+        "remoteAddress": "0.0.0.0",
+        "remotePort": "*",
+        "state": "LISTEN"
+      },
+      {
+        "localPort": "46174",
         "remoteAddress": "127.0.0.1",
-        "remotePort": "34541",
+        "remotePort": "40591",
         "state": "ESTABLISHED"
       },
       {
-        "localPort": "52788",
+        "localPort": "40591",
         "remoteAddress": "127.0.0.1",
-        "remotePort": "34541",
+        "remotePort": "46174",
+        "state": "ESTABLISHED"
+      },
+      {
+        "localPort": "54578",
+        "remoteAddress": "127.0.0.1",
+        "remotePort": "40591",
+        "state": "ESTABLISHED"
+      },
+      {
+        "localPort": "54580",
+        "remoteAddress": "127.0.0.1",
+        "remotePort": "40591",
         "state": "ESTABLISHED"
       }
     ],
     "createdAt": "2026-05-31T13:48:45.931Z",
-    "updatedAt": "2026-06-05T06:14:05.538Z"
+    "updatedAt": "2026-06-11T16:37:51.346Z"
   }
 ]

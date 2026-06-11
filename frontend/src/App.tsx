@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
 import { useSelector, useDispatch } from 'react-redux';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ShieldAlert, 
   Terminal, 
@@ -36,7 +37,8 @@ import PacketAnalysis from './components/PacketAnalysis';
 import SOAR from './components/SOAR';
 import Reporting from './components/Reporting';
 import NotificationSettings from './components/NotificationSettings';
-import ProfileRegistration from './components/ProfileRegistration';
+import Auth from './components/Auth';
+import { useISTClock } from './hooks/useISTClock';
 
 import { 
   RootState, 
@@ -47,11 +49,17 @@ import {
   addLiveAlert, 
   addWebsocketLog, 
   setDbStatus,
-  updateEdrStats
+  updateEdrStats,
+  setOpenPorts,
+  setActiveHosts,
+  setRunningScans,
+  setAlertsDistribution,
+  addPopup
 } from './store';
 
 export default function App() {
   const dispatch = useDispatch();
+  const istTime = useISTClock();
   const token = useSelector((state: RootState) => state.auth.token);
   const user = useSelector((state: RootState) => state.auth.user);
   const profileLoading = useSelector((state: RootState) => state.auth.loading);
@@ -86,38 +94,48 @@ export default function App() {
 
   const fetchProfile = async () => {
     dispatch(setLoading(true));
+    const tokenVal = localStorage.getItem('soc_token') || sessionStorage.getItem('soc_token');
+    if (!tokenVal) {
+      dispatch(setUser(null));
+      dispatch(setToken(null));
+      dispatch(setLoading(false));
+      return;
+    }
     try {
-      const res = await fetch('/api/auth/me');
+      const res = await fetch('/api/auth/me', {
+        headers: { 'Authorization': `Bearer ${tokenVal}` }
+      });
       if (res.ok) {
         const data = await res.json();
         dispatch(setUser(data));
-        if (!localStorage.getItem('soc_token')) {
-          dispatch(setToken('zentrix-local-active'));
-        }
+        dispatch(setToken(tokenVal));
       } else {
         dispatch(setUser(null));
         dispatch(setToken(null));
       }
     } catch (e) {
       dispatch(setUser(null));
+      dispatch(setToken(null));
     } finally {
       dispatch(setLoading(false));
     }
   };
 
-  // Sound generator alert
-  const playBeep = () => {
+  // Tri-tone alarm sound generator for critical threats
+  const playAlarm = () => {
     try {
       const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
-      const oscillator = audioCtx.createOscillator();
-      const gainNode = audioCtx.createGain();
-      oscillator.connect(gainNode);
-      gainNode.connect(audioCtx.destination);
-      oscillator.type = 'sine';
-      oscillator.frequency.setValueAtTime(880, audioCtx.currentTime); // A5 note
-      gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
-      oscillator.start();
-      oscillator.stop(audioCtx.currentTime + 0.15);
+      [880, 1100, 1320].forEach((freq, i) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime + i * 0.15);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + i * 0.15 + 0.3);
+        osc.start(audioCtx.currentTime + i * 0.15);
+        osc.stop(audioCtx.currentTime + i * 0.15 + 0.3);
+      });
     } catch (e) {
       // Ignored
     }
@@ -148,11 +166,42 @@ export default function App() {
         dispatch(setLiveTelemetry(data));
       });
 
+      socket.on('telemetry:update', (data: any) => {
+        dispatch(setLiveTelemetry(data));
+      });
+
+      socket.on('metrics:openports', (count: number) => {
+        dispatch(setOpenPorts(count));
+      });
+
+      socket.on('metrics:activehosts', (count: number) => {
+        dispatch(setActiveHosts(count));
+      });
+
+      socket.on('metrics:runningscans', (count: number) => {
+        dispatch(setRunningScans(count));
+      });
+
+      socket.on('alerts:distribution', (dist: any) => {
+        dispatch(setAlertsDistribution(dist));
+      });
+
+      socket.on('threat:critical', (payload: any) => {
+        dispatch(addLiveAlert(payload));
+        dispatch(addPopup(payload));
+        triggerToast(payload);
+        const settings = JSON.parse(localStorage.getItem('soc_settings') || '{}');
+        if (settings.alarmEnabled !== false) {
+          playAlarm();
+        }
+      });
+
       // Handle alerts
       socket.on('alert', (alert: any) => {
         dispatch(addLiveAlert(alert));
+        dispatch(addPopup(alert));
         triggerToast(alert);
-        playBeep();
+        playAlarm();
 
         // Trigger Local Desktop HTML5 Notification
         if (window.Notification && Notification.permission === 'granted') {
@@ -186,11 +235,11 @@ export default function App() {
     setToasts(prev => [...prev, { id, ...alert }]);
     setTimeout(() => {
       setToasts(prev => prev.filter(t => t.id !== id));
-    }, 6000);
+    }, 8000);
   };
 
-  const handleRegisterSuccess = (profile: any) => {
-    dispatch(setToken('zentrix-local-active'));
+  const handleRegisterSuccess = (profile: any, tokenVal: string) => {
+    dispatch(setToken(tokenVal));
     dispatch(setUser(profile));
     setActiveTab('dashboard');
   };
@@ -204,10 +253,10 @@ export default function App() {
     );
   }
 
-  // If no profile registered, present one-time Registration form
+  // If no profile registered, present one-time Registration / Auth form
   if (!user) {
     return (
-      <ProfileRegistration onRegisterSuccess={handleRegisterSuccess} />
+      <Auth onRegisterSuccess={handleRegisterSuccess} />
     );
   }
 
@@ -356,10 +405,11 @@ export default function App() {
               )}
             </div>
 
-            {/* UTC Clock */}
+            {/* IST Clock */}
             <div className="flex items-center gap-1.5 bg-black px-3 py-1.5 border border-cyber-border rounded text-cyber-primary font-bold">
+              <span className="w-1.5 h-1.5 rounded-full bg-cyber-primary animate-pulse shrink-0"></span>
               <Clock className="w-3.5 h-3.5 text-cyber-primary" />
-              <span>UTC: {time.replace('T', ' ').substring(0, 19)}</span>
+              <span>{istTime} IST</span>
             </div>
           </div>
         </header>
@@ -450,26 +500,71 @@ export default function App() {
 
       {/* 4. REAL-TIME THREAT ALERTS FLOAT TOAST PANELS */}
       <div className="absolute bottom-5 right-5 z-50 flex flex-col gap-3 w-96 max-w-[calc(100vw-40px)] font-mono">
-        {toasts.map(toast => (
-          <div 
-            key={toast.id}
-            className="p-4 bg-black border border-red-500/50 rounded-lg text-slate-100 shadow-2xl glow-red slide-in flex gap-3 cursor-pointer select-text"
-            onClick={() => setActiveTab('incidents')}
-          >
-            <AlertTriangle className="w-5 h-5 text-red-500 shrink-0 animate-bounce" />
-            <div className="flex-1 min-w-0">
-              <div className="flex justify-between items-start">
-                <span className="text-[9px] uppercase font-mono font-bold text-red-400">CRITICAL SYSTEM THREAT</span>
-                <span className="text-[8px] text-red-500 font-mono">NOW</span>
-              </div>
-              <p className="text-xs font-bold text-slate-200 mt-1 truncate">{toast.title}</p>
-              <p className="text-[10px] text-slate-350 mt-1 font-mono leading-snug">{toast.description}</p>
-              <p className="text-[8px] text-slate-500 mt-2 font-mono uppercase bg-red-950/20 px-2 py-0.5 border border-red-500/20 rounded inline-block">
-                HOST: {toast.host}
-              </p>
-            </div>
-          </div>
-        ))}
+        <AnimatePresence>
+          {toasts.map(toast => {
+            const sev = (toast.severity || 'CRITICAL').toUpperCase();
+            const badgeColor = sev === 'CRITICAL' 
+              ? 'bg-red-500/20 text-red-400 border-red-500/30' 
+              : sev === 'HIGH' 
+              ? 'bg-orange-500/20 text-orange-400 border-orange-500/30'
+              : 'bg-amber-500/20 text-amber-400 border-amber-500/30';
+            
+            const timestampIST = new Date(toast.timestamp || new Date()).toLocaleString('en-IN', {
+              timeZone: 'Asia/Kolkata',
+              hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
+            });
+
+            return (
+              <motion.div 
+                key={toast.id}
+                initial={{ opacity: 0, y: 30, scale: 0.9 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -20, scale: 0.9, transition: { duration: 0.2 } }}
+                className="p-4 bg-[#0d1117]/90 backdrop-blur-md border border-[#ef4444]/30 rounded-xl text-slate-100 shadow-2xl relative overflow-hidden flex gap-3 select-text group"
+                style={{ boxShadow: '0 0 15px rgba(239, 68, 68, 0.15)' }}
+              >
+                <AlertTriangle className="w-5 h-5 text-red-500 shrink-0 animate-pulse mt-0.5" />
+                <div className="flex-1 min-w-0">
+                  <div className="flex justify-between items-start">
+                    <span className={`text-[8px] uppercase font-mono font-bold px-2 py-0.5 border rounded ${badgeColor}`}>
+                      {sev} SYSTEM THREAT
+                    </span>
+                    <span className="text-[8px] text-slate-500 font-mono">{timestampIST} IST</span>
+                  </div>
+                  <p className="text-xs font-bold text-slate-200 mt-2 truncate">{toast.title}</p>
+                  <p className="text-[10px] text-slate-400 mt-1 leading-snug">{toast.description}</p>
+                  
+                  <div className="flex justify-between items-center mt-3 pt-2 border-t border-white/5">
+                    <span className="text-[8px] text-slate-500 font-mono uppercase bg-zinc-900 px-2 py-0.5 border border-white/5 rounded">
+                      HOST: {toast.host || 'UNKNOWN'}
+                    </span>
+                    <div className="flex gap-2">
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setToasts(prev => prev.filter(t => t.id !== toast.id));
+                        }}
+                        className="text-[9px] text-slate-500 hover:text-slate-350 px-2 py-0.5 font-mono"
+                      >
+                        Dismiss
+                      </button>
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setActiveTab('incidents');
+                          setToasts(prev => prev.filter(t => t.id !== toast.id));
+                        }}
+                        className="text-[9px] text-[#00D4FF] hover:underline font-mono font-bold"
+                      >
+                        → View
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
+        </AnimatePresence>
       </div>
 
     </div>

@@ -19,7 +19,7 @@ router.get('/logs', authenticateToken, async (req, res) => {
     const logs = await db.logs.find(filter, parseInt(limit));
     res.json(logs);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.json({ logs: [], total: 0 }); // Never throw 500 — return empty logs structure
   }
 });
 

@@ -62,12 +62,31 @@ module.exports = {
     return created;
   },
 
-  // Find records (simple equality query)
+  // Find records (simple equality query + operators)
   async find(collection, query = {}) {
     const list = readCollection(collection);
     if (Object.keys(query).length === 0) return list;
     return list.filter(item => {
-      return Object.entries(query).every(([k, v]) => item[k] === v);
+      return Object.entries(query).every(([k, v]) => {
+        if (v && typeof v === 'object' && !Array.isArray(v)) {
+          if ('$ne' in v) {
+            return item[k] !== v.$ne;
+          }
+          if ('$lt' in v) {
+            return item[k] < v.$lt;
+          }
+          if ('$gt' in v) {
+            return item[k] > v.$gt;
+          }
+          if ('$in' in v) {
+            return Array.isArray(v.$in) && v.$in.includes(item[k]);
+          }
+          if ('$nin' in v) {
+            return Array.isArray(v.$nin) && !v.$nin.includes(item[k]);
+          }
+        }
+        return item[k] === v;
+      });
     });
   },
 
@@ -103,6 +122,28 @@ module.exports = {
     list.splice(idx, 1);
     writeCollection(collection, list);
     return { deletedCount: 1 };
+  },
+
+  // Delete many (by query, supports simple operators like $lt and $gt)
+  async deleteMany(collection, query = {}) {
+    const list = readCollection(collection);
+    const initialLength = list.length;
+    const filtered = list.filter(item => {
+      // Return true if the item should KEEP (i.e. does NOT match the delete query)
+      return !Object.entries(query).every(([k, v]) => {
+        if (v && typeof v === 'object') {
+          if ('$lt' in v) {
+            return item[k] < v.$lt;
+          }
+          if ('$gt' in v) {
+            return item[k] > v.$gt;
+          }
+        }
+        return item[k] === v;
+      });
+    });
+    writeCollection(collection, filtered);
+    return { deletedCount: initialLength - filtered.length };
   },
 
   // Count documents

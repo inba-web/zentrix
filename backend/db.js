@@ -81,6 +81,12 @@ function collection(name) {
       }
       return jsonAdapter.delete(name, query);
     },
+    deleteMany: async (query = {}) => {
+      if (useMongoose) {
+        return MongoModels[name].deleteMany(query);
+      }
+      return jsonAdapter.deleteMany(name, query);
+    },
     countDocuments: async (query = {}) => {
       if (useMongoose) {
         return MongoModels[name].countDocuments(query);
@@ -98,6 +104,7 @@ function collection(name) {
 const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   name: String,
+  passwordHash: String,
   role: { type: String, default: 'Analyst' },
   avatar: String,
   whatsapp: String,
@@ -215,6 +222,15 @@ const deliveryLogSchema = new mongoose.Schema({
   retryCount: { type: Number, default: 0 }
 });
 
+const huntTechniqueSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  description: String,
+  linux: String,
+  windows: String,
+  mitre: String,
+  isCustom: { type: Boolean, default: true }
+});
+
 // Compile Mongoose models
 const MongoModels = {
   users: mongoose.model('User', userSchema),
@@ -226,7 +242,8 @@ const MongoModels = {
   playbooks: mongoose.model('SOARPlaybook', soarPlaybookSchema),
   auditLogs: mongoose.model('AuditLog', auditLogSchema),
   reports: mongoose.model('Report', reportSchema),
-  deliveryLogs: mongoose.model('DeliveryLog', deliveryLogSchema)
+  deliveryLogs: mongoose.model('DeliveryLog', deliveryLogSchema),
+  huntTechniques: mongoose.model('HuntTechnique', huntTechniqueSchema)
 };
 
 // ----------------------------------------------------
@@ -245,7 +262,10 @@ const db = {
   playbooks: collection('playbooks'),
   auditLogs: collection('auditLogs'),
   reports: collection('reports'),
-  deliveryLogs: collection('deliveryLogs')
+  deliveryLogs: collection('deliveryLogs'),
+  huntTechniques: collection('huntTechniques')
 };
+
+db.collection = (name) => db[name];
 
 module.exports = db;

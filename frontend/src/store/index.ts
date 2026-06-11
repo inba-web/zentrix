@@ -43,12 +43,20 @@ interface DashboardState {
   websocketLogs: any[];
   dbStatus: string;
   liveTelemetry: any | null;
+  openPorts: number;
+  activeHosts: number;
+  runningScans: number;
+  alertsDistribution: { CRITICAL: number; HIGH: number; MEDIUM: number; LOW: number };
 }
 const initialDashboardState: DashboardState = {
   liveAlerts: [],
   websocketLogs: [],
   dbStatus: 'Detecting...',
   liveTelemetry: null,
+  openPorts: 0,
+  activeHosts: 0,
+  runningScans: 0,
+  alertsDistribution: { CRITICAL: 0, HIGH: 0, MEDIUM: 0, LOW: 0 }
 };
 const dashboardSlice = createSlice({
   name: 'dashboard',
@@ -68,6 +76,18 @@ const dashboardSlice = createSlice({
     },
     setDbStatus: (state, action: PayloadAction<string>) => {
       state.dbStatus = action.payload;
+    },
+    setOpenPorts: (state, action: PayloadAction<number>) => {
+      state.openPorts = action.payload;
+    },
+    setActiveHosts: (state, action: PayloadAction<number>) => {
+      state.activeHosts = action.payload;
+    },
+    setRunningScans: (state, action: PayloadAction<number>) => {
+      state.runningScans = action.payload;
+    },
+    setAlertsDistribution: (state, action: PayloadAction<{ CRITICAL: number; HIGH: number; MEDIUM: number; LOW: number }>) => {
+      state.alertsDistribution = action.payload;
     }
   }
 });
@@ -100,7 +120,7 @@ const scannerSlice = createSlice({
       state.progress = 0;
       state.target = action.payload.target;
       state.profile = action.payload.profile;
-      state.outputLogs = [`[NMAP] Starting Nmap 7.92 ( https://nmap.org ) at ${new Date().toISOString()}`];
+      state.outputLogs = [`[NMAP] Starting Nmap 7.92 at ${new Date().toISOString()}`];
       state.hosts = [];
       state.ports = [];
     },
@@ -110,12 +130,15 @@ const scannerSlice = createSlice({
         state.outputLogs.push(action.payload.log);
       }
     },
+    addScanLog: (state, action: PayloadAction<string>) => {
+      state.outputLogs.push(action.payload);
+    },
     completeScan: (state, action: PayloadAction<{ hosts: any[]; ports: any[]; logs: string[] }>) => {
       state.isScanning = false;
       state.progress = 100;
       state.hosts = action.payload.hosts;
       state.ports = action.payload.ports;
-      state.outputLogs = [...state.outputLogs, ...action.payload.logs, `[NMAP] Nmap done: 1 IP address scanned in ${((Math.random() * 2) + 0.5).toFixed(2)} seconds`];
+      state.outputLogs = [...state.outputLogs, ...action.payload.logs];
     },
     setScannerState: (state, action: PayloadAction<Partial<ScannerState>>) => {
       return { ...state, ...action.payload };
@@ -183,6 +206,26 @@ const edrSlice = createSlice({
   }
 });
 
+// --- Recent Popups Slice ---
+interface PopupState {
+  popups: any[];
+}
+const initialPopupState: PopupState = {
+  popups: [],
+};
+const popupSlice = createSlice({
+  name: 'popups',
+  initialState: initialPopupState,
+  reducers: {
+    addPopup: (state, action: PayloadAction<any>) => {
+      state.popups = [action.payload, ...state.popups].slice(0, 100);
+    },
+    clearPopups: (state) => {
+      state.popups = [];
+    }
+  }
+});
+
 // --- Configure Store ---
 export const store = configureStore({
   reducer: {
@@ -191,6 +234,7 @@ export const store = configureStore({
     scanner: scannerSlice.reducer,
     packets: packetSlice.reducer,
     edr: edrSlice.reducer,
+    popups: popupSlice.reducer,
   },
 });
 
@@ -198,7 +242,8 @@ export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
 export const { setUser, setToken, setLoading, logout } = authSlice.actions;
-export const { setLiveTelemetry, addLiveAlert, setLiveAlerts, addWebsocketLog, setDbStatus } = dashboardSlice.actions;
-export const { startScan, updateScanProgress, completeScan, setScannerState } = scannerSlice.actions;
+export const { setLiveTelemetry, addLiveAlert, setLiveAlerts, addWebsocketLog, setDbStatus, setOpenPorts, setActiveHosts, setRunningScans, setAlertsDistribution } = dashboardSlice.actions;
+export const { startScan, updateScanProgress, addScanLog, completeScan, setScannerState } = scannerSlice.actions;
 export const { toggleCapture, addPacket, clearPackets, setSelectedPacket, setFilter, setSearchQuery } = packetSlice.actions;
 export const { updateEdrStats } = edrSlice.actions;
+export const { addPopup, clearPopups } = popupSlice.actions;

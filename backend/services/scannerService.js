@@ -1,3 +1,6 @@
+// backend/services/scannerService.js
+const { spawn, execSync } = require('child_process');
+const { PLATFORM } = require('../utils/platform');
 const db = require('../db');
 
 let activeScans = new Map();
@@ -6,105 +9,169 @@ function init(io) {
   global.io = io;
 }
 
-// Highly realistic Nmap/Zenmap scan simulation
-async function runScan(scanId, target, profile, io) {
-  const steps = [
-    { progress: 10, log: `[NMAP] Initiating ARP Ping Scan at ${new Date().toLocaleTimeString()}` },
-    { progress: 20, log: `[NMAP] Scanning ${target} [1 host]` },
-    { progress: 35, log: `[NMAP] Completed ARP Ping Scan - Host Detected (Latency 0.00034s)` },
-    { progress: 50, log: `[NMAP] Initiating Parallel DNS resolution of 1 IP address.` },
-    { progress: 65, log: `[NMAP] Initiating SYN Stealth Scan against common ports.` },
-    { progress: 80, log: `[NMAP] Completed SYN Stealth Scan - Found open ports.` },
-    { progress: 90, log: `[NMAP] Initiating Service/Version Detection & OS fingerprinting.` },
-  ];
+function checkNmap() {
+  try {
+    execSync(PLATFORM === 'win32' ? 'where nmap' : 'which nmap', { stdio: 'ignore' });
+    return true;
+  } catch {
+    return false;
+  }
+}
 
-  for (let i = 0; i < steps.length; i++) {
-    const step = steps[i];
-    await new Promise(r => setTimeout(r, 600 + Math.random() * 400));
+const SCAN_PROFILES = {
+  quick:        ['-T4', '-F'],
+  full:         ['-T4', '-p', '1-65535'],
+  stealth:      ['-sS', '-T2'],
+  aggressive:   ['-A', '-T4'],
+  os_detect:    ['-O', '-T4'],
+  svc_version:  ['-sV', '-T4'],
+  vuln:         ['--script', 'vuln', '-T4'],
+};
+
+function startScan(target, profile) {
+  const scanId = Math.random().toString(36).substring(2, 9);
+  const io = global.io;
+  
+  if (!checkNmap()) {
+    setTimeout(() => {
+      io.emit(`scan:error:${scanId}`, { msg: 'nmap not found on this system. Install nmap and try again.' });
+    }, 100);
+    return scanId;
+  }
+
+  const flags = SCAN_PROFILES[profile] || SCAN_PROFILES.quick;
+  
+  try {
+    const proc = spawn('nmap', [...flags, target]);
+    activeScans.set(scanId, { target, profile, proc, hosts: [], ports: [], logs: [] });
     
-    if (!activeScans.has(scanId)) return; // Scan was cancelled
+    let buffer = '';
+    let currentHost = null;
+    const hosts = [];
+    const ports = [];
     
-    io.emit('scan_progress', {
-      scanId,
-      progress: step.progress,
-      log: step.log
+    // Parse helper
+    const parseLine = (line) => {
+      const trimmed = line.trim();
+      if (!trimmed) return;
+
+      // 1. Host header match: Nmap scan report for host (IP) or just Nmap scan report for IP
+      const hostMatch = trimmed.match(/Nmap scan report for\s+(.+?)(?:\s+\((\d+\.\d+\.\d+\.\d+)\))?$/);
+      if (hostMatch) {
+        currentHost = {
+          host: hostMatch[1],
+          ip: hostMatch[2] || hostMatch[1],
+          mac: 'N/A',
+          os: 'N/A',
+          status: 'Up',
+          latency: 'N/A'
+        };
+        hosts.push(currentHost);
+        return;
+      }
+
+      // 2. Host Up/Down match: Host is up (0.00034s latency)
+      const hostStatusMatch = trimmed.match(/Host is\s+(up|down)(?:\s+\((.+?)\))?/);
+      if (hostStatusMatch && currentHost) {
+        currentHost.status = hostStatusMatch[1] === 'up' ? 'Up' : 'Down';
+        if (hostStatusMatch[2] && hostStatusMatch[2].includes('latency')) {
+          currentHost.latency = hostStatusMatch[2];
+        }
+        return;
+      }
+
+      // 3. MAC address match
+      const macMatch = trimmed.match(/MAC Address:\s+([\w:]+)(?:\s+\((.+?)\))?/);
+      if (macMatch && currentHost) {
+        currentHost.mac = macMatch[1];
+        return;
+      }
+
+      // 4. OS detection match
+      const osMatch = trimmed.match(/OS details:\s+(.+)$/);
+      if (osMatch && currentHost) {
+        currentHost.os = osMatch[1];
+        return;
+      }
+
+      // 5. Port list match: 80/tcp open http nginx
+      const portMatch = trimmed.match(/^(\d+)\/(tcp|udp)\s+(open|filtered|closed)\s+(\S+)(?:\s+(.*))?$/);
+      if (portMatch) {
+        ports.push({
+          host: currentHost ? currentHost.ip : target,
+          port: `${portMatch[1]}/${portMatch[2]}`,
+          state: portMatch[3],
+          service: portMatch[4],
+          version: portMatch[5] || 'N/A'
+        });
+      }
+    };
+
+    proc.stdout.on('data', chunk => {
+      const chunkStr = chunk.toString();
+      buffer += chunkStr;
+      
+      const lines = buffer.split('\n');
+      buffer = lines.pop(); // Keep incomplete last line
+      
+      lines.forEach(line => {
+        io.emit(`scan:output:${scanId}`, { line, ts: new Date().toISOString() });
+        parseLine(line);
+      });
     });
+
+    proc.stderr.on('data', chunk => {
+      const chunkStr = chunk.toString();
+      io.emit(`scan:output:${scanId}`, { line: `[WARN] ${chunkStr}`, ts: new Date().toISOString() });
+    });
+
+    proc.on('close', async (code) => {
+      activeScans.delete(scanId);
+      
+      // Emit results and done
+      io.emit(`scan:results:${scanId}`, { hosts, ports });
+      io.emit(`scan:done:${scanId}`, { exitCode: code });
+      
+      // Save audit log
+      try {
+        await db.auditLogs.create({
+          timestamp: new Date(),
+          user: 'System Scanner',
+          action: 'Network Scan Executed',
+          details: `Nmap scan completed with code ${code} for target ${target} using profile ${profile}. Discovered ${hosts.length} hosts and ${ports.length} ports.`,
+          ip: '127.0.0.1'
+        });
+      } catch (err) {
+        console.error('[SCANNER] Audit log creation failed:', err.message);
+      }
+    });
+    
+  } catch (err) {
+    io.emit(`scan:error:${scanId}`, { msg: `Failed to spawn nmap: ${err.message}` });
   }
 
-  // Generate Scan Results based on profile
-  const hosts = [
-    {
-      host: target === '127.0.0.1' || target === 'localhost' ? 'localhost' : 'target-host-01',
-      ip: target,
-      mac: '00:50:56:C0:00:08',
-      os: profile === 'Aggressive Scan' ? 'Linux 5.4 - 5.15 (Ubuntu 22.04)' : 'Linux 5.X',
-      status: 'Up',
-      latency: '0.00034s'
+  return scanId;
+}
+
+function cancelScan(scanId) {
+  const scan = activeScans.get(scanId);
+  if (scan) {
+    if (scan.proc) {
+      scan.proc.kill();
     }
-  ];
-
-  let ports = [
-    { port: '22/tcp', state: 'open', service: 'ssh', version: 'OpenSSH 8.2p1 Ubuntu' },
-    { port: '80/tcp', state: 'open', service: 'http', version: 'nginx 1.18.0' },
-    { port: '443/tcp', state: 'open', service: 'http', version: 'nginx 1.18.0 (SSL)' }
-  ];
-
-  if (profile === 'Full Scan' || profile === 'Aggressive Scan') {
-    ports.push(
-      { port: '3000/tcp', state: 'open', service: 'http', version: 'Node.js Express' },
-      { port: '5000/tcp', state: 'open', service: 'http', version: 'Node.js Express (ZENTRIX Core)' }
-    );
+    activeScans.delete(scanId);
+    return true;
   }
+  return false;
+}
 
-  if (profile === 'Aggressive Scan') {
-    ports.push(
-      { port: '21/tcp', state: 'closed', service: 'ftp', version: 'vsftpd' },
-      { port: '3306/tcp', state: 'filtered', service: 'mysql', version: 'MySQL' }
-    );
-  }
-
-  const finalLogs = [
-    `[NMAP] Host ${target} appears to be up.`,
-    `[NMAP] Scanned ports: ${ports.length} ports showing open or filtered states.`,
-    `[NMAP] OS fingerprint: ${hosts[0].os}`,
-    `[NMAP] Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel`
-  ];
-
-  io.emit('scan_complete', {
-    scanId,
-    hosts,
-    ports,
-    logs: finalLogs
-  });
-
-  // Save audit log
-  await db.auditLogs.create({
-    timestamp: new Date(),
-    user: 'System Scanner',
-    action: 'Network Scan Executed',
-    details: `Nmap scan completed for target ${target} using profile ${profile}.`,
-    ip: '127.0.0.1'
-  });
-
-  activeScans.delete(scanId);
+function getActiveScansCount() {
+  return activeScans.size;
 }
 
 module.exports = {
   init,
-  startScan(target, profile) {
-    const scanId = Math.random().toString(36).substring(2, 9);
-    activeScans.set(scanId, { target, profile });
-    
-    // Run scan in background
-    runScan(scanId, target, profile, global.io);
-    
-    return scanId;
-  },
-  cancelScan(scanId) {
-    if (activeScans.has(scanId)) {
-      activeScans.delete(scanId);
-      return true;
-    }
-    return false;
-  }
+  startScan,
+  cancelScan,
+  getActiveScansCount
 };

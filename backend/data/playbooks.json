@@ -29,20 +29,17 @@
     ],
     "executions": [],
     "createdAt": "2026-05-31T14:49:30.297Z",
-    "updatedAt": "2026-06-02T06:38:48.996Z",
+    "updatedAt": "2026-06-11T10:33:26.686Z",
     "$push": {
       "executions": {
-        "timestamp": "2026-06-02T06:38:48.996Z",
+        "timestamp": "2026-06-11T10:33:26.686Z",
         "status": "SUCCESS",
         "logs": [
-          "Playbook triggered by alert 9mj13ug",
-          "Analyzing threat levels...",
-          "Executing Step 1: EnrichIOC",
-          "IOC Enriched successfully. Threat Rank: 98% malicious.",
-          "Executing Step 2: NotifyAnalyst",
-          "Executing Step 3: IsolateEndpoint",
-          "Containment threshold exceeded. Sending Isolation command to EDR Agent.",
-          "Playbook executed successfully. Security orchestration finalized."
+          "Analyst manually initialized execution sequence.",
+          "Gathering workspace attributes...",
+          "Executed action EnrichedIOC on active entities.",
+          "Dispatched warning email alerts to Security Administrators.",
+          "Playbook orchestration completed successfully."
         ]
       }
     }
