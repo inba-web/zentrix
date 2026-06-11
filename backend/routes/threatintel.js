@@ -4,6 +4,15 @@ const db = require('../db');
 const { authenticateToken } = require('./auth');
 const threatIntelService = require('../services/threatIntelService');
 
+// GET /api/intel/status
+router.get('/status', authenticateToken, (req, res) => {
+  res.json({
+    virustotal: !!process.env.VIRUSTOTAL_API_KEY,
+    abuseipdb: !!process.env.ABUSEIPDB_API_KEY,
+    otx: !!process.env.OTX_API_KEY
+  });
+});
+
 // Perform real-time external intelligence lookup (VT, AbuseIPDB, AlienVault OTX, URLHaus)
 router.post('/search', authenticateToken, async (req, res) => {
   const { type, value } = req.body; // type: IP, Hash, Domain, URL

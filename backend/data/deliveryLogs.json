@@ -9,5 +9,27 @@
     "retryCount": 0,
     "createdAt": "2026-06-05T05:14:26.741Z",
     "updatedAt": "2026-06-05T05:14:26.741Z"
+  },
+  {
+    "_id": "j1qt7re",
+    "reportId": "c9x73ad",
+    "emailStatus": "Delivered",
+    "whatsAppStatus": "Delivered",
+    "deliveryTimestamp": "2026-06-11T09:16:45.769Z",
+    "failureReason": "Manual generation simulated successfully.",
+    "retryCount": 0,
+    "createdAt": "2026-06-11T09:16:45.770Z",
+    "updatedAt": "2026-06-11T09:16:45.770Z"
+  },
+  {
+    "_id": "9j1uues",
+    "reportId": "vh7lz0c",
+    "emailStatus": "Delivered",
+    "whatsAppStatus": "Delivered",
+    "deliveryTimestamp": "2026-06-11T09:17:10.182Z",
+    "failureReason": "Manual generation simulated successfully.",
+    "retryCount": 0,
+    "createdAt": "2026-06-11T09:17:10.182Z",
+    "updatedAt": "2026-06-11T09:17:10.182Z"
   }
 ]

@@ -7,9 +7,9 @@ const { authenticateToken } = require('./auth');
 router.get('/devices', authenticateToken, async (req, res) => {
   try {
     const list = await db.endpoints.find({});
-    res.json(list);
+    res.json(Array.isArray(list) ? list : []);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.json([]); // Never return 500 — return empty array
   }
 });
 

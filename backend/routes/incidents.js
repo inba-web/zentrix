@@ -68,18 +68,20 @@ router.post('/cases', authenticateToken, async (req, res) => {
     return res.status(400).json({ error: 'Incident Title is required.' });
   }
 
+  const analystName = req.user.name || req.user.email.split('@')[0];
+
   const caseEntry = {
     title,
     severity: severity || 'MEDIUM',
     status: 'NEW',
-    assignedTo: req.user.email.split('@')[0],
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    assignedTo: analystName,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
     impact: impact || 'To be assessed',
     rootCause: rootCause || 'Under investigation',
     recommendations: recommendations || ['Collect full RAM capture', 'Monitor associated external network traffic'],
     timeline: [
-      { timestamp: new Date(), activity: 'Incident Case created manually by analyst.', actor: req.user.email.split('@')[0] }
+      { timestamp: new Date().toISOString(), activity: 'Incident Case created manually by analyst.', actor: analystName }
     ],
     evidence: evidence || []
   };
@@ -95,6 +97,10 @@ router.post('/cases', authenticateToken, async (req, res) => {
       details: `Created security case file: ${title} (${newCase._id})`,
       ip: req.ip || '127.0.0.1'
     });
+
+    if (global.io) {
+      global.io.emit('incident:updated', { id: newCase._id });
+    }
 
     res.status(201).json(newCase);
   } catch (err) {
@@ -115,22 +121,38 @@ router.put('/cases/:id', authenticateToken, async (req, res) => {
   if (recommendations) update.recommendations = recommendations;
 
   try {
+    const original = await db.incidents.findOne({ _id: req.params.id });
+    if (!original) return res.status(404).json({ error: 'Incident case not found.' });
+
     const updated = await db.incidents.findByIdAndUpdate(req.params.id, update);
-    if (!updated) return res.status(404).json({ error: 'Incident case not found.' });
 
     // Append timeline activity
-    const activityMsg = `Case updated: status->${status || 'NoChange'}, assignee->${assignedTo || 'NoChange'}`;
+    let activityMsg = `Case details updated.`;
+    if (status && status !== original.status) {
+      activityMsg = `Status changed to ${status}`;
+    } else if (assignedTo && assignedTo !== original.assignedTo) {
+      activityMsg = `Assigned to ${assignedTo}`;
+    } else if (severity && severity !== original.severity) {
+      activityMsg = `Severity changed to ${severity}`;
+    }
+
+    const actorName = req.user.name || req.user.email.split('@')[0];
     await db.incidents.findByIdAndUpdate(req.params.id, {
       $push: {
         timeline: {
-          timestamp: new Date(),
+          timestamp: new Date().toISOString(),
           activity: activityMsg,
-          actor: req.user.email.split('@')[0]
+          actor: actorName
         }
       }
     });
 
-    res.json(updated);
+    if (global.io) {
+      global.io.emit('incident:updated', { id: req.params.id });
+    }
+
+    const finalDoc = await db.incidents.findOne({ _id: req.params.id });
+    res.json(finalDoc);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -145,17 +167,23 @@ router.post('/cases/:id/timeline', authenticateToken, async (req, res) => {
   }
 
   try {
+    const actorName = req.user.name || req.user.email.split('@')[0];
     const updated = await db.incidents.findByIdAndUpdate(req.params.id, {
       $push: {
         timeline: {
-          timestamp: new Date(),
+          timestamp: new Date().toISOString(),
           activity,
-          actor: req.user.email.split('@')[0]
+          actor: actorName
         }
       }
     });
 
     if (!updated) return res.status(404).json({ error: 'Case file not found.' });
+
+    if (global.io) {
+      global.io.emit('incident:updated', { id: req.params.id });
+    }
+
     res.json({ success: true, activity });
   } catch (err) {
     res.status(500).json({ error: err.message });

@@ -1,7 +1,45 @@
-import { useState, useEffect } from 'react';
-import { Terminal, Search, ChevronRight, Filter, AlertTriangle, ShieldCheck } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Terminal, Search, ChevronRight, Filter, AlertTriangle, ShieldCheck, RefreshCw } from 'lucide-react';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store';
 
-export default function SIEM({ websocketLogs, token }: any) {
+class ErrorBoundary extends React.Component<any, any> {
+  constructor(props: any) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error: any) {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: any, errorInfo: any) {
+    console.error("ErrorBoundary caught a SIEM render crash:", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="p-6 bg-[#0D1117] border border-[#EF4444]/30 rounded-xl text-center font-mono space-y-4 max-w-md mx-auto my-12 shadow-2xl text-white">
+          <AlertTriangle className="w-12 h-12 text-[#EF4444] mx-auto animate-bounce" />
+          <h2 className="text-sm font-bold uppercase">SIEM Monitor Crash Recovered</h2>
+          <p className="text-[10px] text-slate-400 leading-relaxed font-mono">
+            A rendering exception occurred inside the live SIEM logs pipeline.
+          </p>
+          <button 
+            onClick={() => this.setState({ hasError: false })}
+            className="px-4 py-1.5 bg-black border border-cyan-500/20 hover:border-cyan-500 text-cyan-400 text-[10px] rounded uppercase font-bold transition-all"
+          >
+            Reset Ingestion Viewport
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+function SIEMComponent({ websocketLogs, token }: any) {
   const [logs, setLogs] = useState<any[]>([]);
   const [search, setSearch] = useState('');
   const [severityFilter, setSeverityFilter] = useState('');
@@ -17,7 +55,7 @@ export default function SIEM({ websocketLogs, token }: any) {
   // Selected Log Drawer
   const [selectedLog, setSelectedLog] = useState<any>(null);
 
-  // Sync WebSocket logs
+  // Sync WebSocket logs safely
   useEffect(() => {
     fetchLogs();
   }, [websocketLogs]);
@@ -34,7 +72,7 @@ export default function SIEM({ websocketLogs, token }: any) {
       });
       if (res.ok) {
         const data = await res.json();
-        setLogs(data);
+        setLogs(Array.isArray(data) ? data : []);
       }
     } catch (err) {
       console.error('Failed to fetch SIEM logs:', err);
@@ -62,7 +100,7 @@ export default function SIEM({ websocketLogs, token }: any) {
         if (data.statistics) {
           setKqlStats(data.statistics);
         } else {
-          setKqlResults(data.results);
+          setKqlResults(Array.isArray(data.results) ? data.results : []);
         }
       } else {
         setKqlError(data.error || 'Syntax execution error.');
@@ -82,22 +120,24 @@ export default function SIEM({ websocketLogs, token }: any) {
 
   const getSeverityStyle = (sev: string) => {
     switch (sev?.toUpperCase()) {
-      case 'CRITICAL': return 'bg-red-950/50 border-red-500/30 text-red-400 font-bold';
-      case 'WARNING': return 'bg-amber-950/40 border-amber-500/20 text-amber-400';
-      case 'ERROR': return 'bg-red-950/20 border-red-900/10 text-red-400';
-      default: return 'bg-slate-900/50 border-slate-800 text-slate-400';
+      case 'CRITICAL': return 'bg-red-500/10 border-red-500/20 text-red-400 font-bold';
+      case 'WARNING': return 'bg-amber-500/10 border-amber-500/20 text-amber-400';
+      case 'ERROR': return 'bg-red-500/10 border-red-500/20 text-red-400';
+      case 'HIGH': return 'bg-orange-500/10 border-orange-500/20 text-orange-400 font-bold';
+      default: return 'bg-zinc-800/50 border-white/5 text-slate-400';
     }
   };
 
-  const displayedLogs = kqlResults || logs;
+  const rawLogs = kqlResults || logs || [];
+  const displayedLogs = Array.isArray(rawLogs) ? rawLogs : [];
 
   return (
-    <div className="space-y-6 font-sans relative">
+    <div className="space-y-6 font-sans text-white select-none relative">
       
       {/* 1. KQL / SPL ADVANCED QUERY BAR PANEL */}
-      <div className="p-4 bg-[#111625] border border-slate-800 rounded-lg">
+      <div className="p-4 bg-[#0D1117] border border-white/5 rounded-xl shadow-xl">
         <div className="flex items-center gap-2 mb-3">
-          <Terminal className="w-4 h-4 text-blue-500" />
+          <Terminal className="w-4 h-4 text-cyan-400" />
           <span className="text-xs uppercase font-mono font-bold tracking-wider text-slate-200">SPL & KQL Command Shell Console</span>
         </div>
 
@@ -107,12 +147,12 @@ export default function SIEM({ websocketLogs, token }: any) {
             value={kqlQuery}
             onChange={e => setKqlQuery(e.target.value)}
             placeholder='source="Sysmon" | where severity="CRITICAL" | limit 10'
-            className="flex-1 bg-[#050811] border border-slate-700 px-3 py-2 text-xs font-mono text-slate-200 rounded focus:outline-none focus:border-blue-500"
+            className="flex-1 bg-[#111827] border border-white/10 px-3 py-2 text-xs font-mono text-cyan-400 rounded-lg focus:outline-none focus:border-cyan-500/40"
           />
           <button 
             type="submit" 
             disabled={kqlLoading}
-            className="bg-blue-600 hover:bg-blue-700 text-white text-xs px-4 py-2 rounded transition-colors font-mono uppercase"
+            className="bg-cyan-500 hover:bg-cyan-600 text-black text-xs px-4 py-2 rounded-lg transition-colors font-mono font-bold uppercase"
           >
             {kqlLoading ? 'PARSING...' : 'RUN QUERY'}
           </button>
@@ -120,7 +160,7 @@ export default function SIEM({ websocketLogs, token }: any) {
             <button 
               type="button" 
               onClick={clearKql}
-              className="bg-slate-900 border border-slate-700 text-slate-400 text-xs px-3 py-2 rounded hover:text-slate-200"
+              className="bg-black border border-white/10 text-slate-400 text-xs px-3 py-2 rounded-lg hover:text-slate-200"
             >
               CLEAR
             </button>
@@ -128,19 +168,19 @@ export default function SIEM({ websocketLogs, token }: any) {
         </form>
 
         {kqlError && (
-          <div className="mt-3 p-2 bg-red-950/30 border border-red-500/20 text-red-400 text-xs font-mono rounded">
+          <div className="mt-3 p-2.5 bg-red-950/30 border border-red-500/20 text-red-400 text-xs font-mono rounded-lg">
             SYNTAX EXCEPTION: {kqlError}
           </div>
         )}
 
         {kqlStats && (
-          <div className="mt-4 p-3 bg-[#050811] border border-slate-800 rounded font-mono text-xs space-y-2">
-            <p className="text-blue-400 font-bold border-b border-slate-800 pb-1.5">[STATISTICS METRIC MATRIX OUTPUT]</p>
+          <div className="mt-4 p-3 bg-black/40 border border-white/5 rounded-lg font-mono text-xs space-y-2">
+            <p className="text-cyan-400 font-bold border-b border-white/5 pb-1.5">[STATISTICS METRIC MATRIX OUTPUT]</p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {kqlStats.map((stat, idx) => (
-                <div key={idx} className="p-3 bg-[#111625] border border-slate-800 rounded">
+              {(kqlStats ?? []).map((stat: any, idx: number) => (
+                <div key={idx} className="p-3 bg-[#0D1117] border border-white/5 rounded-lg">
                   <p className="text-slate-500 uppercase text-[9px]">{stat.name}</p>
-                  <p className="text-lg font-bold text-slate-100 mt-1">{stat.count} Event hits</p>
+                  <p className="text-base font-bold text-slate-200 mt-1">{stat.count} Event hits</p>
                 </div>
               ))}
             </div>
@@ -150,7 +190,7 @@ export default function SIEM({ websocketLogs, token }: any) {
 
       {/* 2. REGULAR INGESTION SEARCH FILTERS PANEL */}
       {!kqlResults && !kqlStats && (
-        <div className="flex flex-wrap items-center gap-3 p-4 bg-[#111625] border border-slate-800 rounded-lg">
+        <div className="flex flex-wrap items-center gap-3 p-4 bg-[#0D1117] border border-white/5 rounded-xl shadow-lg">
           <div className="flex-1 min-w-[200px] relative">
             <Search className="w-3.5 h-3.5 absolute left-3 top-3 text-slate-500" />
             <input 
@@ -158,7 +198,7 @@ export default function SIEM({ websocketLogs, token }: any) {
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Search ingest logs payload details..."
-              className="w-full bg-[#050811] border border-slate-700 pl-9 pr-3 py-2 text-xs text-slate-200 rounded focus:outline-none focus:border-blue-500"
+              className="w-full bg-[#111827] border border-white/10 pl-9 pr-3 py-2 text-xs text-slate-200 rounded-lg focus:outline-none focus:border-cyan-500/40"
             />
           </div>
 
@@ -167,10 +207,11 @@ export default function SIEM({ websocketLogs, token }: any) {
             <select 
               value={severityFilter}
               onChange={e => setSeverityFilter(e.target.value)}
-              className="bg-[#050811] border border-slate-700 px-3 py-2 text-xs text-slate-300 rounded focus:outline-none"
+              className="bg-[#111827] border border-white/10 px-3 py-2 text-xs text-slate-300 rounded-lg focus:outline-none"
             >
               <option value="">All Severity</option>
               <option value="CRITICAL">CRITICAL</option>
+              <option value="HIGH">HIGH</option>
               <option value="WARNING">WARNING</option>
               <option value="INFO">INFO</option>
             </select>
@@ -178,18 +219,19 @@ export default function SIEM({ websocketLogs, token }: any) {
             <select 
               value={sourceFilter}
               onChange={e => setSourceFilter(e.target.value)}
-              className="bg-[#050811] border border-slate-700 px-3 py-2 text-xs text-slate-300 rounded focus:outline-none"
+              className="bg-[#111827] border border-white/10 px-3 py-2 text-xs text-slate-300 rounded-lg focus:outline-none"
             >
               <option value="">All Collectors</option>
               <option value="Sysmon">Sysmon (Host Events)</option>
               <option value="AuthLog">Authentication Logs</option>
               <option value="Suricata">Suricata Network IDS</option>
               <option value="WinEvent">Windows Security</option>
+              <option value="SIM">Simulated Logs [SIM]</option>
             </select>
 
             <button 
               onClick={fetchLogs}
-              className="bg-slate-900 border border-slate-700 hover:bg-slate-800 text-slate-300 text-xs px-4 py-2 rounded transition-colors"
+              className="bg-black border border-cyan-500/20 hover:border-cyan-500 text-cyan-400 text-xs px-4 py-2 rounded-lg transition-colors font-mono font-bold"
             >
               APPLY FILTERS
             </button>
@@ -198,17 +240,17 @@ export default function SIEM({ websocketLogs, token }: any) {
       )}
 
       {/* 3. LOG LISTS DATA TABLE GRID */}
-      <div className="bg-[#111625] border border-slate-800 rounded-lg overflow-hidden">
-        <div className="p-4 border-b border-slate-800/80 bg-[#0c1325] flex justify-between items-center text-xs font-mono">
-          <span className="text-slate-400">DISPLAYING: <span className="text-blue-400 font-bold">{displayedLogs.length} LOG RECORDS</span></span>
+      <div className="bg-[#0D1117] border border-white/5 rounded-xl overflow-hidden shadow-xl">
+        <div className="p-4 border-b border-white/5 bg-black/20 flex justify-between items-center text-xs font-mono">
+          <span className="text-slate-400">DISPLAYING: <span className="text-cyan-400 font-bold">{displayedLogs.length} LOG RECORDS</span></span>
           {kqlResults && <span className="text-amber-400 font-bold">WARNING: ACTIVE SPL RENDER FILTERS APPLIED</span>}
         </div>
 
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto max-h-[380px] overflow-y-auto">
           <table className="w-full text-left border-collapse text-xs font-sans">
             <thead>
-              <tr className="bg-slate-950/40 text-[#64748b] border-b border-slate-800 uppercase font-mono text-[10px]">
-                <th className="p-3">Timestamp (UTC)</th>
+              <tr className="bg-black/20 text-[#64748b] border-b border-white/5 uppercase font-mono text-[9px] font-bold">
+                <th className="p-3">Timestamp (IST)</th>
                 <th className="p-3">Source Collector</th>
                 <th className="p-3">Severity</th>
                 <th className="p-3">Target Host</th>
@@ -216,34 +258,42 @@ export default function SIEM({ websocketLogs, token }: any) {
                 <th className="p-3"></th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60 font-mono">
-              {displayedLogs.map((log) => (
-                <tr 
-                  key={log._id} 
-                  onClick={() => setSelectedLog(log)}
-                  className="hover:bg-slate-900/60 transition-colors cursor-pointer"
-                >
-                  <td className="p-3 text-slate-400 whitespace-nowrap">
-                    {new Date(log.timestamp).toISOString().replace('T', ' ').substring(0, 19)}
-                  </td>
-                  <td className="p-3 whitespace-nowrap text-blue-400 font-semibold">{log.source}</td>
-                  <td className="p-3 whitespace-nowrap">
-                    <span className={`px-2 py-0.5 border rounded text-[9px] ${getSeverityStyle(log.severity)}`}>
-                      {log.severity}
-                    </span>
-                  </td>
-                  <td className="p-3 whitespace-nowrap text-slate-300 font-bold">{log.host}</td>
-                  <td className="p-3 text-slate-300 truncate max-w-md">{log.message}</td>
-                  <td className="p-3 text-right">
-                    <ChevronRight className="w-4 h-4 text-slate-500 ml-auto" />
-                  </td>
-                </tr>
-              ))}
+            <tbody className="divide-y divide-white/5 font-mono text-[11px] select-text">
+              {(displayedLogs ?? []).map((log, lIdx) => {
+                const isSim = log.source === 'SIM';
+                return (
+                  <tr 
+                    key={log._id || lIdx} 
+                    onClick={() => setSelectedLog(log)}
+                    className="hover:bg-cyan-500/5 transition-colors cursor-pointer"
+                  >
+                    <td className="p-3 text-slate-400 whitespace-nowrap">
+                      {new Date(log.timestamp).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}
+                    </td>
+                    <td className="p-3 whitespace-nowrap text-cyan-400 font-semibold flex items-center gap-1.5">
+                      {isSim && (
+                        <span className="px-1.5 py-0.5 rounded text-[8px] font-bold bg-amber-500/10 border border-amber-500/20 text-amber-400 mr-1">[SIM]</span>
+                      )}
+                      <span>{log.source}</span>
+                    </td>
+                    <td className="p-3 whitespace-nowrap">
+                      <span className={`px-2 py-0.5 border rounded text-[9px] ${getSeverityStyle(log.severity)}`}>
+                        {log.severity}
+                      </span>
+                    </td>
+                    <td className="p-3 whitespace-nowrap text-slate-200 font-bold">{log.host}</td>
+                    <td className="p-3 text-slate-350 truncate max-w-md">{log.message}</td>
+                    <td className="p-3 text-right">
+                      <ChevronRight className="w-4 h-4 text-slate-500 ml-auto" />
+                    </td>
+                  </tr>
+                );
+              })}
 
               {displayedLogs.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="p-8 text-center text-slate-500 font-mono">
-                    No matching SIEM records located in local secure databases.
+                  <td colSpan={6} className="p-12 text-center text-slate-500 font-mono">
+                    No matching SIEM records located in secure database.
                   </td>
                 </tr>
               )}
@@ -254,17 +304,17 @@ export default function SIEM({ websocketLogs, token }: any) {
 
       {/* 4. LOG EXPLORER CONTEXT DRAWER */}
       {selectedLog && (
-        <div className="fixed inset-y-0 right-0 w-[500px] bg-[#0c1222] border-l border-slate-800 shadow-2xl z-50 flex flex-col justify-between slide-in font-sans">
+        <div className="fixed inset-y-0 right-0 w-[500px] bg-[#070B14] border-l border-white/10 shadow-2xl z-50 flex flex-col justify-between slide-in font-sans">
           <div>
             {/* Drawer Header */}
-            <div className="p-5 border-b border-slate-800 bg-[#0e172a] flex justify-between items-center">
+            <div className="p-5 border-b border-white/5 bg-[#0D1117] flex justify-between items-center">
               <div>
-                <span className="text-[10px] uppercase font-mono font-bold text-blue-500">EVENT EXPLORER FRAME</span>
+                <span className="text-[10px] uppercase font-mono font-bold text-cyan-400">EVENT EXPLORER FRAME</span>
                 <h3 className="text-sm font-bold text-slate-200 mt-1 uppercase">Log Record Metadata</h3>
               </div>
               <button 
                 onClick={() => setSelectedLog(null)}
-                className="bg-slate-900 border border-slate-800 text-slate-400 text-xs px-2 py-1 rounded hover:text-slate-200"
+                className="bg-black border border-white/10 text-slate-400 text-xs px-2.5 py-1 rounded-lg hover:text-slate-200 font-mono text-[10px]"
               >
                 CLOSE
               </button>
@@ -272,14 +322,14 @@ export default function SIEM({ websocketLogs, token }: any) {
 
             {/* Content list */}
             <div className="p-6 space-y-5 overflow-y-auto max-h-[calc(100vh-140px)] text-xs">
-              <div className="space-y-2 border-b border-slate-800/60 pb-4 font-mono">
+              <div className="space-y-2 border-b border-white/5 pb-4 font-mono text-[10px]">
                 <div className="flex justify-between">
-                  <span className="text-slate-500">INGEST TIMESTAMP:</span>
-                  <span className="text-slate-300">{new Date(selectedLog.timestamp).toISOString()}</span>
+                  <span className="text-slate-500">INGEST TIMESTAMP (IST):</span>
+                  <span className="text-slate-300">{new Date(selectedLog.timestamp).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-500">COLLECTOR SOURCE:</span>
-                  <span className="text-blue-400 font-semibold">{selectedLog.source}</span>
+                  <span className="text-cyan-400 font-semibold">{selectedLog.source}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-500">SEVERITY RATING:</span>
@@ -294,7 +344,7 @@ export default function SIEM({ websocketLogs, token }: any) {
               </div>
 
               {selectedLog.mitreTactic && (
-                <div className="p-3 bg-red-950/20 border border-red-500/20 rounded font-mono">
+                <div className="p-3 bg-red-950/20 border border-red-500/20 rounded-lg font-mono text-[10px]">
                   <p className="text-red-400 font-bold uppercase text-[9px] flex items-center gap-1.5">
                     <AlertTriangle className="w-3.5 h-3.5" /> MITRE ATT&CK MAPPED TACTIC DETECTED
                   </p>
@@ -305,14 +355,14 @@ export default function SIEM({ websocketLogs, token }: any) {
 
               <div className="space-y-1.5">
                 <label className="block text-[10px] uppercase font-mono text-slate-500">Payload Message Details</label>
-                <div className="p-3 bg-slate-950/60 border border-slate-800 rounded font-mono text-slate-300 leading-relaxed leading-snug">
+                <div className="p-3 bg-black/40 border border-white/5 rounded-lg font-mono text-slate-300 leading-relaxed text-[11px]">
                   {selectedLog.message}
                 </div>
               </div>
 
               <div className="space-y-1.5">
                 <label className="block text-[10px] uppercase font-mono text-slate-500">Raw JSON Telemetry Package</label>
-                <pre className="p-3 bg-slate-950 border border-slate-800 rounded font-mono text-[10px] text-emerald-400 overflow-x-auto max-w-[450px]">
+                <pre className="p-3 bg-black border border-white/5 rounded-lg font-mono text-[9.5px] text-emerald-400 overflow-x-auto max-w-[450px]">
                   {JSON.stringify(selectedLog, null, 2)}
                 </pre>
               </div>
@@ -320,10 +370,10 @@ export default function SIEM({ websocketLogs, token }: any) {
           </div>
 
           {/* Drawer Actions */}
-          <div className="p-4 border-t border-slate-800 bg-[#0e172a] flex justify-end">
+          <div className="p-4 border-t border-white/5 bg-[#0D1117] flex justify-end">
             <button 
               onClick={() => setSelectedLog(null)}
-              className="bg-blue-600 hover:bg-blue-700 text-white text-xs px-4 py-2 rounded transition-colors"
+              className="bg-cyan-500 hover:bg-cyan-600 text-black text-xs px-4 py-2 rounded-lg font-bold font-mono transition-colors"
             >
               ACKNOWLEDGE LOG DETAILS
             </button>
@@ -332,5 +382,13 @@ export default function SIEM({ websocketLogs, token }: any) {
       )}
 
     </div>
+  );
+}
+
+export default function SIEM(props: any) {
+  return (
+    <ErrorBoundary>
+      <SIEMComponent {...props} />
+    </ErrorBoundary>
   );
 }

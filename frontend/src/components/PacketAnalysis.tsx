@@ -1,28 +1,64 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Play, Pause, Trash2, Search, Filter, Cpu, BarChart3, Network, Terminal } from 'lucide-react';
+import { Play, Pause, Trash2, Search, Filter, Cpu, Download, Info, Network, Laptop, ChevronDown, ChevronRight } from 'lucide-react';
 import { RootState, addPacket, clearPackets, toggleCapture, setSelectedPacket, setFilter, setSearchQuery } from '../store';
-import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Cell } from 'recharts';
+import { List } from 'react-window';
 
 const FILTER_OPTIONS = ['all', 'tcp', 'udp', 'icmp', 'arp', 'dns', 'http', 'https'];
-const PROTO_COLORS: Record<string, string> = {
-  'TCP': '#00ff66',
-  'UDP': '#39ff14',
-  'ICMP': '#f59e0b',
-  'ARP': '#00e5ff',
-  'DNS': '#a855f7',
-  'HTTP': '#ec4899',
-  'HTTPS': '#e11d48'
+
+const PROTO_COLORS: Record<string, { bg: string; text: string; border: string }> = {
+  'TCP': { bg: 'bg-cyan-500/10', text: 'text-cyan-400', border: 'border-cyan-500/20' },
+  'UDP': { bg: 'bg-emerald-500/10', text: 'text-emerald-400', border: 'border-emerald-500/20' },
+  'ICMP': { bg: 'bg-orange-500/10', text: 'text-orange-400', border: 'border-orange-500/20' },
+  'ARP': { bg: 'bg-purple-500/10', text: 'text-purple-400', border: 'border-purple-500/20' },
+  'DNS': { bg: 'bg-teal-500/10', text: 'text-teal-400', border: 'border-teal-500/20' },
+  'HTTP': { bg: 'bg-yellow-500/10', text: 'text-yellow-400', border: 'border-yellow-500/20' },
+  'HTTPS': { bg: 'bg-blue-500/10', text: 'text-blue-400', border: 'border-blue-500/20' },
+  'OTHER': { bg: 'bg-zinc-500/10', text: 'text-zinc-400', border: 'border-zinc-500/20' }
 };
+
+interface LocalInfo {
+  ip: string;
+  mac: string;
+  hostname: string;
+  os: string;
+  platform: string;
+  arch: string;
+}
 
 export default function PacketAnalysis() {
   const dispatch = useDispatch();
+  const token = useSelector((state: RootState) => state.auth.token);
   const packetsState = useSelector((state: RootState) => state.packets);
   const { isCapturing, packets, selectedPacket, filter, searchQuery } = packetsState;
 
-  const [expandedSection, setExpandedSection] = useState<string | null>('Internet Protocol Version 4');
+  const [localInfo, setLocalInfo] = useState<LocalInfo | null>(null);
+  const [expandedDetails, setExpandedDetails] = useState<Record<string, boolean>>({
+    frame: true,
+    network: true,
+    payload: true
+  });
 
-  // Handle live WebSocket packet streams
+  // Fetch local info on mount
+  useEffect(() => {
+    fetchLocalInfo();
+  }, []);
+
+  const fetchLocalInfo = async () => {
+    try {
+      const res = await fetch('/api/scan/localinfo', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setLocalInfo(data);
+      }
+    } catch (e) {
+      console.error('Failed to retrieve interface properties', e);
+    }
+  };
+
+  // Register WebSocket handle
   useEffect(() => {
     const socket = (window as any).socket;
     if (!socket) return;
@@ -32,7 +68,6 @@ export default function PacketAnalysis() {
     };
 
     socket.on('packet_captured', handlePacket);
-
     return () => {
       socket.off('packet_captured', handlePacket);
     };
@@ -46,283 +81,369 @@ export default function PacketAnalysis() {
     dispatch(toggleCapture());
   };
 
-  // Filter packets
+  // Export JSON packet log
+  const exportPCAP = () => {
+    if (packets.length === 0) return;
+    const jsonString = `data:text/json;charset=utf-8,${encodeURIComponent(
+      JSON.stringify(packets, null, 2)
+    )}`;
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute('href', jsonString);
+    downloadAnchor.setAttribute('download', `zentrix_packets_${Date.now()}.json`);
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+  };
+
+  // Client-side filtering logic
   const filteredPackets = packets.filter(p => {
+    if (!p) return false;
+    
     // Protocol Filter
-    if (filter !== 'all' && p.protocol.toLowerCase() !== filter.toLowerCase()) {
-      return false;
+    if (filter !== 'all') {
+      const pProto = p.protocol ? p.protocol.toLowerCase() : '';
+      if (filter === 'dns' && pProto !== 'dns') return false;
+      if (filter === 'http' && pProto !== 'http') return false;
+      if (filter === 'https' && pProto !== 'https') return false;
+      if (filter === 'tcp' && pProto !== 'tcp' && pProto !== 'http' && pProto !== 'https') return false;
+      if (filter === 'udp' && pProto !== 'udp' && pProto !== 'dns') return false;
+      if (filter === 'icmp' && pProto !== 'icmp') return false;
+      if (filter === 'arp' && pProto !== 'arp') return false;
     }
-    // Search Query (IP, Port, Protocol)
+
+    // Search query
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
-      const matchIp = p.srcIp.toLowerCase().includes(q) || p.destIp.toLowerCase().includes(q);
-      const matchPort = String(p.srcPort).includes(q) || String(p.destPort).includes(q);
-      const matchProto = p.protocol.toLowerCase().includes(q);
-      const matchInfo = p.info.toLowerCase().includes(q);
-      return matchIp || matchPort || matchProto || matchInfo;
+      const src = p.srcIp ? p.srcIp.toLowerCase() : '';
+      const dest = p.destIp ? p.destIp.toLowerCase() : '';
+      const proto = p.protocol ? p.protocol.toLowerCase() : '';
+      const infoText = p.info ? p.info.toLowerCase() : '';
+      const srcPortStr = p.srcPort ? String(p.srcPort) : '';
+      const dstPortStr = p.destPort ? String(p.destPort) : '';
+
+      return src.includes(q) || dest.includes(q) || proto.includes(q) || infoText.includes(q) || srcPortStr.includes(q) || dstPortStr.includes(q);
     }
+
     return true;
   });
 
-  // Calculate packet capture stats
-  const totalCount = filteredPackets.length;
-  const protoCounts: Record<string, number> = {};
-  filteredPackets.forEach(p => {
-    protoCounts[p.protocol] = (protoCounts[p.protocol] || 0) + 1;
+  // Calculate dynamic stats counters
+  const counts = { TCP: 0, UDP: 0, ICMP: 0, ARP: 0, DNS: 0, HTTP: 0, HTTPS: 0, OTHER: 0 };
+  packets.forEach(p => {
+    if (!p) return;
+    const proto = p.protocol ? p.protocol.toUpperCase() : 'OTHER';
+    if (proto in counts) {
+      counts[proto as keyof typeof counts]++;
+    } else {
+      counts.OTHER++;
+    }
   });
 
-  const chartData = Object.entries(protoCounts).map(([name, value]) => ({
-    name,
-    value,
-    color: PROTO_COLORS[name] || '#71717a'
-  }));
+  // Hex / ASCII payload formatting utility
+  const formatPayload = (hexString: string): string => {
+    if (!hexString) return 'No payload stream captured.';
+    
+    // Strip non-hex chars
+    const cleanHex = hexString.replace(/[^a-fA-F0-9]/g, '');
+    const bytes: string[] = [];
+    for (let i = 0; i < cleanHex.length; i += 2) {
+      bytes.push(cleanHex.substring(i, i + 2));
+    }
+
+    let out = '';
+    for (let i = 0; i < bytes.length; i += 8) {
+      const chunk = bytes.slice(i, i + 8);
+      const hexPart = chunk.join(' ');
+      const asciiPart = chunk.map(b => {
+        const num = parseInt(b, 16);
+        return (num >= 32 && num <= 126) ? String.fromCharCode(num) : '.';
+      }).join('');
+
+      const offset = i.toString(16).toUpperCase().padStart(4, '0');
+      out += `${offset}  ${hexPart.padEnd(24, ' ')}  |  ${asciiPart}\n`;
+    }
+    return out || 'No payload bytes to inspect.';
+  };
+
+  const toggleSection = (section: string) => {
+    setExpandedDetails(prev => ({ ...prev, [section]: !prev[section] }));
+  };
+
+  // Virtualized row renderer
+  const Row = ({ index, style }: { index: number; style: React.CSSProperties }) => {
+    const pkt = filteredPackets[index];
+    if (!pkt) return null;
+
+    const isSelected = selectedPacket?.id === pkt.id;
+    const styleClass = PROTO_COLORS[pkt.protocol] || PROTO_COLORS.OTHER;
+    
+    // Format timestamp: extract HH:mm:ss.ms
+    let formattedTime = 'N/A';
+    if (pkt.timestamp) {
+      try {
+        const timePart = pkt.timestamp.includes('T') ? pkt.timestamp.split('T')[1] : pkt.timestamp;
+        formattedTime = timePart.substring(0, 12);
+      } catch (e) {
+        formattedTime = String(pkt.timestamp);
+      }
+    }
+
+    return (
+      <div 
+        style={style}
+        onClick={() => dispatch(setSelectedPacket(pkt))}
+        className={`flex items-center text-[10.5px] border-b border-white/5 cursor-pointer font-mono select-text transition-all ${
+          isSelected 
+            ? 'bg-cyan-500/10 border-l-[3px] border-l-cyan-400 font-semibold text-slate-100' 
+            : 'hover:bg-white/5 text-slate-300'
+        }`}
+      >
+        <div className="w-12 shrink-0 text-slate-600 font-bold px-2">{packets.length - packets.indexOf(pkt)}</div>
+        <div className="w-24 shrink-0 text-slate-500">{formattedTime}</div>
+        <div className="w-44 shrink-0 text-slate-200 truncate">{pkt.srcIp}{pkt.srcPort ? `:${pkt.srcPort}` : ''}</div>
+        <div className="w-44 shrink-0 text-slate-200 truncate">{pkt.dstIp}{pkt.destPort ? `:${pkt.destPort}` : ''}</div>
+        <div className="w-20 shrink-0 px-1">
+          <span className={`px-1.5 py-0.5 rounded text-[8px] font-bold border ${styleClass.bg} ${styleClass.text} ${styleClass.border}`}>
+            {pkt.protocol}
+          </span>
+        </div>
+        <div className="w-20 shrink-0 text-slate-400">{pkt.length} B</div>
+        <div className="flex-1 min-w-0 truncate text-slate-355 pr-2">{pkt.info}</div>
+      </div>
+    );
+  };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 font-sans text-white select-none">
+    <div className="space-y-6 font-sans text-white select-none relative">
       
-      {/* 1. LEFT TWO-THIRDS: WIRESHARK SHELL */}
-      <div className="lg:col-span-2 space-y-6 flex flex-col h-[700px]">
-        
-        {/* Controls Toolbar */}
-        <div className="flex flex-wrap justify-between items-center p-3 bg-cyber-card border border-cyber-border rounded-lg gap-4 shadow-lg">
-          <div className="flex gap-2 items-center">
-            <button
-              onClick={handleToggle}
-              className={`flex items-center gap-1 px-3 py-1.5 rounded font-mono text-[10px] uppercase font-bold transition-all border ${
-                isCapturing 
-                  ? 'border-red-500/30 text-red-500 bg-red-950/10 hover:bg-red-950/20' 
-                  : 'border-cyber-primary/30 text-cyber-primary bg-black hover:border-cyber-primary'
-              }`}
-            >
-              {isCapturing ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
-              {isCapturing ? 'Pause' : 'Resume'}
-            </button>
-            <button
-              onClick={handleClear}
-              className="flex items-center gap-1 bg-black border border-cyber-border px-3 py-1.5 rounded font-mono text-[10px] uppercase font-bold text-slate-400 hover:text-slate-200 transition-all"
-            >
-              <Trash2 className="w-3.5 h-3.5" />
-              Clear
-            </button>
+      {/* System info / capture status bar */}
+      {localInfo && (
+        <div className="flex flex-wrap items-center gap-4 px-4 py-2.5 bg-[#0D1117] border border-cyan-500/20 rounded-lg text-[10px] font-mono shadow-md">
+          <div className="flex items-center gap-1.5 text-cyan-400 font-bold uppercase">
+            <Laptop className="w-3.5 h-3.5" />
+            <span>[ 🖥 DEVICE ]</span>
           </div>
-
-          {/* Quick Filters */}
-          <div className="flex gap-1.5 flex-wrap items-center">
-            <Filter className="w-3.5 h-3.5 text-slate-500" />
-            {FILTER_OPTIONS.map(opt => (
-              <button
-                key={opt}
-                onClick={() => dispatch(setFilter(opt))}
-                className={`px-2 py-0.5 rounded font-mono text-[9px] uppercase font-bold transition-all border ${
-                  filter === opt 
-                    ? 'border-cyber-primary text-cyber-primary bg-cyber-primary/10' 
-                    : 'border-cyber-border text-slate-400 hover:text-slate-200'
-                }`}
-              >
-                {opt}
-              </button>
-            ))}
+          <div className="flex items-center gap-4 text-slate-400">
+            <span>IP: <strong className="text-slate-200">{localInfo.ip}</strong></span>
+            <span className="text-white/10">|</span>
+            <span>MAC: <strong className="text-slate-200">{localInfo.mac}</strong></span>
+            <span className="text-white/10">|</span>
+            <span>HOST: <strong className="text-slate-200 uppercase">{localInfo.hostname}</strong></span>
+            <span className="text-white/10">|</span>
+            <span>Active Interface: <strong className="text-cyan-400 uppercase">eth0</strong></span>
           </div>
         </div>
+      )}
 
-        {/* Live Packet Table Viewport */}
-        <div className="flex-1 bg-black border border-cyber-border rounded-lg overflow-hidden flex flex-col shadow-lg">
-          <div className="flex bg-cyber-card border-b border-cyber-border p-2 gap-2">
-            <div className="relative flex-1">
-              <Search className="absolute left-2.5 top-2 w-3.5 h-3.5 text-slate-500" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={e => dispatch(setSearchQuery(e.target.value))}
-                placeholder="Apply display filter / search IP, port, protocol, info..."
-                className="w-full bg-black border border-cyber-border pl-8 pr-3 py-1.5 text-xs font-mono text-cyber-primary rounded focus:outline-none focus:border-cyber-primary"
-              />
+      {/* Protocol Counters Stats Bar */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3 bg-[#0D1117] p-3 border border-white/5 rounded-xl text-center shadow-lg font-mono text-[10px]">
+        {Object.entries(counts).map(([proto, count]) => {
+          const style = PROTO_COLORS[proto] || PROTO_COLORS.OTHER;
+          return (
+            <div key={proto} className="bg-black/30 border border-white/5 p-2 rounded-lg">
+              <span className={`block text-[8px] font-bold tracking-wider ${style.text}`}>{proto}</span>
+              <span className="text-sm font-bold text-slate-200 mt-0.5 block">{count}</span>
             </div>
-            <div className="bg-black border border-cyber-border px-3 py-1.5 rounded text-[9px] font-mono text-slate-500 uppercase flex items-center leading-none">
-              Packets: {totalCount}
-            </div>
-          </div>
-
-          {/* Table */}
-          <div className="flex-1 overflow-y-auto font-mono text-[11px] leading-relaxed max-h-[300px]">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-cyber-card text-slate-500 border-b border-cyber-border uppercase text-[9px]">
-                  <th className="p-2">No.</th>
-                  <th className="p-2">Time</th>
-                  <th className="p-2">Source</th>
-                  <th className="p-2">Destination</th>
-                  <th className="p-2">Protocol</th>
-                  <th className="p-2">Src Port</th>
-                  <th className="p-2">Dest Port</th>
-                  <th className="p-2">Length</th>
-                  <th className="p-2">Info</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-cyber-border/40">
-                {filteredPackets.map((pkt, idx) => {
-                  const isSelected = selectedPacket?.id === pkt.id;
-                  const protoColor = PROTO_COLORS[pkt.protocol] || '#71717a';
-                  return (
-                    <tr 
-                      key={pkt.id} 
-                      onClick={() => dispatch(setSelectedPacket(pkt))}
-                      className={`cursor-pointer transition-all hover:bg-cyber-primary/10 ${
-                        isSelected ? 'bg-cyber-primary/20 text-cyber-primary font-bold' : ''
-                      }`}
-                    >
-                      <td className="p-2 text-slate-600 font-bold">{totalCount - idx}</td>
-                      <td className="p-2 text-slate-550">{pkt.timestamp.substring(11, 19)}</td>
-                      <td className="p-2 text-slate-200">{pkt.srcIp}</td>
-                      <td className="p-2 text-slate-200">{pkt.destIp}</td>
-                      <td className="p-2 font-bold" style={{ color: protoColor }}>{pkt.protocol}</td>
-                      <td className="p-2 text-slate-400">{pkt.srcPort || '-'}</td>
-                      <td className="p-2 text-slate-400">{pkt.destPort || '-'}</td>
-                      <td className="p-2 text-slate-450">{pkt.length}</td>
-                      <td className="p-2 text-slate-300 truncate max-w-xs">{pkt.info}</td>
-                    </tr>
-                  );
-                })}
-                {filteredPackets.length === 0 && (
-                  <tr>
-                    <td colSpan={9} className="p-12 text-center text-slate-500 font-mono">
-                      No capture signals active on current interfaces.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* Selected Packet Inspection details & Hex dump */}
-        <div className="h-[250px] bg-cyber-card border border-cyber-border rounded-lg flex flex-col md:flex-row shadow-lg overflow-hidden font-mono text-[10px]">
-          
-          {/* Detailed Tree */}
-          <div className="flex-1 border-r border-cyber-border p-3 overflow-y-auto space-y-2 max-h-[250px]">
-            <p className="text-slate-500 uppercase text-[9px] border-b border-cyber-border pb-1 font-bold">[+] PACKET DETAILS TREE</p>
-            {selectedPacket ? (
-              <div className="space-y-1 text-slate-300 select-text leading-relaxed">
-                {Object.entries(selectedPacket.details || {}).map(([key, val]: any) => {
-                  const isExpanded = expandedSection === key;
-                  return (
-                    <div key={key} className="space-y-1">
-                      <button 
-                        onClick={() => setExpandedSection(isExpanded ? null : key)}
-                        className="w-full text-left font-bold text-cyber-primary flex items-center gap-1 hover:text-cyber-accent"
-                      >
-                        {isExpanded ? '▼' : '▶'} {key}
-                      </button>
-                      {isExpanded && (
-                        <div className="pl-4 border-l border-cyber-border/40 py-1 space-y-0.5 text-slate-400 text-[9px]">
-                          {Object.entries(val).map(([k, v]: any) => (
-                            <p key={k}><span className="text-slate-500">{k}:</span> {String(v)}</p>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <p className="text-slate-500 text-center pt-16">Select a packet from the queue to view details.</p>
-            )}
-          </div>
-
-          {/* Hex Dump */}
-          <div className="flex-1 p-3 overflow-y-auto bg-black max-h-[250px]">
-            <p className="text-slate-500 uppercase text-[9px] border-b border-cyber-border/40 pb-1 font-bold">[+] HEX / ASCII PAYLOAD</p>
-            {selectedPacket ? (
-              <pre className="text-cyber-primary text-[9px] leading-relaxed pt-2 whitespace-pre select-text font-mono">
-                {selectedPacket.payload}
-              </pre>
-            ) : (
-              <p className="text-slate-500 text-center pt-16">No payload trace selected.</p>
-            )}
-          </div>
-
-        </div>
-
+          );
+        })}
       </div>
 
-      {/* 2. RIGHT ONE-THIRD: LIVE STATISTICS */}
-      <div className="lg:col-span-1 space-y-6 h-[700px] overflow-y-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        {/* Connection counts / General KPIs */}
-        <div className="p-5 bg-cyber-card border border-cyber-border rounded-lg shadow-lg space-y-4">
-          <div className="flex items-center gap-2">
-            <Cpu className="w-4 h-4 text-cyber-primary" />
-            <span className="text-xs uppercase font-mono font-bold tracking-wider text-slate-200">Capture Metrics</span>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3 text-center font-mono">
-            <div className="p-3 bg-black border border-cyber-border rounded">
-              <p className="text-[8px] text-slate-500 uppercase">Packets/sec</p>
-              <p className="text-lg font-bold text-cyber-primary mt-1">{isCapturing ? '1.2' : '0.0'}</p>
+        {/* Left 2/3: Packet Queue Viewer */}
+        <div className="lg:col-span-2 space-y-4 flex flex-col h-[520px]">
+          
+          {/* Controls Bar */}
+          <div className="flex flex-wrap justify-between items-center p-3 bg-[#0D1117] border border-white/5 rounded-xl gap-4 shadow-xl">
+            <div className="flex gap-2 items-center">
+              <button
+                onClick={handleToggle}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-mono text-[9px] uppercase font-bold transition-all border ${
+                  isCapturing 
+                    ? 'border-red-500/30 text-red-500 bg-red-950/10 hover:bg-red-950/20' 
+                    : 'border-cyan-500/30 text-cyan-400 bg-black hover:border-cyan-500'
+                }`}
+              >
+                {isCapturing ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
+                {isCapturing ? 'Stop' : 'Start'}
+              </button>
+              <button
+                onClick={handleClear}
+                className="flex items-center gap-1.5 bg-black border border-white/10 px-3 py-1.5 rounded-lg font-mono text-[9px] uppercase font-bold text-slate-400 hover:text-slate-200 hover:border-white/20 transition-all"
+              >
+                <Trash2 className="w-3 h-3" />
+                Clear
+              </button>
+              <button
+                onClick={exportPCAP}
+                disabled={packets.length === 0}
+                className={`flex items-center gap-1.5 border px-3 py-1.5 rounded-lg font-mono text-[9px] uppercase font-bold transition-all ${
+                  packets.length === 0 
+                    ? 'border-zinc-800 text-zinc-600 cursor-not-allowed' 
+                    : 'border-cyan-500/20 text-cyan-400 bg-black hover:border-cyan-500 hover:bg-cyan-500/10'
+                }`}
+              >
+                <Download className="w-3 h-3" />
+                Export PCAP
+              </button>
             </div>
-            <div className="p-3 bg-black border border-cyber-border rounded">
-              <p className="text-[8px] text-slate-500 uppercase">Total Data</p>
-              <p className="text-lg font-bold text-cyber-primary mt-1">
-                {(packets.reduce((acc, curr) => acc + curr.length, 0) / 1024).toFixed(1)} KB
-              </p>
-            </div>
-          </div>
-        </div>
 
-        {/* Charts: Protocol Usage */}
-        <div className="p-5 bg-cyber-card border border-cyber-border rounded-lg shadow-lg flex flex-col justify-between h-[300px]">
-          <div>
-            <span className="text-xs uppercase font-mono font-bold tracking-wider text-slate-200">Protocol Distribution</span>
-            <p className="text-[10px] text-slate-500 font-mono mb-4">TRAFFIC SHARE ANALYSIS</p>
-          </div>
-
-          <div className="flex-1 w-full text-[9px] font-mono mt-4">
-            {chartData.length > 0 ? (
-              <ResponsiveContainer width="100%" height="90%">
-                <BarChart data={chartData} margin={{ left: -25, right: 10, top: 0, bottom: 0 }}>
-                  <XAxis dataKey="name" stroke="#222" tick={{ fill: '#71717a', fontSize: 9 }} />
-                  <YAxis stroke="#222" tick={{ fill: '#71717a', fontSize: 9 }} />
-                  <Tooltip 
-                    contentStyle={{ backgroundColor: '#000000', border: '1px solid #141418', borderRadius: '4px' }}
-                    itemStyle={{ fontFamily: 'monospace' }}
-                  />
-                  <Bar dataKey="value" fill="#00ff66">
-                    {chartData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            ) : (
-              <p className="text-slate-500 text-center pt-20">Capturing packet streams...</p>
-            )}
-          </div>
-        </div>
-
-        {/* Top Talkers */}
-        <div className="p-5 bg-cyber-card border border-cyber-border rounded-lg shadow-lg">
-          <div className="flex items-center gap-2 mb-4">
-            <Network className="w-4 h-4 text-cyber-primary" />
-            <span className="text-xs uppercase font-mono font-bold tracking-wider text-slate-200">Top Talkers (IPs)</span>
-          </div>
-
-          <div className="space-y-2 select-text font-mono text-[10px]">
-            {(Object.entries(
-              filteredPackets.reduce((acc: Record<string, number>, curr) => {
-                acc[curr.srcIp] = (acc[curr.srcIp] || 0) + 1;
-                return acc;
-              }, {})
-            ) as [string, number][])
-              .sort((a, b) => b[1] - a[1])
-              .slice(0, 5)
-              .map(([ip, count]: [string, number], idx) => (
-                <div key={idx} className="p-2 bg-black border border-cyber-border rounded flex justify-between items-center">
-                  <span className="text-slate-350">{ip}</span>
-                  <span className="text-cyber-primary font-bold">{count} pkts</span>
-                </div>
+            {/* Quick Filter Selectors */}
+            <div className="flex gap-1 flex-wrap items-center">
+              <Filter className="w-3 h-3 text-slate-500 mr-1" />
+              {FILTER_OPTIONS.map(opt => (
+                <button
+                  key={opt}
+                  onClick={() => dispatch(setFilter(opt))}
+                  className={`px-2 py-0.5 rounded font-mono text-[8px] uppercase font-bold transition-all border ${
+                    filter === opt 
+                      ? 'border-cyan-500 text-cyan-400 bg-cyan-950/20' 
+                      : 'border-white/5 text-slate-400 hover:text-slate-200'
+                  }`}
+                >
+                  {opt}
+                </button>
               ))}
-            {totalCount === 0 && <p className="text-slate-500 text-center py-6">No packet streams detected.</p>}
+            </div>
           </div>
+
+          {/* Virtualized fixed header list */}
+          <div className="flex-1 bg-black/40 border border-white/5 rounded-xl overflow-hidden flex flex-col shadow-inner">
+            <div className="flex bg-[#0D1117]/80 border-b border-white/5 p-2 gap-2 items-center">
+              <div className="relative flex-1">
+                <Search className="absolute left-2.5 top-2 w-3.5 h-3.5 text-slate-500" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={e => dispatch(setSearchQuery(e.target.value))}
+                  placeholder="Filter by IP range, ports, protocol signature..."
+                  className="w-full bg-[#111827] border border-white/10 pl-8 pr-3 py-1.5 text-xs font-mono text-cyan-400 rounded-lg focus:outline-none focus:border-cyan-500/40"
+                />
+              </div>
+              <div className="bg-black border border-white/10 px-3 py-1.5 rounded-lg text-[9px] font-mono text-slate-400 uppercase">
+                Captured: {filteredPackets.length}
+              </div>
+            </div>
+
+            {/* Fixed Header columns */}
+            <div className="flex bg-[#0D1117]/40 text-slate-500 border-b border-white/5 font-mono text-[8.5px] uppercase font-bold py-2 shrink-0">
+              <div className="w-12 shrink-0 px-2">No.</div>
+              <div className="w-24 shrink-0">Time (IST)</div>
+              <div className="w-44 shrink-0">Source IP:Port</div>
+              <div className="w-44 shrink-0">Destination IP:Port</div>
+              <div className="w-20 shrink-0">Protocol</div>
+              <div className="w-20 shrink-0">Length</div>
+              <div className="flex-1 min-w-0">Info Summary</div>
+            </div>
+
+            {/* Virtualized list row mapper */}
+            <div className="flex-1 min-h-[300px]">
+              {filteredPackets.length > 0 ? (
+                <List
+                  height={300}
+                  itemCount={filteredPackets.length}
+                  itemSize={28}
+                  width="100%"
+                >
+                  {Row}
+                </List>
+              ) : (
+                <div className="text-center py-28 text-slate-500 font-mono text-[10px] space-y-1">
+                  <p>Capture buffer empty.</p>
+                  <p className="text-[8.5px] text-slate-600">Ensure tshark has proper administrative interface capture bounds.</p>
+                </div>
+              )}
+            </div>
+          </div>
+
+        </div>
+
+        {/* Right 1/3: Detail Inspection drawers */}
+        <div className="lg:col-span-1 bg-[#0D1117] border border-white/5 rounded-xl h-[520px] flex flex-col shadow-xl overflow-hidden p-4 space-y-4">
+          
+          <div className="border-b border-white/5 pb-2">
+            <h3 className="text-xs uppercase font-mono font-bold tracking-wider text-cyan-400 flex items-center gap-1.5">
+              <Info className="w-4 h-4" />
+              Packet Inspector
+            </h3>
+            <p className="text-[9px] text-slate-500 font-mono">FRAME DECONSTRUCTION & PAYLOAD</p>
+          </div>
+
+          <div className="flex-1 overflow-y-auto space-y-3 pr-1 font-mono text-[10px]">
+            
+            {selectedPacket ? (
+              <div className="space-y-3 select-text">
+                
+                {/* 1. Frame Section */}
+                <div className="border border-white/5 rounded-lg overflow-hidden bg-black/10">
+                  <button 
+                    onClick={() => toggleSection('frame')}
+                    className="w-full flex items-center justify-between p-2 bg-black/40 text-[9.5px] font-bold text-slate-200"
+                  >
+                    <span>1. FRAME DIAGNOSTICS</span>
+                    {expandedDetails.frame ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
+                  </button>
+                  {expandedDetails.frame && (
+                    <div className="p-2.5 space-y-1 text-slate-400 border-t border-white/5 text-[9px] leading-relaxed">
+                      <p><span className="text-slate-500 font-semibold">Timestamp:</span> {selectedPacket.timestamp}</p>
+                      <p><span className="text-slate-500 font-semibold">Capture Interface:</span> eth0 (Operational)</p>
+                      <p><span className="text-slate-500 font-semibold">Capture Length:</span> {selectedPacket.length} bytes</p>
+                      <p><span className="text-slate-500 font-semibold">Wire Length:</span> {selectedPacket.length} bytes</p>
+                      {selectedPacket.details?.Frame?.['frame.number'] && (
+                        <p><span className="text-slate-500 font-semibold">Frame Number:</span> {selectedPacket.details.Frame['frame.number']}</p>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* 2. Network Section */}
+                <div className="border border-white/5 rounded-lg overflow-hidden bg-black/10">
+                  <button 
+                    onClick={() => toggleSection('network')}
+                    className="w-full flex items-center justify-between p-2 bg-black/40 text-[9.5px] font-bold text-slate-200"
+                  >
+                    <span>2. NETWORK METADATA</span>
+                    {expandedDetails.network ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
+                  </button>
+                  {expandedDetails.network && (
+                    <div className="p-2.5 space-y-1 text-slate-400 border-t border-white/5 text-[9px] leading-relaxed">
+                      <p><span className="text-slate-500 font-semibold">Source IP:</span> {selectedPacket.srcIp}</p>
+                      <p><span className="text-slate-500 font-semibold">Destination IP:</span> {selectedPacket.dstIp}</p>
+                      <p><span className="text-slate-500 font-semibold">TTL (Time to Live):</span> {selectedPacket.ttl || 64}</p>
+                      <p><span className="text-slate-500 font-semibold">Protocol Signature:</span> {selectedPacket.protocol} {selectedPacket.srcPort ? `(${selectedPacket.srcPort} -> ${selectedPacket.destPort})` : ''}</p>
+                      <p><span className="text-slate-500 font-semibold">Flags Mask:</span> {selectedPacket.flags || '0x00 (None)'}</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* 3. Payload Section */}
+                <div className="border border-white/5 rounded-lg overflow-hidden bg-black/10">
+                  <button 
+                    onClick={() => toggleSection('payload')}
+                    className="w-full flex items-center justify-between p-2 bg-black/40 text-[9.5px] font-bold text-slate-200"
+                  >
+                    <span>3. HEX / ASCII PAYLOAD</span>
+                    {expandedDetails.payload ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
+                  </button>
+                  {expandedDetails.payload && (
+                    <div className="p-2 bg-black border-t border-white/5 overflow-x-auto">
+                      <pre className="text-cyan-400 text-[8.5px] leading-relaxed whitespace-pre font-mono">
+                        {formatPayload(selectedPacket.payloadHex || selectedPacket.payload)}
+                      </pre>
+                    </div>
+                  )}
+                </div>
+
+              </div>
+            ) : (
+              <div className="text-center py-36 text-slate-500 text-[10px]">
+                <p>No packet inspect target.</p>
+                <p className="text-[8px] text-slate-600 mt-1">Select an active row from queue table to deconstruct.</p>
+              </div>
+            )}
+
+          </div>
+
         </div>
 
       </div>

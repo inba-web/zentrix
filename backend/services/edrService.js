@@ -161,16 +161,27 @@ async function pollEDR(io) {
     };
 
     // Update EDR DB entry for this host
-    await db.endpoints.findOneAndUpdate({ hostname: hostInfo.hostname }, hostInfo);
+    let localDevice = await db.endpoints.findOne({ hostname: hostInfo.hostname });
+    if (!localDevice) {
+      localDevice = await db.endpoints.create(hostInfo);
+    } else {
+      await db.endpoints.findByIdAndUpdate(localDevice._id, hostInfo);
+    }
 
     // Broadcast EDR updates
-    io.emit('edr_stats', {
-      id: hostInfo.hostname,
-      hostname: hostInfo.hostname,
-      cpuUsage: hostInfo.cpuUsage,
-      ramUsage: hostInfo.ramUsage,
-      status: 'Online',
-      lastSeen: hostInfo.lastSeen
+    const allDevices = await db.endpoints.find({});
+    io.emit('edr:update', allDevices);
+
+    // Also emit old format event to avoid breaking legacy code
+    allDevices.forEach(d => {
+      io.emit('edr_stats', {
+        id: d._id || d.hostname,
+        hostname: d.hostname,
+        cpuUsage: d.cpuUsage,
+        ramUsage: d.ramUsage,
+        status: d.status,
+        lastSeen: d.lastSeen
+      });
     });
 
   } catch (err) {
@@ -178,23 +189,38 @@ async function pollEDR(io) {
   }
 }
 
-function init(io) {
+async function init(io) {
   ioInstance = io;
   
-  // Seed DB with local host record
-  db.endpoints.findOneAndUpdate({ hostname: require('os').hostname() }, {
-    hostname: require('os').hostname(),
-    ip: '127.0.0.1',
-    os: `${require('os').type()} ${require('os').release()}`,
-    status: 'Online'
-  });
+  // Seed DB with local host record if missing
+  try {
+    let localDevice = await db.endpoints.findOne({ hostname: require('os').hostname() });
+    const localPayload = {
+      hostname: require('os').hostname(),
+      ip: '127.0.0.1',
+      os: `${require('os').type()} ${require('os').release()}`,
+      status: 'Online',
+      cpuUsage: 5,
+      ramUsage: 35,
+      lastSeen: new Date(),
+      processes: [],
+      networkConnections: []
+    };
+    if (!localDevice) {
+      await db.endpoints.create(localPayload);
+    } else {
+      await db.endpoints.findByIdAndUpdate(localDevice._id, { status: 'Online' });
+    }
+  } catch (err) {
+    console.error('[EDR] Seeding local host record failed:', err.message);
+  }
 
   // Watch directories for File changes
   setupFileWatcher(io);
 
-  // Poll EDR stats every 4 seconds
+  // Poll EDR stats every 3 seconds
   if (edrInterval) clearInterval(edrInterval);
-  edrInterval = setInterval(() => pollEDR(io), 4000);
+  edrInterval = setInterval(() => pollEDR(io), 3000);
 }
 
 module.exports = {
