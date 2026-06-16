@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store';
 import { Cpu, Server, ShieldAlert, Activity, Network, FileCode, CheckCircle, XCircle, RefreshCw, AlertTriangle } from 'lucide-react';
 
 class ErrorBoundary extends React.Component<any, any> {
@@ -7,7 +9,7 @@ class ErrorBoundary extends React.Component<any, any> {
     this.state = { hasError: false };
   }
 
-  static getDerivedStateFromError(error: any) {
+  static getDerivedStateFromError(_error: any) {
     return { hasError: true };
   }
 
@@ -37,45 +39,19 @@ class ErrorBoundary extends React.Component<any, any> {
   }
 }
 
-function EDRComponent({ edrUpdates, token }: any) {
-  const [devices, setDevices] = useState<any[]>([]);
-  const [selectedDevice, setSelectedDevice] = useState<any>(null);
+function EDRComponent({ token }: any) {
+  // Derive devices list directly from Redux — always fresh, never stale
+  const edrUpdates = useSelector((state: RootState) => state.edr.edrUpdates);
+
+  // Track selected device by hostname (string key), not object reference
+  const [selectedHostname, setSelectedHostname] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [forensicTimeline, setForensicTimeline] = useState<any[]>([]);
 
-  useEffect(() => {
-    fetchDevices();
-  }, []);
+  // Convert edrUpdates map to sorted array; merge with full device records fetched from API
+  const [deviceRecords, setDeviceRecords] = useState<Record<string, any>>({});
 
-  // Sync real-time updates from WebSocket EDR stats pump
-  useEffect(() => {
-    const updatesKeys = Object.keys(edrUpdates ?? {});
-    if (updatesKeys.length > 0) {
-      setDevices(prev => (prev ?? []).map(dev => {
-        const update = edrUpdates[dev.hostname];
-        if (update) {
-          // If the selected device gets updated, update its metrics too
-          if (selectedDevice && selectedDevice.hostname === dev.hostname) {
-            setSelectedDevice((d: any) => d ? ({
-              ...d,
-              cpuUsage: update.cpuUsage,
-              ramUsage: update.ramUsage,
-              status: update.status
-            }) : d);
-          }
-          return {
-            ...dev,
-            cpuUsage: update.cpuUsage,
-            ramUsage: update.ramUsage,
-            status: update.status
-          };
-        }
-        return dev;
-      }));
-    }
-  }, [edrUpdates]);
-
-  const fetchDevices = async () => {
+  const fetchDevices = useCallback(async () => {
     setLoading(true);
     try {
       const res = await fetch('/api/edr/devices', {
@@ -83,10 +59,16 @@ function EDRComponent({ edrUpdates, token }: any) {
       });
       if (res.ok) {
         const data = await res.json();
-        const arr = Array.isArray(data) ? data : [];
-        setDevices(arr);
-        if (arr.length > 0) {
-          selectDevice(arr[0]);
+        const arr: any[] = Array.isArray(data) ? data : [];
+        const map: Record<string, any> = {};
+        arr.forEach(dev => {
+          if (dev?.hostname) map[dev.hostname] = dev;
+        });
+        setDeviceRecords(map);
+        // Auto-select first device if none selected
+        if (!selectedHostname && arr.length > 0) {
+          setSelectedHostname(arr[0].hostname);
+          seedForensicTimeline(arr[0]);
         }
       }
     } catch (err) {
@@ -94,21 +76,46 @@ function EDRComponent({ edrUpdates, token }: any) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [token, selectedHostname]);
 
-  const selectDevice = (device: any) => {
-    setSelectedDevice(device);
-    
-    // Seed forensic logs matching OS properties
+  useEffect(() => {
+    fetchDevices();
+  }, []);
+
+  // Merge Redux real-time stats into deviceRecords
+  const mergedDevices: any[] = Object.keys(deviceRecords).map(hostname => {
+    const base = deviceRecords[hostname] ?? {};
+    const live = edrUpdates[hostname] ?? {};
+    return {
+      ...base,
+      ...live,
+      hostname,
+      cpuUsage: live.cpuUsage ?? base.cpuUsage ?? 0,
+      ramUsage: live.ramUsage ?? base.ramUsage ?? 0,
+      status: live.status ?? base.status ?? 'Online',
+      processes: base.processes ?? [],
+      networkConnections: base.networkConnections ?? []
+    };
+  });
+
+  // Derive selectedDevice from merged map so it's always live
+  const selectedDevice = mergedDevices.find(d => d.hostname === selectedHostname) ?? null;
+
+  const seedForensicTimeline = (device: any) => {
     const isWindows = device?.hostname?.startsWith('WIN') || false;
-    const mockTimeline = [
+    setForensicTimeline([
       { timestamp: '19:12:01', event: 'Process Spawned: services.exe', category: 'Process', desc: 'PID 820 system process execution.' },
       { timestamp: '19:12:05', event: 'TCP socket bind on port 445', category: 'Network', desc: 'Binds listening network connector.' },
       { timestamp: '19:13:20', event: isWindows ? 'Registry RunKey modified: HKLM\\Software\\Updater' : 'File written in directory /etc/cron.d/updater', category: 'Persistence', desc: 'Persistence installation mechanism logged.' },
       { timestamp: '19:14:12', event: isWindows ? 'svchost.exe loaded cryptbase.dll' : 'sshd spawned child bash environment', category: 'System', desc: 'Process DLL handles updates mapping.' },
       { timestamp: '19:14:45', event: 'Outbound proxy telemetry handshake', category: 'Network', desc: 'Outgoing session telemetry dispatched.' },
-    ];
-    setForensicTimeline(mockTimeline);
+    ]);
+  };
+
+  const selectDevice = (device: any) => {
+    if (!device?.hostname) return;
+    setSelectedHostname(device.hostname);
+    seedForensicTimeline(device);
   };
 
   const handleIsolateAction = async (action: 'Isolate' | 'Reconnect') => {
@@ -125,10 +132,12 @@ function EDRComponent({ edrUpdates, token }: any) {
       });
       if (res.ok) {
         const data = await res.json();
-        setDevices(prev => (prev ?? []).map(d => d.hostname === selectedDevice.hostname ? { ...d, status: data.status } : d));
-        setSelectedDevice((d: any) => d ? ({ ...d, status: data.status }) : d);
+        // Update local record so UI reflects change immediately
+        setDeviceRecords(prev => ({
+          ...prev,
+          [selectedDevice.hostname]: { ...prev[selectedDevice.hostname], status: data.status }
+        }));
 
-        // Append to forensic timeline
         const timestamp = new Date().toLocaleTimeString();
         setForensicTimeline(prev => [
           { timestamp, event: `Agent state update: ${action} Action`, category: 'Containment', desc: `Isolation target triggered state to: ${data.status}` },
@@ -152,7 +161,6 @@ function EDRComponent({ edrUpdates, token }: any) {
         </p>
         
         <div className="space-y-2 select-text leading-snug">
-          {/* Node 1: Kernel Root */}
           <div className="flex items-center gap-2 text-slate-400">
             <span className="text-slate-700">├─</span>
             <FileCode className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
@@ -161,7 +169,6 @@ function EDRComponent({ edrUpdates, token }: any) {
             <span className="text-[8px] bg-cyan-950/20 border border-cyan-500/20 px-1 text-cyan-400 uppercase font-bold rounded">SYSTEM PRIVILEGES</span>
           </div>
 
-          {/* Node 2: System Subshell */}
           <div className="flex items-center gap-2 text-slate-400 pl-4">
             <span className="text-slate-700">│  ├─</span>
             <FileCode className="w-3.5 h-3.5 text-cyan-500/70 shrink-0" />
@@ -170,7 +177,6 @@ function EDRComponent({ edrUpdates, token }: any) {
             <span className="text-[8px] text-slate-500 font-mono">/sys/kernel/root</span>
           </div>
 
-          {/* Node 3: Core Service Spawning */}
           <div className="flex items-center gap-2 text-slate-400 pl-8">
             <span className="text-slate-700">│  │  ├─</span>
             <FileCode className="w-3.5 h-3.5 text-cyan-500/60 shrink-0" />
@@ -178,7 +184,6 @@ function EDRComponent({ edrUpdates, token }: any) {
             <span className="text-slate-200">{isWindows ? 'services.exe' : 'cron'}</span>
           </div>
 
-          {/* Node 4: Running Endpoint App */}
           <div className="flex items-center gap-2 text-slate-400 pl-12">
             <span className="text-slate-700">│  │  │  ├─</span>
             <FileCode className="w-3.5 h-3.5 text-cyan-500/50 shrink-0" />
@@ -187,7 +192,6 @@ function EDRComponent({ edrUpdates, token }: any) {
             <span className="text-[8px] bg-emerald-950/20 border border-emerald-500/20 px-1.5 text-emerald-400 uppercase font-mono font-bold leading-none rounded">Healthy</span>
           </div>
 
-          {/* Node 5: Threat Process Anomaly Injection */}
           <div className="flex flex-col pl-16 border-l border-red-500/30 ml-1 py-1 space-y-1">
             <div className="flex items-center gap-2 text-red-400 font-bold">
               <span className="text-slate-700">├─</span>
@@ -204,8 +208,6 @@ function EDRComponent({ edrUpdates, token }: any) {
       </div>
     );
   };
-
-  const devicesList = Array.isArray(devices) ? devices : [];
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 font-sans select-none text-white">
@@ -231,12 +233,12 @@ function EDRComponent({ edrUpdates, token }: any) {
             <p className="text-xs font-mono text-slate-500 animate-pulse">Querying agent nodes registries...</p>
           ) : (
             <div className="space-y-2 overflow-y-auto max-h-[500px] pr-1">
-              {(devicesList ?? []).map((dev, dIdx) => {
-                const isActive = selectedDevice?.hostname === dev?.hostname;
+              {mergedDevices.map((dev, dIdx) => {
+                const isActive = selectedHostname === dev?.hostname;
                 const isIsolated = dev?.status === 'Isolated';
                 return (
                   <div 
-                    key={dev?._id || dIdx}
+                    key={dev?.hostname || dIdx}
                     onClick={() => selectDevice(dev)}
                     className={`p-3 border rounded-xl cursor-pointer transition-all ${
                       isActive 
@@ -259,13 +261,13 @@ function EDRComponent({ edrUpdates, token }: any) {
                     </div>
 
                     <div className="mt-3 grid grid-cols-2 gap-2 text-[9px] font-mono text-slate-400 leading-tight">
-                      <div>IP Address: <span className="text-slate-350">{dev?.ip}</span></div>
-                      <div>Memory Util: <span className="text-slate-350">{dev?.ramUsage || 35}%</span></div>
+                      <div>IP Address: <span className="text-slate-300">{dev?.ip || '127.0.0.1'}</span></div>
+                      <div>Memory Util: <span className="text-slate-300">{dev?.ramUsage ?? 0}%</span></div>
                     </div>
                   </div>
                 );
               })}
-              {devicesList.length === 0 && (
+              {mergedDevices.length === 0 && (
                 <p className="text-slate-500 text-center py-20 font-mono text-[10px]">No registered endpoints detected.</p>
               )}
             </div>
@@ -274,8 +276,8 @@ function EDRComponent({ edrUpdates, token }: any) {
 
         {/* Local environment metrics summary */}
         <div className="border-t border-white/5 pt-3 text-[10px] font-mono text-slate-500 flex justify-between items-center">
-          <span>HOSTS: {devicesList.length} Monitored</span>
-          <span>OFFLINE: 0 Nodes</span>
+          <span>HOSTS: {mergedDevices.length} Monitored</span>
+          <span>OFFLINE: {mergedDevices.filter(d => d?.status === 'Isolated').length} Isolated</span>
         </div>
       </div>
 
@@ -289,7 +291,7 @@ function EDRComponent({ edrUpdates, token }: any) {
               <div>
                 <span className="text-[10px] uppercase font-mono font-bold text-cyan-400">ACTIVE TARGET TELEMETRY</span>
                 <h3 className="text-base font-bold text-slate-100 mt-1 uppercase">{selectedDevice?.hostname} Dashboard</h3>
-                <p className="text-xs text-slate-400 mt-1 font-mono">IP: {selectedDevice?.ip}  |  OS: {selectedDevice?.os}</p>
+                <p className="text-xs text-slate-400 mt-1 font-mono">IP: {selectedDevice?.ip || '127.0.0.1'}  |  OS: {selectedDevice?.os || 'Unknown'}</p>
               </div>
 
               {/* Isolation containment controls */}
@@ -306,21 +308,21 @@ function EDRComponent({ edrUpdates, token }: any) {
                     onClick={() => handleIsolateAction('Isolate')}
                     className="bg-[#EF4444] hover:bg-red-700 text-white text-xs font-mono font-bold px-4 py-2 rounded-lg transition-colors uppercase animate-pulse shadow-md shadow-red-500/10"
                   >
-                    CONTAIN & ISOLATE DEVICE
+                    CONTAIN &amp; ISOLATE DEVICE
                   </button>
                 )}
               </div>
             </div>
 
-            {/* Metrics usage grids */}
+            {/* Metrics usage grids — live values from Redux */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="p-4 bg-[#0D1117] border border-white/5 rounded-xl flex items-center gap-3 shadow-lg">
                 <Cpu className="w-5 h-5 text-cyan-400 shrink-0" />
                 <div className="flex-1">
                   <p className="text-[9px] uppercase font-mono text-slate-500">CPU Ingestion</p>
-                  <p className="text-base font-bold text-slate-200 mt-0.5">{selectedDevice?.cpuUsage || 12}%</p>
+                  <p className="text-base font-bold text-slate-200 mt-0.5">{selectedDevice?.cpuUsage ?? 0}%</p>
                   <div className="w-full bg-black h-1.5 rounded-full mt-2 overflow-hidden">
-                    <div className="bg-cyan-500 h-full rounded-full transition-all duration-500" style={{ width: `${selectedDevice?.cpuUsage || 12}%` }}></div>
+                    <div className="bg-cyan-500 h-full rounded-full transition-all duration-500" style={{ width: `${Math.min(selectedDevice?.cpuUsage ?? 0, 100)}%` }}></div>
                   </div>
                 </div>
               </div>
@@ -329,9 +331,9 @@ function EDRComponent({ edrUpdates, token }: any) {
                 <Activity className="w-5 h-5 text-emerald-400 shrink-0" />
                 <div className="flex-1">
                   <p className="text-[9px] uppercase font-mono text-slate-500">RAM Allocation</p>
-                  <p className="text-base font-bold text-slate-200 mt-0.5">{selectedDevice?.ramUsage || 35}%</p>
+                  <p className="text-base font-bold text-slate-200 mt-0.5">{selectedDevice?.ramUsage ?? 0}%</p>
                   <div className="w-full bg-black h-1.5 rounded-full mt-2 overflow-hidden">
-                    <div className="bg-emerald-500 h-full rounded-full transition-all duration-500" style={{ width: `${selectedDevice?.ramUsage || 35}%` }}></div>
+                    <div className="bg-emerald-500 h-full rounded-full transition-all duration-500" style={{ width: `${Math.min(selectedDevice?.ramUsage ?? 0, 100)}%` }}></div>
                   </div>
                 </div>
               </div>

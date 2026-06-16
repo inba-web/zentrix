@@ -27,11 +27,8 @@
         }
       }
     ],
-    "executions": [],
-    "createdAt": "2026-05-31T14:49:30.297Z",
-    "updatedAt": "2026-06-11T10:33:26.686Z",
-    "$push": {
-      "executions": {
+    "executions": [
+      {
         "timestamp": "2026-06-11T10:33:26.686Z",
         "status": "SUCCESS",
         "logs": [
@@ -42,7 +39,9 @@
           "Playbook orchestration completed successfully."
         ]
       }
-    }
+    ],
+    "createdAt": "2026-05-31T14:49:30.297Z",
+    "updatedAt": "2026-06-11T10:33:26.686Z"
   },
   {
     "_id": "yxl9xyi",
@@ -65,11 +64,8 @@
         }
       }
     ],
-    "executions": [],
-    "createdAt": "2026-05-31T14:49:30.297Z",
-    "updatedAt": "2026-06-02T06:40:50.368Z",
-    "$push": {
-      "executions": {
+    "executions": [
+      {
         "timestamp": "2026-06-02T06:40:50.368Z",
         "status": "SUCCESS",
         "logs": [
@@ -82,6 +78,8 @@
           "Playbook executed successfully. Security orchestration finalized."
         ]
       }
-    }
+    ],
+    "createdAt": "2026-05-31T14:49:30.297Z",
+    "updatedAt": "2026-06-02T06:40:50.368Z"
   }
 ]

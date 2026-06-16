@@ -102,11 +102,51 @@ module.exports = {
     const idx = list.findIndex(item => item._id === id);
     if (idx === -1) return null;
     const item = list[idx];
-    const updated = {
-      ...item,
-      ...(updates.$set || updates),
-      updatedAt: new Date().toISOString()
-    };
+    
+    // Copy item
+    const updated = { ...item };
+    
+    // Process MongoDB operators if present
+    let hasOperator = false;
+    
+    if (updates.$set) {
+      Object.assign(updated, updates.$set);
+      hasOperator = true;
+    }
+    if (updates.$push) {
+      for (const [key, val] of Object.entries(updates.$push)) {
+        if (!Array.isArray(updated[key])) {
+          updated[key] = [];
+        }
+        updated[key].push(val);
+      }
+      hasOperator = true;
+    }
+    if (updates.$pull) {
+      for (const [key, query] of Object.entries(updates.$pull)) {
+        if (Array.isArray(updated[key])) {
+          if (query && typeof query === 'object') {
+            updated[key] = updated[key].filter(el => {
+              return !Object.entries(query).every(([k, v]) => el[k] === v);
+            });
+          } else {
+            updated[key] = updated[key].filter(el => el !== query);
+          }
+        }
+      }
+      hasOperator = true;
+    }
+    
+    // If no operators, treat updates as direct set/merge
+    if (!hasOperator) {
+      for (const [key, val] of Object.entries(updates)) {
+        if (!key.startsWith('$')) {
+          updated[key] = val;
+        }
+      }
+    }
+    
+    updated.updatedAt = new Date().toISOString();
     list[idx] = updated;
     writeCollection(collection, list);
     return updated;

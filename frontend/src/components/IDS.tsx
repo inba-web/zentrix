@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store';
 import { 
   AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell 
 } from 'recharts';
@@ -6,7 +8,8 @@ import { Radio, ShieldAlert, Cpu, Network, Layers, Terminal } from 'lucide-react
 
 const COLORS = ['#3b82f6', '#06b6d4', '#ef4444'];
 
-export default function IDS({ websocketLogs, token }: any) {
+export default function IDS({ token }: any) {
+  const websocketLogs = useSelector((state: RootState) => state.dashboard.websocketLogs) ?? [];
   const [idsLogs, setIdsLogs] = useState<any[]>([]);
   const [selectedLog, setSelectedLog] = useState<any>(null);
 
