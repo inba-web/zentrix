@@ -8,7 +8,7 @@ import subprocess
 import urllib.request
 import urllib.parse
 
-BACKEND_URL = "http://localhost:5000/api/edr/agent-telemetry"
+BACKEND_URL = "http://localhost:5001/api/edr/agent-telemetry"
 
 def get_system_stats():
     # Cross-platform telemetry metrics gatherer

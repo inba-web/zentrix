@@ -3008,5 +3008,125 @@
     "ip": "::1",
     "createdAt": "2026-06-11T10:33:26.690Z",
     "updatedAt": "2026-06-11T10:33:26.690Z"
+  },
+  {
+    "_id": "74k6f24",
+    "timestamp": "2026-06-11T16:40:35.319Z",
+    "user": "System Scanner",
+    "action": "Network Scan Executed",
+    "details": "Nmap scan completed with code 0 for target 127.0.0.1 using profile quick. Discovered 1 hosts and 1 ports.",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-11T16:40:35.321Z",
+    "updatedAt": "2026-06-11T16:40:35.321Z"
+  },
+  {
+    "_id": "p1621if",
+    "timestamp": "2026-06-11T16:40:56.704Z",
+    "user": "System Scanner",
+    "action": "Network Scan Executed",
+    "details": "Nmap scan completed with code 0 for target 10.99.147.23 using profile quick. Discovered 1 hosts and 1 ports.",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-11T16:40:56.706Z",
+    "updatedAt": "2026-06-11T16:40:56.706Z"
+  },
+  {
+    "_id": "8kvfph7",
+    "timestamp": "2026-06-16T10:08:48.224Z",
+    "user": "System Scanner",
+    "action": "Network Scan Executed",
+    "details": "Nmap scan completed with code 0 for target 127.0.0.1 using profile quick. Discovered 1 hosts and 1 ports.",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-16T10:08:48.227Z",
+    "updatedAt": "2026-06-16T10:08:48.227Z"
+  },
+  {
+    "_id": "q034ucf",
+    "timestamp": "2026-06-16T10:12:48.015Z",
+    "user": "inbavarunan",
+    "action": "Threat Hunt Executed",
+    "details": "Ran hunt technique \"Established Connections\" command on platform linux.",
+    "ip": "::1",
+    "createdAt": "2026-06-16T10:12:48.018Z",
+    "updatedAt": "2026-06-16T10:12:48.018Z"
+  },
+  {
+    "_id": "mg0keg8",
+    "timestamp": "2026-06-16T10:24:32.773Z",
+    "user": "inbavarunans",
+    "action": "Network Isolation",
+    "details": "State changed for endpoint hostname: anonymous to Isolated.",
+    "ip": "::1",
+    "createdAt": "2026-06-16T10:24:32.774Z",
+    "updatedAt": "2026-06-16T10:24:32.774Z"
+  },
+  {
+    "_id": "84kk37x",
+    "timestamp": "2026-06-16T10:24:33.796Z",
+    "user": "inbavarunans",
+    "action": "Network Reconnection",
+    "details": "State changed for endpoint hostname: anonymous to Online.",
+    "ip": "::1",
+    "createdAt": "2026-06-16T10:24:33.797Z",
+    "updatedAt": "2026-06-16T10:24:33.797Z"
+  },
+  {
+    "_id": "mfssieq",
+    "timestamp": "2026-06-16T10:24:35.170Z",
+    "user": "inbavarunans",
+    "action": "Network Reconnection",
+    "details": "State changed for endpoint hostname: anonymous to Online.",
+    "ip": "::1",
+    "createdAt": "2026-06-16T10:24:35.170Z",
+    "updatedAt": "2026-06-16T10:24:35.170Z"
+  },
+  {
+    "_id": "5cqajb3",
+    "timestamp": "2026-06-16T10:24:36.859Z",
+    "user": "inbavarunans",
+    "action": "Network Isolation",
+    "details": "State changed for endpoint hostname: anonymous to Isolated.",
+    "ip": "::1",
+    "createdAt": "2026-06-16T10:24:36.860Z",
+    "updatedAt": "2026-06-16T10:24:36.860Z"
+  },
+  {
+    "_id": "86rs0vu",
+    "timestamp": "2026-06-16T10:31:20.463Z",
+    "user": "System Scanner",
+    "action": "Network Scan Executed",
+    "details": "Nmap scan completed with code 0 for target 127.0.0.1 using profile quick. Discovered 1 hosts and 1 ports.",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-16T10:31:20.465Z",
+    "updatedAt": "2026-06-16T10:31:20.465Z"
+  },
+  {
+    "_id": "ohh7qz4",
+    "timestamp": "2026-06-16T10:34:48.516Z",
+    "user": "System Scanner",
+    "action": "Network Scan Executed",
+    "details": "Nmap scan completed with code 0 for target 127.0.0.1 using profile quick. Discovered 1 hosts and 1 ports.",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-16T10:34:48.522Z",
+    "updatedAt": "2026-06-16T10:34:48.522Z"
+  },
+  {
+    "_id": "t5vajwf",
+    "timestamp": "2026-06-16T10:35:24.931Z",
+    "user": "System Scanner",
+    "action": "Network Scan Executed",
+    "details": "Nmap scan completed with code 0 for target 172.20.35.194 using profile quick. Discovered 1 hosts and 1 ports.",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-16T10:35:24.932Z",
+    "updatedAt": "2026-06-16T10:35:24.932Z"
+  },
+  {
+    "_id": "xtc6kx0",
+    "timestamp": "2026-06-16T10:35:36.774Z",
+    "user": "System Scanner",
+    "action": "Network Scan Executed",
+    "details": "Nmap scan completed with code 0 for target 172.20.35.195 using profile quick. Discovered 0 hosts and 0 ports.",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-16T10:35:36.775Z",
+    "updatedAt": "2026-06-16T10:35:36.775Z"
   }
 ]

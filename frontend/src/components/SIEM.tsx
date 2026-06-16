@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Terminal, Search, ChevronRight, Filter, AlertTriangle, ShieldCheck, RefreshCw } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store';
@@ -39,12 +39,16 @@ class ErrorBoundary extends React.Component<any, any> {
   }
 }
 
-function SIEMComponent({ websocketLogs, token }: any) {
-  const [logs, setLogs] = useState<any[]>([]);
+function SIEMComponent({ token }: any) {
+  // Read logs directly from Redux store — updated via WebSocket, no polling
+  const websocketLogs = useSelector((state: RootState) => state.dashboard.websocketLogs) ?? [];
+
+  const [filteredLogs, setFilteredLogs] = useState<any[] | null>(null); // null = show redux logs
   const [search, setSearch] = useState('');
   const [severityFilter, setSeverityFilter] = useState('');
   const [sourceFilter, setSourceFilter] = useState('');
-  
+  const [filterLoading, setFilterLoading] = useState(false);
+
   // KQL search engine states
   const [kqlQuery, setKqlQuery] = useState('source="Sysmon" | limit 20');
   const [kqlResults, setKqlResults] = useState<any[] | null>(null);
@@ -55,12 +59,14 @@ function SIEMComponent({ websocketLogs, token }: any) {
   // Selected Log Drawer
   const [selectedLog, setSelectedLog] = useState<any>(null);
 
-  // Sync WebSocket logs safely
-  useEffect(() => {
-    fetchLogs();
-  }, [websocketLogs]);
-
+  // Only fetch from API when user explicitly applies filters
   const fetchLogs = async () => {
+    const hasFilters = search || severityFilter || sourceFilter;
+    if (!hasFilters) {
+      setFilteredLogs(null); // revert to showing Redux live logs
+      return;
+    }
+    setFilterLoading(true);
     try {
       const qParams = new URLSearchParams();
       if (search) qParams.append('search', search);
@@ -72,10 +78,13 @@ function SIEMComponent({ websocketLogs, token }: any) {
       });
       if (res.ok) {
         const data = await res.json();
-        setLogs(Array.isArray(data) ? data : []);
+        setFilteredLogs(Array.isArray(data) ? data : (Array.isArray(data?.logs) ? data.logs : []));
       }
     } catch (err) {
       console.error('Failed to fetch SIEM logs:', err);
+      setFilteredLogs([]);
+    } finally {
+      setFilterLoading(false);
     }
   };
 
@@ -128,8 +137,9 @@ function SIEMComponent({ websocketLogs, token }: any) {
     }
   };
 
-  const rawLogs = kqlResults || logs || [];
-  const displayedLogs = Array.isArray(rawLogs) ? rawLogs : [];
+  // Display: filteredLogs when API filters active, else live Redux stream
+  const rawLogs = kqlResults || filteredLogs || websocketLogs || [];
+  const displayedLogs: any[] = Array.isArray(rawLogs) ? rawLogs : [];
 
   return (
     <div className="space-y-6 font-sans text-white select-none relative">
@@ -231,9 +241,10 @@ function SIEMComponent({ websocketLogs, token }: any) {
 
             <button 
               onClick={fetchLogs}
-              className="bg-black border border-cyan-500/20 hover:border-cyan-500 text-cyan-400 text-xs px-4 py-2 rounded-lg transition-colors font-mono font-bold"
+              disabled={filterLoading}
+              className="bg-black border border-cyan-500/20 hover:border-cyan-500 text-cyan-400 text-xs px-4 py-2 rounded-lg transition-colors font-mono font-bold disabled:opacity-50"
             >
-              APPLY FILTERS
+              {filterLoading ? 'FILTERING...' : 'APPLY FILTERS'}
             </button>
           </div>
         </div>
@@ -243,7 +254,13 @@ function SIEMComponent({ websocketLogs, token }: any) {
       <div className="bg-[#0D1117] border border-white/5 rounded-xl overflow-hidden shadow-xl">
         <div className="p-4 border-b border-white/5 bg-black/20 flex justify-between items-center text-xs font-mono">
           <span className="text-slate-400">DISPLAYING: <span className="text-cyan-400 font-bold">{displayedLogs.length} LOG RECORDS</span></span>
-          {kqlResults && <span className="text-amber-400 font-bold">WARNING: ACTIVE SPL RENDER FILTERS APPLIED</span>}
+          <div className="flex items-center gap-3">
+            {filteredLogs !== null && !kqlResults && (
+              <button onClick={() => { setFilteredLogs(null); setSearch(''); setSeverityFilter(''); setSourceFilter(''); }} className="text-slate-500 hover:text-slate-300 text-[10px] font-mono transition-colors">✕ CLEAR FILTERS</button>
+            )}
+            {kqlResults && <span className="text-amber-400 font-bold">WARNING: ACTIVE SPL RENDER FILTERS APPLIED</span>}
+            {!kqlResults && !filteredLogs && <span className="text-emerald-400/60 font-bold text-[9px]">● LIVE STREAM</span>}
+          </div>
         </div>
 
         <div className="overflow-x-auto max-h-[380px] overflow-y-auto">

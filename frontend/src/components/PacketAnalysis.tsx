@@ -170,7 +170,7 @@ export default function PacketAnalysis() {
   };
 
   // Virtualized row renderer
-  const Row = ({ index, style }: { index: number; style: React.CSSProperties }) => {
+  const Row = ({ index, style, ariaAttributes }: any) => {
     const pkt = filteredPackets[index];
     if (!pkt) return null;
 
@@ -191,6 +191,7 @@ export default function PacketAnalysis() {
     return (
       <div 
         style={style}
+        {...ariaAttributes}
         onClick={() => dispatch(setSelectedPacket(pkt))}
         className={`flex items-center text-[10.5px] border-b border-white/5 cursor-pointer font-mono select-text transition-all ${
           isSelected 
@@ -340,13 +341,12 @@ export default function PacketAnalysis() {
             <div className="flex-1 min-h-[300px]">
               {filteredPackets.length > 0 ? (
                 <List
-                  height={300}
-                  itemCount={filteredPackets.length}
-                  itemSize={28}
-                  width="100%"
-                >
-                  {Row}
-                </List>
+                  rowCount={filteredPackets.length}
+                  rowHeight={28}
+                  rowComponent={Row}
+                  rowProps={{}}
+                  style={{ height: 300, width: '100%' }}
+                />
               ) : (
                 <div className="text-center py-28 text-slate-500 font-mono text-[10px] space-y-1">
                   <p>Capture buffer empty.</p>

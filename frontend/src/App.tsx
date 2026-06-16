@@ -144,7 +144,7 @@ export default function App() {
   useEffect(() => {
     if (token) {
       // Initialize WebSocket connection
-      const socket = io('http://localhost:5000');
+      const socket = io('http://localhost:5001');
       (window as any).socket = socket;
 
       socket.on('connect', () => {
@@ -156,9 +156,27 @@ export default function App() {
         dispatch(addWebsocketLog(log));
       });
 
-      // Handle EDR updates
+      // Handle EDR stats (per-device update from agent check-ins)
       socket.on('edr_stats', (stat: any) => {
         dispatch(updateEdrStats(stat));
+      });
+
+      // Handle full device list broadcast from edrService poll loop
+      socket.on('edr:update', (devices: any[]) => {
+        if (Array.isArray(devices)) {
+          devices.forEach(d => {
+            if (d && d.hostname) {
+              dispatch(updateEdrStats({
+                id: d._id || d.hostname,
+                hostname: d.hostname,
+                cpuUsage: d.cpuUsage,
+                ramUsage: d.ramUsage,
+                status: d.status,
+                lastSeen: d.lastSeen
+              }));
+            }
+          });
+        }
       });
 
       // Handle telemetry updates (Executive metrics)
@@ -431,21 +449,18 @@ export default function App() {
 
           {activeTab === 'siem' && (
             <SIEM 
-              websocketLogs={useSelector((state: RootState) => state.dashboard.websocketLogs)} 
               token={token} 
             />
           )}
 
           {activeTab === 'edr' && (
             <EDR 
-              edrUpdates={useSelector((state: RootState) => state.edr.edrUpdates)} 
               token={token} 
             />
           )}
 
           {activeTab === 'ids' && (
             <IDS 
-              websocketLogs={useSelector((state: RootState) => state.dashboard.websocketLogs)} 
               token={token} 
             />
           )}

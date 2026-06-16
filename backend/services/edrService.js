@@ -69,9 +69,11 @@ async function broadcastEDRAlert(alert, io) {
 // Compare active processes to capture creation and termination events
 async function pollEDR(io) {
   try {
-    const [procs, connections] = await Promise.all([
+    const [procs, connections, cpuLoad, mem] = await Promise.all([
       si.processes(),
-      si.networkConnections()
+      si.networkConnections(),
+      si.currentLoad(),
+      si.mem()
     ]);
 
     const activeList = procs.list || [];
@@ -142,14 +144,18 @@ async function pollEDR(io) {
       state: c.state || 'ESTABLISHED'
     })).slice(0, 15);
 
+    // Real CPU & RAM from systeminformation — no simulated values
+    const realCpuUsage = Math.round(cpuLoad.currentLoad ?? 0);
+    const realRamUsage = mem.total > 0 ? Math.round((mem.used / mem.total) * 100) : 0;
+
     // Save/update endpoint metrics in database for actual host
     const hostInfo = {
       hostname: require('os').hostname(),
       ip: '127.0.0.1',
       os: `${require('os').type()} ${require('os').release()} (${require('os').arch()})`,
       status: 'Online',
-      cpuUsage: Math.floor(Math.random() * 15) + 2, // Stable active rating
-      ramUsage: Math.floor(Math.random() * 20) + 40,
+      cpuUsage: realCpuUsage,
+      ramUsage: realRamUsage,
       lastSeen: new Date(),
       processes: activeList.slice(0, 20).map(p => ({
         pid: p.pid,

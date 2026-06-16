@@ -63,5 +63,31 @@
     "fileName": "ZENTRIX_Report_1781169422437.pdf",
     "createdAt": "2026-06-11T09:17:10.182Z",
     "updatedAt": "2026-06-11T09:17:10.183Z"
+  },
+  {
+    "_id": "ggtyhc0",
+    "timestamp": "2026-06-16T10:25:43.168Z",
+    "title": "ZENTRIX SOC CSV Report",
+    "deliveryStatus": "Dispatched",
+    "recipient": "inbavarunans@gmail.com",
+    "alertsCount": 15216,
+    "endpointCount": 2,
+    "securityScore": 30,
+    "fileName": "ZENTRIX_Report_1781605536868.pdf",
+    "createdAt": "2026-06-16T10:25:43.183Z",
+    "updatedAt": "2026-06-16T10:25:43.185Z"
+  },
+  {
+    "_id": "sm6egsw",
+    "timestamp": "2026-06-16T10:37:28.681Z",
+    "title": "ZENTRIX SOC CSV Report",
+    "deliveryStatus": "Dispatched",
+    "recipient": "inbavarunans@gmail.com",
+    "alertsCount": 15456,
+    "endpointCount": 2,
+    "securityScore": 30,
+    "fileName": "ZENTRIX_Report_1781606236197.pdf",
+    "createdAt": "2026-06-16T10:37:28.693Z",
+    "updatedAt": "2026-06-16T10:37:28.694Z"
   }
 ]

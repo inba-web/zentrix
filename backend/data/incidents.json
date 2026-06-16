@@ -24,6 +24,11 @@
         "timestamp": "2026-06-02T06:25:03.938Z",
         "activity": "SOAR Automation Executed Containment Strategy",
         "actor": "SOAR Bot"
+      },
+      {
+        "timestamp": "2026-06-11T09:53:22.071Z",
+        "activity": "Case updated: status->RESOLVED, assignee->NoChange",
+        "actor": "inbavarunans"
       }
     ],
     "evidence": [
@@ -47,14 +52,7 @@
         "createdAt": "2026-06-02T06:25:03.932Z",
         "updatedAt": "2026-06-02T06:25:03.932Z"
       }
-    ],
-    "$push": {
-      "timeline": {
-        "timestamp": "2026-06-11T09:53:22.071Z",
-        "activity": "Case updated: status->RESOLVED, assignee->NoChange",
-        "actor": "inbavarunans"
-      }
-    }
+    ]
   },
   {
     "_id": "6sixcj1",
@@ -81,6 +79,11 @@
         "timestamp": "2026-06-02T06:25:18.934Z",
         "activity": "SOAR Automation Executed Containment Strategy",
         "actor": "SOAR Bot"
+      },
+      {
+        "timestamp": "2026-06-11T09:53:26.843Z",
+        "activity": "Case updated: status->RESOLVED, assignee->NoChange",
+        "actor": "inbavarunans"
       }
     ],
     "evidence": [
@@ -104,14 +107,7 @@
         "createdAt": "2026-06-02T06:25:18.932Z",
         "updatedAt": "2026-06-02T06:25:18.932Z"
       }
-    ],
-    "$push": {
-      "timeline": {
-        "timestamp": "2026-06-11T09:53:26.843Z",
-        "activity": "Case updated: status->RESOLVED, assignee->NoChange",
-        "actor": "inbavarunans"
-      }
-    }
+    ]
   },
   {
     "_id": "33pxn2d",

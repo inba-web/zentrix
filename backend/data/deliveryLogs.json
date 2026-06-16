@@ -31,5 +31,27 @@
     "retryCount": 0,
     "createdAt": "2026-06-11T09:17:10.182Z",
     "updatedAt": "2026-06-11T09:17:10.182Z"
+  },
+  {
+    "_id": "iyfxzmf",
+    "reportId": "ggtyhc0",
+    "emailStatus": "Delivered",
+    "whatsAppStatus": "Delivered",
+    "deliveryTimestamp": "2026-06-16T10:25:43.184Z",
+    "failureReason": "Manual generation simulated successfully.",
+    "retryCount": 0,
+    "createdAt": "2026-06-16T10:25:43.184Z",
+    "updatedAt": "2026-06-16T10:25:43.184Z"
+  },
+  {
+    "_id": "1ci5f9h",
+    "reportId": "sm6egsw",
+    "emailStatus": "Delivered",
+    "whatsAppStatus": "Delivered",
+    "deliveryTimestamp": "2026-06-16T10:37:28.693Z",
+    "failureReason": "Manual generation simulated successfully.",
+    "retryCount": 0,
+    "createdAt": "2026-06-16T10:37:28.693Z",
+    "updatedAt": "2026-06-16T10:37:28.693Z"
   }
 ]
