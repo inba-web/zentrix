@@ -228,12 +228,12 @@
   {
     "_id": "2vj2eh1",
     "hostname": "hunter",
-    "ip": "127.0.0.1",
-    "os": "Linux 6.17.10+kali-amd64 (x64)",
+    "ip": "172.20.35.194",
+    "os": "Linux 6.17.10+kali-amd64",
     "status": "Online",
-    "cpuUsage": 11,
-    "ramUsage": 93,
-    "lastSeen": "2026-06-16T10:59:34.426Z",
+    "cpuUsage": 15,
+    "ramUsage": 63,
+    "lastSeen": "2026-06-17T10:11:43.969Z",
     "processes": [
       {
         "pid": 1,
@@ -358,13 +358,13 @@
     ],
     "networkConnections": [
       {
-        "localPort": "35065",
+        "localPort": "8080",
         "remoteAddress": "0.0.0.0",
         "remotePort": "*",
         "state": "LISTEN"
       },
       {
-        "localPort": "8080",
+        "localPort": "43467",
         "remoteAddress": "0.0.0.0",
         "remotePort": "*",
         "state": "LISTEN"
@@ -376,79 +376,79 @@
         "state": "LISTEN"
       },
       {
-        "localPort": "40683",
-        "remoteAddress": "0.0.0.0",
-        "remotePort": "*",
-        "state": "LISTEN"
-      },
-      {
-        "localPort": "32985",
-        "remoteAddress": "0.0.0.0",
-        "remotePort": "*",
-        "state": "LISTEN"
-      },
-      {
-        "localPort": "33229",
-        "remoteAddress": "0.0.0.0",
-        "remotePort": "*",
-        "state": "LISTEN"
-      },
-      {
-        "localPort": "33379",
-        "remoteAddress": "0.0.0.0",
-        "remotePort": "*",
-        "state": "LISTEN"
-      },
-      {
-        "localPort": "37901",
-        "remoteAddress": "0.0.0.0",
-        "remotePort": "*",
-        "state": "LISTEN"
-      },
-      {
-        "localPort": "34001",
-        "remoteAddress": "0.0.0.0",
-        "remotePort": "*",
-        "state": "LISTEN"
-      },
-      {
-        "localPort": "34501",
-        "remoteAddress": "0.0.0.0",
-        "remotePort": "*",
-        "state": "LISTEN"
-      },
-      {
-        "localPort": "38757",
-        "remoteAddress": "0.0.0.0",
-        "remotePort": "*",
-        "state": "LISTEN"
-      },
-      {
-        "localPort": "57188",
-        "remoteAddress": "127.0.0.1",
-        "remotePort": "38757",
+        "localPort": "37440",
+        "remoteAddress": "151.101.1.242",
+        "remotePort": "443",
         "state": "ESTABLISHED"
       },
       {
-        "localPort": "38757",
-        "remoteAddress": "127.0.0.1",
-        "remotePort": "40074",
+        "localPort": "44840",
+        "remoteAddress": "142.250.207.234",
+        "remotePort": "443",
         "state": "ESTABLISHED"
       },
       {
-        "localPort": "38757",
-        "remoteAddress": "127.0.0.1",
-        "remotePort": "51882",
+        "localPort": "36334",
+        "remoteAddress": "142.251.152.2",
+        "remotePort": "443",
         "state": "ESTABLISHED"
       },
       {
-        "localPort": "60630",
-        "remoteAddress": "142.251.222.197",
+        "localPort": "49362",
+        "remoteAddress": "18.161.229.70",
+        "remotePort": "443",
+        "state": "ESTABLISHED"
+      },
+      {
+        "localPort": "47348",
+        "remoteAddress": "104.18.39.21",
+        "remotePort": "443",
+        "state": "ESTABLISHED"
+      },
+      {
+        "localPort": "53182",
+        "remoteAddress": "172.253.118.188",
+        "remotePort": "443",
+        "state": "ESTABLISHED"
+      },
+      {
+        "localPort": "47220",
+        "remoteAddress": "142.251.221.195",
+        "remotePort": "443",
+        "state": "ESTABLISHED"
+      },
+      {
+        "localPort": "49494",
+        "remoteAddress": "142.250.182.74",
+        "remotePort": "443",
+        "state": "ESTABLISHED"
+      },
+      {
+        "localPort": "57116",
+        "remoteAddress": "151.101.1.242",
+        "remotePort": "443",
+        "state": "ESTABLISHED"
+      },
+      {
+        "localPort": "45796",
+        "remoteAddress": "8.8.8.8",
+        "remotePort": "443",
+        "state": "ESTABLISHED"
+      },
+      {
+        "localPort": "45800",
+        "remoteAddress": "8.8.8.8",
+        "remotePort": "443",
+        "state": "ESTABLISHED"
+      },
+      {
+        "localPort": "48806",
+        "remoteAddress": "192.178.211.84",
         "remotePort": "443",
         "state": "ESTABLISHED"
       }
     ],
     "createdAt": "2026-06-16T10:09:42.443Z",
-    "updatedAt": "2026-06-16T10:59:34.426Z"
+    "updatedAt": "2026-06-17T10:11:43.969Z"
   }
 ]
