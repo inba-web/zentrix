@@ -21,14 +21,57 @@ def get_system_stats():
     
     try:
         if platform.system() == "Windows":
-            # Windows metric tools
-            out = subprocess.check_output("wmic cpu get LoadPercentage", shell=True).decode()
-            cpu_usage = int(out.split("\n")[1].strip())
+            # Windows CPU usage
+            out_cpu = subprocess.check_output("wmic cpu get LoadPercentage", shell=True).decode()
+            cpu_usage = int(out_cpu.split("\n")[1].strip())
+            
+            # Windows RAM usage
+            out_mem = subprocess.check_output("wmic OS get FreePhysicalMemory,TotalVisibleMemorySize /Value", shell=True).decode()
+            mem_lines = [line.strip() for line in out_mem.split('\n') if line.strip()]
+            mem_dict = {}
+            for line in mem_lines:
+                parts = line.split('=')
+                if len(parts) == 2:
+                    mem_dict[parts[0]] = int(parts[1])
+            free_mem = mem_dict.get('FreePhysicalMemory', 0)
+            total_mem = mem_dict.get('TotalVisibleMemorySize', 0)
+            if total_mem > 0:
+                ram_usage = int(((total_mem - free_mem) / total_mem) * 100)
         else:
-            # Linux metric tools
-            out = subprocess.check_output("top -bn1 | grep 'Cpu(s)'", shell=True).decode()
-            # Extract CPU usage percentage from top command
-            cpu_usage = int(float(out.split()[1].replace(',', '.')))
+            # Linux CPU usage
+            try:
+                out_cpu = subprocess.check_output("top -bn1 | grep 'Cpu(s)'", shell=True).decode()
+                cpu_usage = int(float(out_cpu.split()[1].replace(',', '.')))
+            except Exception:
+                try:
+                    with open('/proc/loadavg', 'r') as f:
+                        cpu_usage = min(100, int(float(f.readline().split()[0]) * 10))
+                except Exception:
+                    pass
+            
+            # Linux RAM usage
+            try:
+                out_mem = subprocess.check_output("free | grep Mem", shell=True).decode()
+                mem_parts = out_mem.split()
+                total_mem = int(mem_parts[1])
+                used_mem = int(mem_parts[2])
+                ram_usage = int((used_mem / total_mem) * 100)
+            except Exception:
+                try:
+                    with open('/proc/meminfo', 'r') as f:
+                        meminfo = {}
+                        for line in f:
+                            parts = line.split(':')
+                            if len(parts) == 2:
+                                meminfo[parts[0].strip()] = int(parts[1].split()[0])
+                        total = meminfo.get('MemTotal', 1)
+                        free = meminfo.get('MemFree', 0)
+                        buffers = meminfo.get('Buffers', 0)
+                        cached = meminfo.get('Cached', 0)
+                        used = total - free - buffers - cached
+                        ram_usage = int((used / total) * 100)
+                except Exception:
+                    pass
     except Exception:
         pass
         

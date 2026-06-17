@@ -3128,5 +3128,35 @@
     "ip": "127.0.0.1",
     "createdAt": "2026-06-16T10:35:36.775Z",
     "updatedAt": "2026-06-16T10:35:36.775Z"
+  },
+  {
+    "_id": "0w4ukil",
+    "timestamp": "2026-06-16T12:54:58.986Z",
+    "user": "System Scanner",
+    "action": "Network Scan Executed",
+    "details": "Nmap scan completed with code 0 for target 127.0.0.1 using profile quick. Discovered 1 hosts and 1 ports.",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-16T12:54:58.990Z",
+    "updatedAt": "2026-06-16T12:54:58.990Z"
+  },
+  {
+    "_id": "c67wx7w",
+    "timestamp": "2026-06-16T14:22:15.388Z",
+    "user": "System Scanner",
+    "action": "Network Scan Executed",
+    "details": "Nmap scan completed with code 0 for target 192.168.45.64 using profile os_detect. Discovered 1 hosts and 3 ports.",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-16T14:22:15.391Z",
+    "updatedAt": "2026-06-16T14:22:15.391Z"
+  },
+  {
+    "_id": "rn9dzw2",
+    "timestamp": "2026-06-17T09:46:29.676Z",
+    "user": "inbavarunan",
+    "action": "Threat Hunt Executed",
+    "details": "Ran hunt technique \"High-CPU Processes\" command on platform linux.",
+    "ip": "::1",
+    "createdAt": "2026-06-17T09:46:29.680Z",
+    "updatedAt": "2026-06-17T09:46:29.680Z"
   }
 ]
