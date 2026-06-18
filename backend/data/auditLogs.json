@@ -3158,5 +3158,135 @@
     "ip": "::1",
     "createdAt": "2026-06-17T09:46:29.680Z",
     "updatedAt": "2026-06-17T09:46:29.680Z"
+  },
+  {
+    "_id": "y2abf66",
+    "timestamp": "2026-06-17T10:48:31.023Z",
+    "user": "inbavarunans",
+    "action": "SOAR Manual Execution",
+    "details": "Orchestrated execution for playbook: Critical Malware Containment Playbook",
+    "ip": "::1",
+    "createdAt": "2026-06-17T10:48:31.027Z",
+    "updatedAt": "2026-06-17T10:48:31.027Z"
+  },
+  {
+    "_id": "nwdz8sn",
+    "timestamp": "2026-06-17T10:50:26.208Z",
+    "user": "System Scanner",
+    "action": "Network Scan Executed",
+    "details": "Nmap scan completed with code 0 for target 127.0.0.1 using profile quick. Discovered 1 hosts and 1 ports.",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-17T10:50:26.210Z",
+    "updatedAt": "2026-06-17T10:50:26.210Z"
+  },
+  {
+    "_id": "ioxmins",
+    "timestamp": "2026-06-17T10:51:03.058Z",
+    "user": "System Scanner",
+    "action": "Network Scan Executed",
+    "details": "Nmap scan completed with code 0 for target 172.20.35.194 using profile quick. Discovered 1 hosts and 1 ports.",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-17T10:51:03.061Z",
+    "updatedAt": "2026-06-17T10:51:03.061Z"
+  },
+  {
+    "_id": "3ix1n3x",
+    "timestamp": "2026-06-17T10:54:54.818Z",
+    "user": "inbavarunans",
+    "action": "Network Reconnection",
+    "details": "State changed for endpoint hostname: anonymous to Online.",
+    "ip": "::1",
+    "createdAt": "2026-06-17T10:54:54.820Z",
+    "updatedAt": "2026-06-17T10:54:54.820Z"
+  },
+  {
+    "_id": "0nb2caf",
+    "timestamp": "2026-06-17T10:54:56.358Z",
+    "user": "inbavarunans",
+    "action": "Network Reconnection",
+    "details": "State changed for endpoint hostname: anonymous to Online.",
+    "ip": "::1",
+    "createdAt": "2026-06-17T10:54:56.359Z",
+    "updatedAt": "2026-06-17T10:54:56.360Z"
+  },
+  {
+    "_id": "3u3js7x",
+    "timestamp": "2026-06-17T10:55:16.713Z",
+    "user": "System Scanner",
+    "action": "Network Scan Executed",
+    "details": "Nmap scan completed with code 0 for target 172.20.35.194 using profile aggressive. Discovered 1 hosts and 3 ports.",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-17T10:55:16.715Z",
+    "updatedAt": "2026-06-17T10:55:16.715Z"
+  },
+  {
+    "_id": "c0m6xlf",
+    "timestamp": "2026-06-17T10:55:51.320Z",
+    "user": "inbavarunan",
+    "action": "Threat Intel Query",
+    "details": "Queried IP: \"185.220.101.5\". Risk Score resolved to 98%.",
+    "ip": "::1",
+    "createdAt": "2026-06-17T10:55:51.324Z",
+    "updatedAt": "2026-06-17T10:55:51.324Z"
+  },
+  {
+    "_id": "dolxta2",
+    "timestamp": "2026-06-17T10:56:19.474Z",
+    "user": "inbavarunan",
+    "action": "Threat Hunt Executed",
+    "details": "Ran hunt technique \"High-CPU Processes\" command on platform linux.",
+    "ip": "::1",
+    "createdAt": "2026-06-17T10:56:19.476Z",
+    "updatedAt": "2026-06-17T10:56:19.476Z"
+  },
+  {
+    "_id": "qdfxpdx",
+    "timestamp": "2026-06-17T11:05:46.834Z",
+    "user": "System Scanner",
+    "action": "Network Scan Executed",
+    "details": "Nmap scan completed with code 0 for target 172.20.35.194 using profile full. Discovered 1 hosts and 3 ports.",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-17T11:05:46.838Z",
+    "updatedAt": "2026-06-17T11:05:46.838Z"
+  },
+  {
+    "_id": "ojsuqv1",
+    "timestamp": "2026-06-17T11:08:00.648Z",
+    "user": "inbavarunans",
+    "action": "SIEM Query Executed",
+    "details": "Search Query: \"source=\"Sysmon\" | limit 20\". Returned 20 results.",
+    "ip": "::1",
+    "createdAt": "2026-06-17T11:08:00.651Z",
+    "updatedAt": "2026-06-17T11:08:00.651Z"
+  },
+  {
+    "_id": "5rgxqco",
+    "timestamp": "2026-06-17T11:08:39.791Z",
+    "user": "inbavarunans",
+    "action": "SOAR Manual Execution",
+    "details": "Orchestrated execution for playbook: Brute Force Auto-Mitigation Playbook",
+    "ip": "::1",
+    "createdAt": "2026-06-17T11:08:39.794Z",
+    "updatedAt": "2026-06-17T11:08:39.794Z"
+  },
+  {
+    "_id": "tggh240",
+    "timestamp": "2026-06-17T11:08:41.148Z",
+    "user": "inbavarunans",
+    "action": "SOAR Manual Execution",
+    "details": "Orchestrated execution for playbook: Critical Malware Containment Playbook",
+    "ip": "::1",
+    "createdAt": "2026-06-17T11:08:41.150Z",
+    "updatedAt": "2026-06-17T11:08:41.150Z"
+  },
+  {
+    "_id": "y8vh62i",
+    "timestamp": "2026-06-17T11:09:45.810Z",
+    "user": "inbavarunan",
+    "action": "Threat Hunt Executed",
+    "details": "Ran hunt technique \"High-CPU Processes\" command on platform linux.",
+    "ip": "::1",
+    "createdAt": "2026-06-17T11:09:45.812Z",
+    "updatedAt": "2026-06-17T11:09:45.812Z"
   }
 ]

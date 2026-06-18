@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { io } from 'socket.io-client';
 import { useSelector, useDispatch } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -71,6 +71,12 @@ export default function App() {
   const [time, setTime] = useState<string>(new Date().toISOString());
   const [toasts, setToasts] = useState<any[]>([]);
   const [showNotificationDropdown, setShowNotificationDropdown] = useState(false);
+
+  // Sync user reference to allow socket event handlers to access latest settings
+  const userRef = useRef(user);
+  useEffect(() => {
+    userRef.current = user;
+  }, [user]);
 
   // UTC clock tick
   useEffect(() => {
@@ -207,9 +213,14 @@ export default function App() {
       socket.on('threat:critical', (payload: any) => {
         dispatch(addLiveAlert(payload));
         dispatch(addPopup(payload));
-        triggerToast(payload);
-        const settings = JSON.parse(localStorage.getItem('soc_settings') || '{}');
-        if (settings.alarmEnabled !== false) {
+        
+        const isPopupEnabled = userRef.current?.popupEnabled !== false;
+        const sev = (payload.severity || 'CRITICAL').toUpperCase();
+        if (isPopupEnabled || sev === 'CRITICAL' || sev === 'HIGH') {
+          triggerToast(payload);
+        }
+        
+        if (userRef.current?.alarmEnabled !== false) {
           playAlarm();
         }
       });
@@ -218,11 +229,19 @@ export default function App() {
       socket.on('alert', (alert: any) => {
         dispatch(addLiveAlert(alert));
         dispatch(addPopup(alert));
-        triggerToast(alert);
-        playAlarm();
+        
+        const isPopupEnabled = userRef.current?.popupEnabled !== false;
+        const sev = (alert.severity || 'CRITICAL').toUpperCase();
+        if (isPopupEnabled || sev === 'CRITICAL' || sev === 'HIGH') {
+          triggerToast(alert);
+        }
+        
+        if (userRef.current?.alarmEnabled !== false && sev === 'CRITICAL') {
+          playAlarm();
+        }
 
         // Trigger Local Desktop HTML5 Notification
-        if (window.Notification && Notification.permission === 'granted') {
+        if (userRef.current?.desktopNotifications !== false && window.Notification && Notification.permission === 'granted') {
           new window.Notification(`CRITICAL SOC THREAT: ${alert.title}`, {
             body: `${alert.description} on host ${alert.host}`,
             icon: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80'

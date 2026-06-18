@@ -38,10 +38,32 @@
           "Dispatched warning email alerts to Security Administrators.",
           "Playbook orchestration completed successfully."
         ]
+      },
+      {
+        "timestamp": "2026-06-17T10:48:31.022Z",
+        "status": "SUCCESS",
+        "logs": [
+          "Analyst manually initialized execution sequence.",
+          "Gathering workspace attributes...",
+          "Executed action EnrichedIOC on active entities.",
+          "Dispatched warning email alerts to Security Administrators.",
+          "Playbook orchestration completed successfully."
+        ]
+      },
+      {
+        "timestamp": "2026-06-17T11:08:41.148Z",
+        "status": "SUCCESS",
+        "logs": [
+          "Analyst manually initialized execution sequence.",
+          "Gathering workspace attributes...",
+          "Executed action EnrichedIOC on active entities.",
+          "Dispatched warning email alerts to Security Administrators.",
+          "Playbook orchestration completed successfully."
+        ]
       }
     ],
     "createdAt": "2026-05-31T14:49:30.297Z",
-    "updatedAt": "2026-06-11T10:33:26.686Z"
+    "updatedAt": "2026-06-17T11:08:41.148Z"
   },
   {
     "_id": "yxl9xyi",
@@ -77,9 +99,20 @@
           "Firewall Rules updated. Source IP blocked in Border IDS router gateway.",
           "Playbook executed successfully. Security orchestration finalized."
         ]
+      },
+      {
+        "timestamp": "2026-06-17T11:08:39.790Z",
+        "status": "SUCCESS",
+        "logs": [
+          "Analyst manually initialized execution sequence.",
+          "Gathering workspace attributes...",
+          "Executed action EnrichedIOC on active entities.",
+          "Dispatched warning email alerts to Security Administrators.",
+          "Playbook orchestration completed successfully."
+        ]
       }
     ],
     "createdAt": "2026-05-31T14:49:30.297Z",
-    "updatedAt": "2026-06-02T06:40:50.368Z"
+    "updatedAt": "2026-06-17T11:08:39.790Z"
   }
 ]

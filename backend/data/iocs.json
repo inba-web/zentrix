@@ -7,34 +7,32 @@
     "reputation": 98,
     "source": "Correlated Intel Engine",
     "notes": "Lookup target matching indicators of active security compromises. Risk Index registered at 98%.",
-    "createdAt": "2026-06-05T05:46:43.610Z",
-    "updatedAt": "2026-06-05T05:46:43.610Z",
+    "createdAt": "2026-06-17T10:55:51.319Z",
+    "updatedAt": "2026-06-17T10:55:51.320Z",
     "enrichment": {
       "category": "Malicious SSH Scanner",
       "advisory": "Lookup target matching indicators of active security compromises. Risk Index registered at 98%.",
       "virusTotal": {
-        "maliciousVotes": 54,
+        "maliciousVotes": 45,
         "harmlessVotes": 4,
         "reputationScore": 98,
-        "lastScanDate": "2026-06-05T05:46:43.609Z",
+        "lastScanDate": "2026-06-17T10:55:51.319Z",
         "category": "Tor Exit Node"
       },
       "abuseIPDB": {
         "abuseScore": 98,
-        "totalReports": 411,
+        "totalReports": 333,
         "isp": "DigitalOcean LLC",
         "country": "Netherlands"
       },
       "alienVaultOTX": {
-        "pulseCount": 24,
+        "pulseCount": 12,
         "adversaries": [
-          "APT29 (Cozy Bear)",
-          "Wizard Spider"
+          "APT29 (Cozy Bear)"
         ],
         "industriesTargeted": [
           "Finance",
-          "Government",
-          "Energy"
+          "Government"
         ]
       },
       "urlHaus": {
@@ -42,7 +40,8 @@
         "threatType": "N/A",
         "reporter": "ZENTRIX Scanner"
       }
-    }
+    },
+    "cachedAt": "2026-06-17T10:55:51.319Z"
   },
   {
     "_id": "crcly69",
