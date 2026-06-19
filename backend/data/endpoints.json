@@ -231,9 +231,9 @@
     "ip": "127.0.0.1",
     "os": "Linux 6.17.10+kali-amd64 (x64)",
     "status": "Online",
-    "cpuUsage": 55,
-    "ramUsage": 94,
-    "lastSeen": "2026-06-18T09:29:07.690Z",
+    "cpuUsage": 29,
+    "ramUsage": 66,
+    "lastSeen": "2026-06-18T10:55:13.887Z",
     "processes": [
       {
         "pid": 1,
@@ -285,12 +285,6 @@
       },
       {
         "pid": 10,
-        "name": "kworker",
-        "path": "system",
-        "parent": 0
-      },
-      {
-        "pid": 11,
         "name": "kworker",
         "path": "system",
         "parent": 0
@@ -354,6 +348,12 @@
         "name": "idle_inject",
         "path": "system",
         "parent": 0
+      },
+      {
+        "pid": 23,
+        "name": "migration",
+        "path": "system",
+        "parent": 0
       }
     ],
     "networkConnections": [
@@ -406,6 +406,12 @@
         "state": "LISTEN"
       },
       {
+        "localPort": "45683",
+        "remoteAddress": "0.0.0.0",
+        "remotePort": "*",
+        "state": "LISTEN"
+      },
+      {
         "localPort": "8080",
         "remoteAddress": "0.0.0.0",
         "remotePort": "*",
@@ -424,31 +430,25 @@
         "state": "LISTEN"
       },
       {
-        "localPort": "33050",
-        "remoteAddress": "104.18.32.47",
-        "remotePort": "443",
-        "state": "ESTABLISHED"
-      },
-      {
         "localPort": "40911",
         "remoteAddress": "127.0.0.1",
         "remotePort": "53882",
         "state": "ESTABLISHED"
       },
       {
-        "localPort": "52632",
-        "remoteAddress": "104.18.39.21",
+        "localPort": "43998",
+        "remoteAddress": "66.117.22.191",
         "remotePort": "443",
         "state": "ESTABLISHED"
       },
       {
-        "localPort": "34596",
-        "remoteAddress": "216.239.36.223",
+        "localPort": "54852",
+        "remoteAddress": "142.250.206.14",
         "remotePort": "443",
-        "state": "TIME_WAIT"
+        "state": "ESTABLISHED"
       }
     ],
     "createdAt": "2026-06-16T10:09:42.443Z",
-    "updatedAt": "2026-06-18T09:29:07.690Z"
+    "updatedAt": "2026-06-18T10:55:13.887Z"
   }
 ]

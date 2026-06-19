@@ -171,7 +171,10 @@ const PRESETS = {
 
 // GET /api/hunt/presets
 router.get('/presets', authenticateToken, (req, res) => {
-  res.json(Object.values(PRESETS));
+  res.json({
+    presets: Object.values(PRESETS),
+    platform: PLATFORM
+  });
 });
 
 // GET /api/hunt/custom
@@ -187,15 +190,23 @@ router.get('/custom', authenticateToken, async (req, res) => {
 // POST /api/hunt/custom
 router.post('/custom', authenticateToken, async (req, res) => {
   const { name, description, linux, windows, mitre } = req.body;
-  if (!name || !linux) {
-    return res.status(400).json({ error: 'Name and Linux command are required.' });
+  if (!name) {
+    return res.status(400).json({ error: 'Name is required.' });
+  }
+
+  const isWin = PLATFORM === 'win32';
+  if (isWin && (!windows || windows.trim() === '')) {
+    return res.status(400).json({ error: 'Windows command is required.' });
+  }
+  if (!isWin && (!linux || linux.trim() === '')) {
+    return res.status(400).json({ error: 'Linux command is required.' });
   }
 
   try {
     const custom = await db.huntTechniques.create({
       name,
       description: description || '',
-      linux,
+      linux: linux || '',
       windows: windows || '',
       mitre: mitre || 'User Custom Audit',
       isCustom: true
@@ -238,13 +249,15 @@ router.delete('/custom/:id', authenticateToken, async (req, res) => {
 
 // POST /api/hunt/run
 router.post('/run', authenticateToken, (req, res) => {
-  const { techniqueId, isCustom, command } = req.body;
+  const { techniqueId, isCustom, linuxCommand, windowsCommand } = req.body;
   
   let cmd = '';
   let techniqueName = 'Custom Technique';
   
   if (isCustom) {
-    cmd = command;
+    cmd = PLATFORM === 'win32'
+      ? (windowsCommand || 'echo "No Windows command provided"')
+      : (linuxCommand || 'echo "No Linux command provided"');
     techniqueName = req.body.name || 'Custom Technique';
   } else {
     const preset = PRESETS[techniqueId];

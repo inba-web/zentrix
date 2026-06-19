@@ -3195,5 +3195,103 @@
         "updatedAt": "2026-06-02T06:40:50.352Z"
       }
     ]
+  },
+  {
+    "_id": "ozq975q",
+    "title": "[AUTO-CONTAINED] Incident Case: Suspicious Process Spawned",
+    "severity": "CRITICAL",
+    "status": "CONTAINED",
+    "assignedTo": "SOAR Automation Engine",
+    "createdAt": "2026-06-18T10:13:58.804Z",
+    "updatedAt": "2026-06-18T10:13:58.804Z",
+    "impact": "Critical security compromise detected on target host.",
+    "rootCause": "Spawned Process Image: nmap (PID: 1952142) parented by PID: N/A. Path: /usr/lib/nmap.",
+    "recommendations": [
+      "Perform system memory dump analysis",
+      "Revoke active session tokens for associated host accounts",
+      "Re-image device if registry modifications are deep"
+    ],
+    "timeline": [
+      {
+        "timestamp": "2026-06-18T10:13:58.804Z",
+        "activity": "Intrusion Alert Fired: Suspicious Process Spawned",
+        "actor": "SIEM Agent"
+      },
+      {
+        "timestamp": "2026-06-18T10:13:58.804Z",
+        "activity": "SOAR Automation Executed Containment Strategy",
+        "actor": "SOAR Bot"
+      }
+    ],
+    "evidence": [
+      {
+        "_id": "kqs7ygs",
+        "timestamp": "2026-06-18T10:13:58.587Z",
+        "severity": "CRITICAL",
+        "title": "Suspicious Process Spawned",
+        "description": "Spawned Process Image: nmap (PID: 1952142) parented by PID: N/A. Path: /usr/lib/nmap.",
+        "category": "Process Activity",
+        "host": "hunter",
+        "status": "NEW",
+        "assignedTo": "Unassigned",
+        "evidence": {
+          "pid": 1952142,
+          "name": "nmap",
+          "path": "/usr/lib/nmap",
+          "cpu": 0
+        },
+        "createdAt": "2026-06-18T10:13:58.607Z",
+        "updatedAt": "2026-06-18T10:13:58.608Z"
+      }
+    ]
+  },
+  {
+    "_id": "srlg69l",
+    "title": "[AUTO-CONTAINED] Incident Case: Suspicious Process Spawned",
+    "severity": "CRITICAL",
+    "status": "CONTAINED",
+    "assignedTo": "SOAR Automation Engine",
+    "createdAt": "2026-06-18T10:14:16.822Z",
+    "updatedAt": "2026-06-18T10:14:16.822Z",
+    "impact": "Critical security compromise detected on target host.",
+    "rootCause": "Spawned Process Image: nmap (PID: 1960908) parented by PID: N/A. Path: /usr/lib/nmap.",
+    "recommendations": [
+      "Perform system memory dump analysis",
+      "Revoke active session tokens for associated host accounts",
+      "Re-image device if registry modifications are deep"
+    ],
+    "timeline": [
+      {
+        "timestamp": "2026-06-18T10:14:16.822Z",
+        "activity": "Intrusion Alert Fired: Suspicious Process Spawned",
+        "actor": "SIEM Agent"
+      },
+      {
+        "timestamp": "2026-06-18T10:14:16.822Z",
+        "activity": "SOAR Automation Executed Containment Strategy",
+        "actor": "SOAR Bot"
+      }
+    ],
+    "evidence": [
+      {
+        "_id": "ihpwnh9",
+        "timestamp": "2026-06-18T10:14:16.642Z",
+        "severity": "CRITICAL",
+        "title": "Suspicious Process Spawned",
+        "description": "Spawned Process Image: nmap (PID: 1960908) parented by PID: N/A. Path: /usr/lib/nmap.",
+        "category": "Process Activity",
+        "host": "hunter",
+        "status": "NEW",
+        "assignedTo": "Unassigned",
+        "evidence": {
+          "pid": 1960908,
+          "name": "nmap",
+          "path": "/usr/lib/nmap",
+          "cpu": 0
+        },
+        "createdAt": "2026-06-18T10:14:16.659Z",
+        "updatedAt": "2026-06-18T10:14:16.659Z"
+      }
+    ]
   }
 ]

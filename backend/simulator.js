@@ -264,6 +264,15 @@ async function generateEDRStats() {
 async function triggerRandomThreatScenario() {
   if (!ioInstance) return;
 
+  try {
+    const user = await db.users.findOne({});
+    if (!user || !user.showSimulatedThreats) {
+      return;
+    }
+  } catch (err) {
+    return;
+  }
+
   const scenario = ATTACK_SCENARIOS[Math.floor(Math.random() * ATTACK_SCENARIOS.length)];
   const host = ENDPOINTS[Math.floor(Math.random() * ENDPOINTS.length)];
   const alertEntry = {

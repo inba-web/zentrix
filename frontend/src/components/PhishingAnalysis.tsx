@@ -49,7 +49,7 @@ Please click http://185.220.101.5/login to update your passkeys immediately. urg
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 font-sans">
       
       {/* 1. LEFT COLUMN: RAW HEADERS TEXTBIN */}
-      <div className="lg:col-span-1 p-5 bg-[#111625] border border-slate-800 rounded-lg h-[650px] flex flex-col justify-between overflow-y-auto">
+      <div className="lg:col-span-1 p-5 bg-[#111625] border border-slate-800 rounded-lg h-[calc(100vh-140px)] flex flex-col justify-between overflow-y-auto">
         <div className="space-y-4">
           <div className="flex items-center gap-2">
             <Mail className="w-4 h-4 text-blue-500" />
@@ -62,7 +62,7 @@ Please click http://185.220.101.5/login to update your passkeys immediately. urg
           <textarea 
             value={headers}
             onChange={e => setHeaders(e.target.value)}
-            className="w-full h-[400px] bg-[#050811] border border-slate-700 p-3 text-xs font-mono text-slate-200 rounded focus:outline-none focus:border-blue-500 resize-none select-text leading-normal"
+            className="w-full h-[calc(100vh-320px)] bg-[#050811] border border-slate-700 p-3 text-xs font-mono text-slate-200 rounded focus:outline-none focus:border-blue-500 resize-none select-text leading-normal"
             placeholder="Paste raw email headers parameters including SPF fields..."
           />
 
@@ -88,7 +88,7 @@ Please click http://185.220.101.5/login to update your passkeys immediately. urg
       </div>
 
       {/* 2. RIGHT PANEL: PARSED RESULTS & MITIGATION ALIGNMENT */}
-      <div className="lg:col-span-2 space-y-6 h-[650px] overflow-y-auto pr-1">
+      <div className="lg:col-span-2 space-y-6 h-[calc(100vh-140px)] overflow-y-auto pr-1">
         
         {analyzing && (
           <div className="p-8 bg-[#111625] border border-slate-800 rounded-lg flex flex-col items-center justify-center space-y-3 h-[300px]">

@@ -11,11 +11,13 @@ let loops = [];
 async function collectAndEmit() {
   if (!ioInstance) return;
   try {
-    const [cpu, mem, procs, netConns] = await Promise.all([
+    const [cpu, mem, procs, netConns, fsSize, netStats] = await Promise.all([
       si.currentLoad(),
       si.mem(),
       si.processes(),
-      si.networkConnections()
+      si.networkConnections(),
+      si.fsSize(),
+      si.networkStats()
     ]);
 
     const activeConnsCount = netConns.filter(c => c.state === 'ESTABLISHED').length;
@@ -33,14 +35,69 @@ async function collectAndEmit() {
     const ramUsedPercent = Math.round((mem.used / mem.total) * 100);
     const cpuUsedPercent = Math.round(cpu.currentLoad);
 
+    // Dynamic actual disk usage
+    const rootFs = fsSize.find(f => f.mount === '/') || fsSize[0] || { size: 1, used: 0, use: 0 };
+    const diskUsedPercent = Math.round(rootFs.use || 0);
+
+    // Dynamic actual network throughput
+    let rxSec = 0;
+    let txSec = 0;
+    if (netStats && netStats.length > 0) {
+      netStats.forEach(iface => {
+        rxSec += iface.rx_sec || 0;
+        txSec += iface.tx_sec || 0;
+      });
+    }
+    const downloadMbps = ((rxSec * 8) / 1e6).toFixed(2);
+    const uploadMbps = ((txSec * 8) / 1e6).toFixed(2);
+
+    // Active incidents and active scans
+    const scannerService = require('./scannerService');
+    const runningScansCount = scannerService.getActiveScansCount ? scannerService.getActiveScansCount() : 0;
+    const activeIncidentsCount = await db.incidents.countDocuments({ status: { $ne: 'RESOLVED' } });
+
+    // Alerts severity counts
+    const alertsList = await db.alerts.find({});
+    const alertsBySeverity = { CRITICAL: 0, HIGH: 0, MEDIUM: 0, LOW: 0, INFO: 0 };
+    alertsList.forEach(a => {
+      const sev = (a.severity || 'MEDIUM').toUpperCase();
+      if (sev in alertsBySeverity) {
+        alertsBySeverity[sev]++;
+      }
+    });
+
+    // Endpoint Health Score calculation
+    const criticalCount = alertsBySeverity.CRITICAL;
+    const highCount = alertsBySeverity.HIGH;
+    const mediumCount = alertsBySeverity.MEDIUM;
+    const healthScore = Math.max(0, 100 - (criticalCount * 15 + highCount * 5 + mediumCount * 1));
+
+    // Async commands resolution for active hosts and open ports count
+    const openPortsCount = await new Promise((resolve) => {
+      getOpenPortsCount(count => resolve(count));
+    });
+    const activeHostsCount = await new Promise((resolve) => {
+      getActiveHostsCount(count => resolve(count));
+    });
+
     const telemetryData = {
       ts: new Date().toISOString(),
       cpu: cpuUsedPercent,
       ram: ramUsedPercent,
       ramUsedGB: (mem.used / 1e9).toFixed(1),
       ramTotalGB: (mem.total / 1e9).toFixed(1),
+      disk: diskUsedPercent,
+      activeProcesses: procs.list.length,
+      activeHosts: activeHostsCount,
+      openPorts: openPortsCount,
+      activeIncidents: activeIncidentsCount,
+      alertsDistribution: alertsBySeverity,
+      downloadSpeed: downloadMbps,
+      uploadSpeed: uploadMbps,
+      healthScore: healthScore,
       topProcesses: topProcs,
-      activeConnections: activeConnsCount
+      activeConnections: activeConnsCount,
+      runningScans: runningScansCount
     };
 
     // Emit standard updates to new UI
@@ -51,9 +108,9 @@ async function collectAndEmit() {
       timestamp: telemetryData.ts,
       cpuUsage: cpuUsedPercent,
       ramUsage: ramUsedPercent,
-      diskUsage: '42.5',
+      diskUsage: diskUsedPercent.toString(),
       diskIO: { read: '1.2', write: '0.4' },
-      network: { download: '45.2', upload: '12.8' },
+      network: { download: downloadMbps, upload: uploadMbps },
       activeProcesses: procs.list.length,
       systemUptime: os.uptime(),
       openConnections: activeConnsCount,

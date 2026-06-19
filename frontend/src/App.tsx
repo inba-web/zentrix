@@ -57,6 +57,77 @@ import {
   addPopup
 } from './store';
 
+function ToastItem({ toast, onClose }: { toast: any; onClose: (id: string) => void }) {
+  useEffect(() => {
+    if (!toast.persistent) {
+      const timer = setTimeout(() => {
+        onClose(toast.id);
+      }, 8000);
+      return () => clearTimeout(timer);
+    }
+  }, [toast.id, toast.count, toast.persistent, onClose]);
+
+  const sev = (toast.severity || 'MEDIUM').toUpperCase();
+  const badgeColor = sev === 'CRITICAL' 
+    ? 'bg-red-500/20 text-red-400 border-red-500/30' 
+    : sev === 'HIGH' 
+    ? 'bg-orange-500/20 text-orange-400 border-orange-500/30'
+    : 'bg-amber-500/20 text-amber-400 border-amber-500/30';
+  
+  const timestampIST = new Date(toast.timestamp || new Date()).toLocaleString('en-IN', {
+    timeZone: 'Asia/Kolkata',
+    hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
+  });
+
+  return (
+    <motion.div 
+      initial={{ opacity: 0, y: 30, scale: 0.9 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: -20, scale: 0.9, transition: { duration: 0.2 } }}
+      className="p-4 bg-[#0d1117]/95 backdrop-blur-md border border-[#ef4444]/30 rounded-xl text-slate-100 shadow-2xl relative overflow-hidden flex gap-3 select-text group"
+      style={{ boxShadow: '0 0 15px rgba(239, 68, 68, 0.15)' }}
+    >
+      <AlertTriangle className="w-5 h-5 text-red-500 shrink-0 animate-pulse mt-0.5" />
+      <div className="flex-1 min-w-0">
+        <div className="flex justify-between items-start">
+          <span className={`text-[8px] uppercase font-mono font-bold px-2 py-0.5 border rounded ${badgeColor}`}>
+            {sev} SYSTEM THREAT {toast.count > 1 ? `(${toast.count}x)` : ''}
+          </span>
+          <span className="text-[8px] text-slate-500 font-mono">{timestampIST} IST</span>
+        </div>
+        <p className="text-xs font-bold text-slate-200 mt-2 truncate">
+          {toast.title} {toast.count > 1 ? `(${toast.count} occurrences)` : ''}
+        </p>
+        <p className="text-[10px] text-slate-400 mt-1 leading-snug">{toast.description}</p>
+        
+        <div className="flex justify-between items-center mt-3 pt-2 border-t border-white/5">
+          <span className="text-[8px] text-slate-500 font-mono uppercase bg-zinc-900 px-2 py-0.5 border border-white/5 rounded">
+            HOST: {toast.host || 'UNKNOWN'}
+          </span>
+          <div className="flex gap-2">
+            <button 
+              onClick={() => onClose(toast.id)}
+              className="text-[9px] text-slate-500 hover:text-slate-350 px-2 py-0.5 font-mono"
+            >
+              Dismiss
+            </button>
+            <button 
+              onClick={(e) => {
+                e.stopPropagation();
+                (window as any).setActiveTabModule?.('incidents');
+                onClose(toast.id);
+              }}
+              className="text-[9px] text-[#00D4FF] hover:underline font-mono font-bold"
+            >
+              → View
+            </button>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
 export default function App() {
   const dispatch = useDispatch();
   const istTime = useISTClock();
@@ -68,9 +139,20 @@ export default function App() {
 
   const [activeTab, setActiveTab] = useState<string>('dashboard');
   const [dbHealth, setDbHealth] = useState<string>('Detecting...');
+  const [criticalPopup, setCriticalPopup] = useState<any | null>(null);
   const [time, setTime] = useState<string>(new Date().toISOString());
   const [toasts, setToasts] = useState<any[]>([]);
   const [showNotificationDropdown, setShowNotificationDropdown] = useState(false);
+
+  // Expose active tab switching globally so components/toasts can navigate
+  useEffect(() => {
+    (window as any).setActiveTabModule = (tab: string) => {
+      setActiveTab(tab);
+    };
+    return () => {
+      delete (window as any).setActiveTabModule;
+    };
+  }, []);
 
   // Sync user reference to allow socket event handlers to access latest settings
   const userRef = useRef(user);
@@ -211,42 +293,12 @@ export default function App() {
       });
 
       socket.on('threat:critical', (payload: any) => {
-        dispatch(addLiveAlert(payload));
-        dispatch(addPopup(payload));
-        
-        const isPopupEnabled = userRef.current?.popupEnabled !== false;
-        const sev = (payload.severity || 'CRITICAL').toUpperCase();
-        if (isPopupEnabled || sev === 'CRITICAL' || sev === 'HIGH') {
-          triggerToast(payload);
-        }
-        
-        if (userRef.current?.alarmEnabled !== false) {
-          playAlarm();
-        }
+        handleIncomingAlert(payload);
       });
 
       // Handle alerts
       socket.on('alert', (alert: any) => {
-        dispatch(addLiveAlert(alert));
-        dispatch(addPopup(alert));
-        
-        const isPopupEnabled = userRef.current?.popupEnabled !== false;
-        const sev = (alert.severity || 'CRITICAL').toUpperCase();
-        if (isPopupEnabled || sev === 'CRITICAL' || sev === 'HIGH') {
-          triggerToast(alert);
-        }
-        
-        if (userRef.current?.alarmEnabled !== false && sev === 'CRITICAL') {
-          playAlarm();
-        }
-
-        // Trigger Local Desktop HTML5 Notification
-        if (userRef.current?.desktopNotifications !== false && window.Notification && Notification.permission === 'granted') {
-          new window.Notification(`CRITICAL SOC THREAT: ${alert.title}`, {
-            body: `${alert.description} on host ${alert.host}`,
-            icon: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80'
-          });
-        }
+        handleIncomingAlert(alert);
       });
 
       // Fetch initial DB health
@@ -267,12 +319,71 @@ export default function App() {
     }
   }, [token, dispatch]);
 
-  const triggerToast = (alert: any) => {
-    const id = Math.random().toString(36).substring(7);
-    setToasts(prev => [...prev, { id, ...alert }]);
-    setTimeout(() => {
-      setToasts(prev => prev.filter(t => t.id !== id));
-    }, 8000);
+  const handleIncomingAlert = (alert: any) => {
+    const sev = (alert.severity || 'MEDIUM').toUpperCase();
+    
+    // Always record to liveAlerts / popups history
+    dispatch(addLiveAlert(alert));
+    dispatch(addPopup(alert));
+
+    if (sev === 'INFO' || sev === 'LOW') {
+      // INFO: No popup, dashboard notification only
+      // LOW: Notification center only
+      return;
+    }
+
+    const isPopupEnabled = userRef.current?.popupEnabled !== false;
+    if (!isPopupEnabled) return;
+
+    if (sev === 'MEDIUM') {
+      triggerToast(alert, false);
+    } else if (sev === 'HIGH') {
+      triggerToast(alert, true);
+    } else if (sev === 'CRITICAL') {
+      // Full-screen critical threat popup with deduplication
+      setCriticalPopup(prev => {
+        if (prev && prev.title === alert.title && prev.host === alert.host) {
+          return {
+            ...prev,
+            count: (prev.count || 1) + 1,
+            timestamp: alert.timestamp || new Date(),
+            description: alert.description
+          };
+        }
+        return { ...alert, count: 1 };
+      });
+
+      if (userRef.current?.alarmEnabled !== false) {
+        playAlarm();
+      }
+
+      // Trigger Local Desktop HTML5 Notification
+      if (userRef.current?.desktopNotifications !== false && window.Notification && Notification.permission === 'granted') {
+        new window.Notification(`CRITICAL SOC THREAT: ${alert.title}`, {
+          body: `${alert.description} on host ${alert.host}`,
+          icon: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80'
+        });
+      }
+    }
+  };
+
+  const triggerToast = (alert: any, persistent = false) => {
+    setToasts(prev => {
+      const existingIdx = prev.findIndex(t => t.title === alert.title && t.host === alert.host);
+      if (existingIdx !== -1) {
+        const updated = [...prev];
+        updated[existingIdx] = {
+          ...updated[existingIdx],
+          count: (updated[existingIdx].count || 1) + 1,
+          timestamp: alert.timestamp || new Date(),
+          description: alert.description
+        };
+        return updated;
+      } else {
+        const id = Math.random().toString(36).substring(7);
+        return [...prev, { id, ...alert, count: 1, persistent }];
+      }
+    });
   };
 
   const handleRegisterSuccess = (profile: any, tokenVal: string) => {
@@ -535,71 +646,106 @@ export default function App() {
       {/* 4. REAL-TIME THREAT ALERTS FLOAT TOAST PANELS */}
       <div className="absolute bottom-5 right-5 z-50 flex flex-col gap-3 w-96 max-w-[calc(100vw-40px)] font-mono">
         <AnimatePresence>
-          {toasts.map(toast => {
-            const sev = (toast.severity || 'CRITICAL').toUpperCase();
-            const badgeColor = sev === 'CRITICAL' 
-              ? 'bg-red-500/20 text-red-400 border-red-500/30' 
-              : sev === 'HIGH' 
-              ? 'bg-orange-500/20 text-orange-400 border-orange-500/30'
-              : 'bg-amber-500/20 text-amber-400 border-amber-500/30';
-            
-            const timestampIST = new Date(toast.timestamp || new Date()).toLocaleString('en-IN', {
-              timeZone: 'Asia/Kolkata',
-              hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
-            });
-
-            return (
-              <motion.div 
-                key={toast.id}
-                initial={{ opacity: 0, y: 30, scale: 0.9 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -20, scale: 0.9, transition: { duration: 0.2 } }}
-                className="p-4 bg-[#0d1117]/90 backdrop-blur-md border border-[#ef4444]/30 rounded-xl text-slate-100 shadow-2xl relative overflow-hidden flex gap-3 select-text group"
-                style={{ boxShadow: '0 0 15px rgba(239, 68, 68, 0.15)' }}
-              >
-                <AlertTriangle className="w-5 h-5 text-red-500 shrink-0 animate-pulse mt-0.5" />
-                <div className="flex-1 min-w-0">
-                  <div className="flex justify-between items-start">
-                    <span className={`text-[8px] uppercase font-mono font-bold px-2 py-0.5 border rounded ${badgeColor}`}>
-                      {sev} SYSTEM THREAT
-                    </span>
-                    <span className="text-[8px] text-slate-500 font-mono">{timestampIST} IST</span>
-                  </div>
-                  <p className="text-xs font-bold text-slate-200 mt-2 truncate">{toast.title}</p>
-                  <p className="text-[10px] text-slate-400 mt-1 leading-snug">{toast.description}</p>
-                  
-                  <div className="flex justify-between items-center mt-3 pt-2 border-t border-white/5">
-                    <span className="text-[8px] text-slate-500 font-mono uppercase bg-zinc-900 px-2 py-0.5 border border-white/5 rounded">
-                      HOST: {toast.host || 'UNKNOWN'}
-                    </span>
-                    <div className="flex gap-2">
-                      <button 
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setToasts(prev => prev.filter(t => t.id !== toast.id));
-                        }}
-                        className="text-[9px] text-slate-500 hover:text-slate-350 px-2 py-0.5 font-mono"
-                      >
-                        Dismiss
-                      </button>
-                      <button 
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setActiveTab('incidents');
-                          setToasts(prev => prev.filter(t => t.id !== toast.id));
-                        }}
-                        className="text-[9px] text-[#00D4FF] hover:underline font-mono font-bold"
-                      >
-                        → View
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            );
-          })}
+          {toasts.map(toast => (
+            <ToastItem 
+              key={toast.id} 
+              toast={toast} 
+              onClose={(id) => setToasts(prev => prev.filter(t => t.id !== id))} 
+            />
+          ))}
         </AnimatePresence>
       </div>
+
+      {/* 5. FULL-SCREEN CRITICAL SECURITY ALERT OVERLAY */}
+      {criticalPopup && (
+        <div className="fixed inset-0 bg-red-950/80 backdrop-blur-md z-50 flex items-center justify-center p-6 select-text animate-fade-in">
+          <div className="bg-[#0b0505] border-2 border-red-500 rounded-2xl max-w-2xl w-full p-8 shadow-[0_0_50px_rgba(239,68,68,0.4)] relative overflow-hidden flex flex-col font-mono">
+            {/* Pulsing hazard lights background */}
+            <div className="absolute inset-0 bg-radial-gradient from-red-500/10 to-transparent pointer-events-none animate-pulse" />
+            
+            <div className="flex items-center gap-4 border-b border-red-500/30 pb-4 mb-6">
+              <div className="p-3 bg-red-500/20 border border-red-500 rounded-xl text-red-500 animate-pulse">
+                <ShieldAlert className="w-8 h-8" />
+              </div>
+              <div>
+                <h1 className="text-lg font-bold tracking-widest text-red-500 uppercase">CRITICAL SYSTEM THREAT DETECTED</h1>
+                <p className="text-[10px] text-red-400 uppercase tracking-wider mt-0.5">SOAR Containment Protocol Active</p>
+              </div>
+              {criticalPopup.count > 1 && (
+                <span className="ml-auto bg-red-500 text-black text-xs font-bold px-3 py-1 rounded-full animate-bounce">
+                  {criticalPopup.count} OCCURRENCES
+                </span>
+              )}
+            </div>
+
+            <div className="space-y-4 text-xs flex-1">
+              <div className="grid grid-cols-2 gap-4 bg-black/40 p-4 border border-white/5 rounded-xl font-mono text-[10px] text-slate-400">
+                <div>
+                  <span className="text-slate-500 block">THREAT CLASSIFICATION:</span>
+                  <span className="text-red-400 font-bold text-xs uppercase">{criticalPopup.category || 'Malicious Intrusion'}</span>
+                </div>
+                <div>
+                  <span className="text-slate-500 block">TARGET ENDPOINT:</span>
+                  <span className="text-white font-bold text-xs">{criticalPopup.host || 'LOCAL NODE'}</span>
+                </div>
+                <div>
+                  <span className="text-slate-500 block">DETECTED TIMESTAMP:</span>
+                  <span className="text-slate-350">{new Date(criticalPopup.timestamp).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })} IST</span>
+                </div>
+                <div>
+                  <span className="text-slate-500 block">MITRE ATT&CK:</span>
+                  <span className="text-[#00D4FF]">{criticalPopup.evidence?.mitreTactic || 'Execution'}</span>
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <span className="text-[9px] text-slate-500 uppercase block font-bold">Threat Indicators Details</span>
+                <div className="p-4 bg-black border border-white/5 rounded-xl text-slate-300 text-xs leading-relaxed max-h-36 overflow-y-auto">
+                  {criticalPopup.description}
+                </div>
+              </div>
+
+              {criticalPopup.evidence && (
+                <div className="space-y-1">
+                  <span className="text-[9px] text-slate-500 uppercase block font-bold">Active Evidence Package</span>
+                  <pre className="p-3 bg-zinc-950 border border-white/5 rounded-xl text-[9px] text-emerald-400 overflow-x-auto max-h-32">
+                    {JSON.stringify(criticalPopup.evidence, null, 2)}
+                  </pre>
+                </div>
+              )}
+            </div>
+
+            <div className="mt-8 flex justify-between gap-4 border-t border-red-500/20 pt-6">
+              <button 
+                onClick={() => setCriticalPopup(null)}
+                className="flex-1 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-slate-300 font-bold text-xs py-3 rounded-xl uppercase transition-colors"
+              >
+                Acknowledge Alert
+              </button>
+              <button 
+                onClick={async () => {
+                  try {
+                    await fetch('/api/edr/isolate', {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`
+                      },
+                      body: JSON.stringify({ hostname: criticalPopup.host, action: 'Isolate' })
+                    });
+                  } catch (e) {
+                    console.error('Failed to isolate host from popup:', e);
+                  }
+                  setCriticalPopup(null);
+                }}
+                className="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold text-xs py-3 rounded-xl uppercase transition-colors shadow-lg shadow-red-600/20"
+              >
+                Isolate Host Endpoint
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );

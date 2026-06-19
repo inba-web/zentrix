@@ -53,5 +53,16 @@
     "retryCount": 0,
     "createdAt": "2026-06-16T10:37:28.693Z",
     "updatedAt": "2026-06-16T10:37:28.693Z"
+  },
+  {
+    "_id": "gwl4akm",
+    "reportId": "klkf7fi",
+    "emailStatus": "Delivered",
+    "whatsAppStatus": "Delivered",
+    "deliveryTimestamp": "2026-06-18T09:54:12.410Z",
+    "failureReason": "Manual generation simulated successfully.",
+    "retryCount": 0,
+    "createdAt": "2026-06-18T09:54:12.410Z",
+    "updatedAt": "2026-06-18T09:54:12.410Z"
   }
 ]

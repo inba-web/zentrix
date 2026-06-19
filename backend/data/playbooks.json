@@ -60,10 +60,21 @@
           "Dispatched warning email alerts to Security Administrators.",
           "Playbook orchestration completed successfully."
         ]
+      },
+      {
+        "timestamp": "2026-06-18T09:36:35.546Z",
+        "status": "SUCCESS",
+        "logs": [
+          "Analyst manually initialized execution sequence.",
+          "Gathering workspace attributes...",
+          "Executed action EnrichedIOC on active entities.",
+          "Dispatched warning email alerts to Security Administrators.",
+          "Playbook orchestration completed successfully."
+        ]
       }
     ],
     "createdAt": "2026-05-31T14:49:30.297Z",
-    "updatedAt": "2026-06-17T11:08:41.148Z"
+    "updatedAt": "2026-06-18T09:36:35.546Z"
   },
   {
     "_id": "yxl9xyi",
@@ -110,9 +121,61 @@
           "Dispatched warning email alerts to Security Administrators.",
           "Playbook orchestration completed successfully."
         ]
+      },
+      {
+        "timestamp": "2026-06-18T10:14:26.258Z",
+        "status": "SUCCESS",
+        "logs": [
+          "Playbook triggered by alert 3d4fywq",
+          "Analyzing threat levels...",
+          "Executing Step 1: EnrichIOC",
+          "IOC Enriched successfully. Threat Rank: 98% malicious.",
+          "Executing Step 2: BlockIP",
+          "Firewall Rules updated. Source IP blocked in Border IDS router gateway.",
+          "Playbook executed successfully. Security orchestration finalized."
+        ]
+      },
+      {
+        "timestamp": "2026-06-18T10:14:26.317Z",
+        "status": "SUCCESS",
+        "logs": [
+          "Playbook triggered by alert lpn3jxs",
+          "Analyzing threat levels...",
+          "Executing Step 1: EnrichIOC",
+          "IOC Enriched successfully. Threat Rank: 98% malicious.",
+          "Executing Step 2: BlockIP",
+          "Firewall Rules updated. Source IP blocked in Border IDS router gateway.",
+          "Playbook executed successfully. Security orchestration finalized."
+        ]
+      },
+      {
+        "timestamp": "2026-06-18T10:14:26.354Z",
+        "status": "SUCCESS",
+        "logs": [
+          "Playbook triggered by alert vq1v1xv",
+          "Analyzing threat levels...",
+          "Executing Step 1: EnrichIOC",
+          "IOC Enriched successfully. Threat Rank: 98% malicious.",
+          "Executing Step 2: BlockIP",
+          "Firewall Rules updated. Source IP blocked in Border IDS router gateway.",
+          "Playbook executed successfully. Security orchestration finalized."
+        ]
+      },
+      {
+        "timestamp": "2026-06-18T10:14:26.394Z",
+        "status": "SUCCESS",
+        "logs": [
+          "Playbook triggered by alert ctv3cez",
+          "Analyzing threat levels...",
+          "Executing Step 1: EnrichIOC",
+          "IOC Enriched successfully. Threat Rank: 98% malicious.",
+          "Executing Step 2: BlockIP",
+          "Firewall Rules updated. Source IP blocked in Border IDS router gateway.",
+          "Playbook executed successfully. Security orchestration finalized."
+        ]
       }
     ],
     "createdAt": "2026-05-31T14:49:30.297Z",
-    "updatedAt": "2026-06-17T11:08:39.790Z"
+    "updatedAt": "2026-06-18T10:14:26.395Z"
   }
 ]

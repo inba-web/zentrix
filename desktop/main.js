@@ -37,6 +37,8 @@ function createWindow() {
     }
   });
 
+  mainWindow.maximize();
+
   mainWindow.on('closed', function () {
     mainWindow = null;
   });

@@ -16,6 +16,7 @@ export default function ThreatHunting({ token }: any) {
   const [presets, setPresets] = useState<Technique[]>([]);
   const [customs, setCustoms] = useState<Technique[]>([]);
   const [selectedTechnique, setSelectedTechnique] = useState<Technique | null>(null);
+  const [platform, setPlatform] = useState<string>('linux');
   
   const [isScanning, setIsScanning] = useState(false);
   const [output, setOutput] = useState<string>('');
@@ -41,9 +42,12 @@ export default function ThreatHunting({ token }: any) {
       });
       if (res.ok) {
         const data = await res.json();
-        setPresets(data);
-        if (data.length > 0) {
-          setSelectedTechnique(data[0]);
+        const presetsList = Array.isArray(data) ? data : (data.presets || []);
+        const currentPlatform = data.platform || 'linux';
+        setPresets(presetsList);
+        setPlatform(currentPlatform);
+        if (presetsList.length > 0) {
+          setSelectedTechnique(presetsList[0]);
         }
       }
     } catch (e) {
@@ -67,7 +71,10 @@ export default function ThreatHunting({ token }: any) {
 
   const handleCreateCustom = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newName.trim() || !newLinux.trim()) return;
+    const isWin = platform === 'win32';
+    if (!newName.trim()) return;
+    if (isWin && !newWindows.trim()) return;
+    if (!isWin && !newLinux.trim()) return;
 
     try {
       const res = await fetch('/api/hunt/custom', {
@@ -126,7 +133,12 @@ export default function ThreatHunting({ token }: any) {
     try {
       const isCustom = !!selectedTechnique.isCustom;
       const bodyPayload = isCustom
-        ? { isCustom: true, command: selectedTechnique.linux, name: selectedTechnique.name }
+        ? { 
+            isCustom: true, 
+            linuxCommand: selectedTechnique.linux, 
+            windowsCommand: selectedTechnique.windows, 
+            name: selectedTechnique.name 
+          }
         : { isCustom: false, techniqueId: selectedTechnique.id };
 
       const res = await fetch('/api/hunt/run', {
@@ -206,7 +218,7 @@ export default function ThreatHunting({ token }: any) {
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 font-sans text-white select-none">
       
       {/* 1. LEFT COLUMN: TECHNIQUES SELECTOR & CUSTOM BUILDER */}
-      <div className="lg:col-span-1 p-5 bg-[#0D1117] border border-white/5 rounded-xl h-[620px] flex flex-col justify-between overflow-y-auto shadow-xl">
+      <div className="lg:col-span-1 p-5 bg-[#0D1117] border border-white/5 rounded-xl h-[calc(100vh-140px)] flex flex-col justify-between overflow-y-auto shadow-xl">
         <div className="space-y-4">
           <div className="flex justify-between items-center border-b border-white/5 pb-2">
             <div>
@@ -261,10 +273,12 @@ export default function ThreatHunting({ token }: any) {
               </div>
 
               <div>
-                <label className="block text-slate-500 mb-0.5">LINUX COMMAND</label>
+                <label className="block text-slate-500 mb-0.5">
+                  LINUX COMMAND {platform !== 'win32' && <span className="text-cyan-400 font-bold">(Active OS - Required)</span>}
+                </label>
                 <input
                   type="text"
-                  required
+                  required={platform !== 'win32'}
                   value={newLinux}
                   onChange={e => setNewLinux(e.target.value)}
                   placeholder="e.g. ps aux"
@@ -273,9 +287,12 @@ export default function ThreatHunting({ token }: any) {
               </div>
 
               <div>
-                <label className="block text-slate-500 mb-0.5">WINDOWS COMMAND</label>
+                <label className="block text-slate-500 mb-0.5">
+                  WINDOWS COMMAND {platform === 'win32' && <span className="text-cyan-400 font-bold">(Active OS - Required)</span>}
+                </label>
                 <input
                   type="text"
+                  required={platform === 'win32'}
                   value={newWindows}
                   onChange={e => setNewWindows(e.target.value)}
                   placeholder="e.g. Get-Process"
@@ -300,7 +317,7 @@ export default function ThreatHunting({ token }: any) {
               </div>
             </form>
           ) : (
-            <div className="space-y-1.5 max-h-[460px] overflow-y-auto pr-1">
+            <div className="space-y-1.5 max-h-[calc(100vh-260px)] overflow-y-auto pr-1">
               {techniquesList.map((t, idx) => {
                 const isSelected = selectedTechnique?.name === t.name;
                 const isCustom = !!t.isCustom;
@@ -344,7 +361,7 @@ export default function ThreatHunting({ token }: any) {
       </div>
 
       {/* 2. RIGHT COLUMN: EXECUTIVE COMMAND DETAILS & MONOSPACE OUTPUT LOGS */}
-      <div className="lg:col-span-2 space-y-4 h-[620px] flex flex-col justify-between">
+      <div className="lg:col-span-2 space-y-4 h-[calc(100vh-140px)] flex flex-col justify-between">
         
         {/* Selection description bar */}
         {selectedTechnique ? (
@@ -362,15 +379,18 @@ export default function ThreatHunting({ token }: any) {
               </div>
 
               {/* Commands review grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 font-mono text-[9.5px]">
-                <div className="p-3 bg-black/40 border border-white/5 rounded-lg">
-                  <span className="text-slate-500 block text-[8px] uppercase mb-1">Linux System Command</span>
-                  <span className="text-cyan-400 font-mono select-all block break-all">{selectedTechnique.linux}</span>
-                </div>
-                <div className="p-3 bg-black/40 border border-white/5 rounded-lg">
-                  <span className="text-slate-500 block text-[8px] uppercase mb-1">Windows PowerShell Command</span>
-                  <span className="text-cyan-400 font-mono select-all block break-all">{selectedTechnique.windows || 'N/A'}</span>
-                </div>
+              <div className="font-mono text-[9.5px]">
+                {platform === 'win32' ? (
+                  <div className="p-3 bg-black/40 border border-white/5 rounded-lg">
+                    <span className="text-slate-500 block text-[8px] uppercase mb-1">Windows PowerShell Command</span>
+                    <span className="text-cyan-400 font-mono select-all block break-all">{selectedTechnique.windows || 'N/A'}</span>
+                  </div>
+                ) : (
+                  <div className="p-3 bg-black/40 border border-white/5 rounded-lg">
+                    <span className="text-slate-500 block text-[8px] uppercase mb-1">Linux System Command</span>
+                    <span className="text-cyan-400 font-mono select-all block break-all">{selectedTechnique.linux}</span>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -392,7 +412,7 @@ export default function ThreatHunting({ token }: any) {
         )}
 
         {/* Results output Monospace terminal */}
-        <div className="p-5 bg-[#0D1117] border border-white/5 rounded-xl h-[330px] flex flex-col justify-between shadow-xl">
+        <div className="p-5 bg-[#0D1117] border border-white/5 rounded-xl h-[calc(50vh-90px)] flex flex-col justify-between shadow-xl">
           <div className="flex justify-between items-center border-b border-white/5 pb-2">
             <div className="flex items-center gap-1.5">
               <Terminal className="w-4 h-4 text-cyan-400 animate-pulse" />
@@ -409,7 +429,7 @@ export default function ThreatHunting({ token }: any) {
             )}
           </div>
 
-          <div className="flex-1 bg-black p-4 border border-white/5 rounded-xl font-mono text-[10.5px] leading-relaxed overflow-y-auto my-3 select-text select-all max-h-[200px]">
+          <div className="flex-1 bg-black p-4 border border-white/5 rounded-xl font-mono text-[10.5px] leading-relaxed overflow-y-auto my-3 select-text select-all max-h-[calc(50vh-180px)]">
             {output ? (
               output.split('\n').map((line, idx) => formatOutputLine(line, idx))
             ) : (

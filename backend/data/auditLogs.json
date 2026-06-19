@@ -3288,5 +3288,135 @@
     "ip": "::1",
     "createdAt": "2026-06-17T11:09:45.812Z",
     "updatedAt": "2026-06-17T11:09:45.812Z"
+  },
+  {
+    "_id": "l6u3e49",
+    "timestamp": "2026-06-18T09:35:03.130Z",
+    "user": "inbavarunan",
+    "action": "Threat Hunt Executed",
+    "details": "Ran hunt technique \"High-CPU Processes\" command on platform linux.",
+    "ip": "::1",
+    "createdAt": "2026-06-18T09:35:03.134Z",
+    "updatedAt": "2026-06-18T09:35:03.134Z"
+  },
+  {
+    "_id": "nn80ulb",
+    "timestamp": "2026-06-18T09:36:35.546Z",
+    "user": "inbavarunans",
+    "action": "SOAR Manual Execution",
+    "details": "Orchestrated execution for playbook: Critical Malware Containment Playbook",
+    "ip": "::1",
+    "createdAt": "2026-06-18T09:36:35.550Z",
+    "updatedAt": "2026-06-18T09:36:35.550Z"
+  },
+  {
+    "_id": "b99x1ow",
+    "timestamp": "2026-06-18T09:36:51.675Z",
+    "user": "inbavarunan",
+    "action": "Threat Intel Query",
+    "details": "Queried IP: \"185.220.101.5\". Risk Score resolved to 98%.",
+    "ip": "::1",
+    "createdAt": "2026-06-18T09:36:51.680Z",
+    "updatedAt": "2026-06-18T09:36:51.680Z"
+  },
+  {
+    "_id": "z3993bz",
+    "timestamp": "2026-06-18T09:37:07.999Z",
+    "user": "inbavarunan",
+    "action": "Threat Intel Query",
+    "details": "Queried Domain: \"google.com\". Risk Score resolved to 7%.",
+    "ip": "::1",
+    "createdAt": "2026-06-18T09:37:08.002Z",
+    "updatedAt": "2026-06-18T09:37:08.002Z"
+  },
+  {
+    "_id": "spahs61",
+    "timestamp": "2026-06-18T09:37:16.635Z",
+    "user": "inbavarunan",
+    "action": "Threat Intel Query",
+    "details": "Queried Domain: \"inba.com\". Risk Score resolved to 11%.",
+    "ip": "::1",
+    "createdAt": "2026-06-18T09:37:16.637Z",
+    "updatedAt": "2026-06-18T09:37:16.637Z"
+  },
+  {
+    "_id": "2rx6bav",
+    "timestamp": "2026-06-18T09:37:27.713Z",
+    "user": "inbavarunan",
+    "action": "IOC Retracted",
+    "details": "Removed IOC entry 3jbbarn from repository.",
+    "ip": "::1",
+    "createdAt": "2026-06-18T09:37:27.715Z",
+    "updatedAt": "2026-06-18T09:37:27.715Z"
+  },
+  {
+    "_id": "egs8sk1",
+    "timestamp": "2026-06-18T09:37:28.612Z",
+    "user": "inbavarunan",
+    "action": "IOC Retracted",
+    "details": "Removed IOC entry crcly69 from repository.",
+    "ip": "::1",
+    "createdAt": "2026-06-18T09:37:28.613Z",
+    "updatedAt": "2026-06-18T09:37:28.613Z"
+  },
+  {
+    "_id": "z4p4lp6",
+    "timestamp": "2026-06-18T10:02:04.329Z",
+    "user": "inbavarunan",
+    "action": "Threat Hunt Executed",
+    "details": "Ran hunt technique \"High-CPU Processes\" command on platform linux.",
+    "ip": "::1",
+    "createdAt": "2026-06-18T10:02:04.332Z",
+    "updatedAt": "2026-06-18T10:02:04.332Z"
+  },
+  {
+    "_id": "rzfispe",
+    "timestamp": "2026-06-18T10:13:44.283Z",
+    "user": "System Scanner",
+    "action": "Network Scan Executed",
+    "details": "Nmap scan completed with code 0 for target 127.0.0.1 using profile quick. Discovered 1 hosts and 1 ports.",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-18T10:13:44.287Z",
+    "updatedAt": "2026-06-18T10:13:44.287Z"
+  },
+  {
+    "_id": "odckghj",
+    "timestamp": "2026-06-18T10:13:58.809Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system hunter and created Incident ticket ozq975q",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-18T10:13:58.811Z",
+    "updatedAt": "2026-06-18T10:13:58.811Z"
+  },
+  {
+    "_id": "ylledgn",
+    "timestamp": "2026-06-18T10:14:02.584Z",
+    "user": "System Scanner",
+    "action": "Network Scan Executed",
+    "details": "Nmap scan completed with code 0 for target 172.20.35.194 using profile quick. Discovered 1 hosts and 1 ports.",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-18T10:14:02.588Z",
+    "updatedAt": "2026-06-18T10:14:02.588Z"
+  },
+  {
+    "_id": "j4kofn0",
+    "timestamp": "2026-06-18T10:14:10.814Z",
+    "user": "inbavarunans",
+    "action": "Network Isolation",
+    "details": "State changed for endpoint hostname: hunter to Isolated.",
+    "ip": "::1",
+    "createdAt": "2026-06-18T10:14:10.816Z",
+    "updatedAt": "2026-06-18T10:14:10.816Z"
+  },
+  {
+    "_id": "33ckgr9",
+    "timestamp": "2026-06-18T10:14:16.824Z",
+    "user": "SOAR System",
+    "action": "Containment Action Executed",
+    "details": "Isolated system hunter and created Incident ticket srlg69l",
+    "ip": "127.0.0.1",
+    "createdAt": "2026-06-18T10:14:16.824Z",
+    "updatedAt": "2026-06-18T10:14:16.824Z"
   }
 ]

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store';
 import { Cpu, Server, ShieldAlert, Activity, Network, FileCode, CheckCircle, XCircle, RefreshCw, AlertTriangle } from 'lucide-react';
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 class ErrorBoundary extends React.Component<any, any> {
   constructor(props: any) {
@@ -50,6 +51,44 @@ function EDRComponent({ token }: any) {
 
   // Convert edrUpdates map to sorted array; merge with full device records fetched from API
   const [deviceRecords, setDeviceRecords] = useState<Record<string, any>>({});
+  const [deviceHistory, setDeviceHistory] = useState<any[]>([]);
+
+  // Derive selectedDevice from merged map so it's always live
+  const mergedDevices: any[] = Object.keys(deviceRecords).map(hostname => {
+    const base = deviceRecords[hostname] ?? {};
+    const live = edrUpdates[hostname] ?? {};
+    return {
+      ...base,
+      ...live,
+      hostname,
+      cpuUsage: live.cpuUsage ?? base.cpuUsage ?? 0,
+      ramUsage: live.ramUsage ?? base.ramUsage ?? 0,
+      status: live.status ?? base.status ?? 'Online',
+      processes: base.processes ?? [],
+      networkConnections: base.networkConnections ?? []
+    };
+  });
+
+  const selectedDevice = mergedDevices.find(d => d.hostname === selectedHostname) ?? null;
+
+  // Track telemetry history for the selected EDR device
+  useEffect(() => {
+    if (selectedDevice) {
+      const timestamp = new Date().toLocaleTimeString('en-IN', { hour12: false });
+      setDeviceHistory(prev => {
+        const filtered = prev.filter(p => p.hostname === selectedDevice.hostname);
+        const newPoint = {
+          time: timestamp,
+          cpu: selectedDevice.cpuUsage ?? 0,
+          ram: selectedDevice.ramUsage ?? 0,
+          hostname: selectedDevice.hostname
+        };
+        return [...filtered, newPoint].slice(-30);
+      });
+    } else {
+      setDeviceHistory([]);
+    }
+  }, [selectedDevice?.cpuUsage, selectedDevice?.ramUsage, selectedDevice?.hostname]);
 
   const fetchDevices = useCallback(async () => {
     setLoading(true);
@@ -82,24 +121,7 @@ function EDRComponent({ token }: any) {
     fetchDevices();
   }, []);
 
-  // Merge Redux real-time stats into deviceRecords
-  const mergedDevices: any[] = Object.keys(deviceRecords).map(hostname => {
-    const base = deviceRecords[hostname] ?? {};
-    const live = edrUpdates[hostname] ?? {};
-    return {
-      ...base,
-      ...live,
-      hostname,
-      cpuUsage: live.cpuUsage ?? base.cpuUsage ?? 0,
-      ramUsage: live.ramUsage ?? base.ramUsage ?? 0,
-      status: live.status ?? base.status ?? 'Online',
-      processes: base.processes ?? [],
-      networkConnections: base.networkConnections ?? []
-    };
-  });
 
-  // Derive selectedDevice from merged map so it's always live
-  const selectedDevice = mergedDevices.find(d => d.hostname === selectedHostname) ?? null;
 
   const seedForensicTimeline = (device: any) => {
     const isWindows = device?.hostname?.startsWith('WIN') || false;
@@ -213,7 +235,7 @@ function EDRComponent({ token }: any) {
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 font-sans select-none text-white">
       
       {/* 1. LEFT COLUMN: ENDPOINT REGISTRY LIST */}
-      <div className="p-5 bg-[#0D1117] border border-white/5 rounded-xl lg:col-span-1 h-[650px] flex flex-col justify-between shadow-xl">
+      <div className="p-5 bg-[#0D1117] border border-white/5 rounded-xl lg:col-span-1 h-[calc(100vh-140px)] flex flex-col justify-between shadow-xl">
         <div>
           <div className="flex justify-between items-center mb-4 border-b border-white/5 pb-2">
             <div>
@@ -232,7 +254,7 @@ function EDRComponent({ token }: any) {
           {loading ? (
             <p className="text-xs font-mono text-slate-500 animate-pulse">Querying agent nodes registries...</p>
           ) : (
-            <div className="space-y-2 overflow-y-auto max-h-[500px] pr-1">
+            <div className="space-y-2 overflow-y-auto max-h-[calc(100vh-270px)] pr-1">
               {mergedDevices.map((dev, dIdx) => {
                 const isActive = selectedHostname === dev?.hostname;
                 const isIsolated = dev?.status === 'Isolated';
@@ -282,7 +304,7 @@ function EDRComponent({ token }: any) {
       </div>
 
       {/* 2. RIGHT COLUMNS: PROCESS TREE & TELEMETRY PANELS */}
-      <div className="lg:col-span-2 space-y-6 h-[650px] overflow-y-auto pr-1">
+      <div className="lg:col-span-2 space-y-6 h-[calc(100vh-140px)] overflow-y-auto pr-1">
         
         {selectedDevice ? (
           <>
@@ -336,6 +358,46 @@ function EDRComponent({ token }: any) {
                     <div className="bg-emerald-500 h-full rounded-full transition-all duration-500" style={{ width: `${Math.min(selectedDevice?.ramUsage ?? 0, 100)}%` }}></div>
                   </div>
                 </div>
+              </div>
+            </div>
+
+            {/* Virtual Real-time Graph for EDR Endpoint */}
+            <div className="p-5 bg-[#0D1117] border border-white/5 rounded-xl flex flex-col h-64 shadow-xl">
+              <div className="flex justify-between items-center mb-3">
+                <div>
+                  <span className="text-xs uppercase font-mono font-bold tracking-wider text-slate-200">System Monitor Health Graph</span>
+                  <p className="text-[9px] text-slate-500 font-mono">REAL-TIME CPU &amp; RAM INGESTION FOR {selectedDevice.hostname}</p>
+                </div>
+              </div>
+              <div className="flex-1 min-h-0 w-full text-[9px] font-mono">
+                {deviceHistory.length > 0 ? (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={deviceHistory} margin={{ left: -25, right: 10, top: 10, bottom: 0 }}>
+                      <defs>
+                        <linearGradient id="edrCpuGrad" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#00D4FF" stopOpacity={0.4}/>
+                          <stop offset="95%" stopColor="#00D4FF" stopOpacity={0}/>
+                        </linearGradient>
+                        <linearGradient id="edrRamGrad" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#00FF87" stopOpacity={0.25}/>
+                          <stop offset="95%" stopColor="#00FF87" stopOpacity={0}/>
+                        </linearGradient>
+                      </defs>
+                      <XAxis dataKey="time" stroke="#222" strokeWidth={0.5} tick={{ fill: '#71717a', fontSize: 8 }} />
+                      <YAxis stroke="#222" strokeWidth={0.5} tick={{ fill: '#71717a', fontSize: 8 }} domain={[0, 100]} />
+                      <Tooltip 
+                        contentStyle={{ backgroundColor: '#090d16', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '6px' }}
+                        labelStyle={{ color: '#71717a', fontFamily: 'monospace' }}
+                        itemStyle={{ fontFamily: 'monospace' }}
+                      />
+                      <Legend wrapperStyle={{ fontSize: '9px', fontFamily: 'monospace' }} />
+                      <Area type="monotone" dataKey="cpu" stroke="#00D4FF" strokeWidth={2} fillOpacity={1} fill="url(#edrCpuGrad)" name="CPU Usage %" isAnimationActive={true} />
+                      <Area type="monotone" dataKey="ram" stroke="#00FF87" strokeWidth={1.5} fillOpacity={1} fill="url(#edrRamGrad)" name="RAM Usage %" isAnimationActive={true} />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <p className="text-slate-500 text-center pt-20 font-mono">Aggregating telemetry signals...</p>
+                )}
               </div>
             </div>
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Play, Pause, Trash2, Search, Filter, Cpu, Download, Info, Network, Laptop, ChevronDown, ChevronRight } from 'lucide-react';
 import { RootState, addPacket, clearPackets, toggleCapture, setSelectedPacket, setFilter, setSearchQuery } from '../store';
@@ -38,6 +38,24 @@ export default function PacketAnalysis() {
     network: true,
     payload: true
   });
+
+  const [listHeight, setListHeight] = useState(300);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const updateHeight = () => {
+      if (containerRef.current) {
+        setListHeight(containerRef.current.clientHeight || 300);
+      }
+    };
+    updateHeight();
+    const timer = setTimeout(updateHeight, 100);
+    window.addEventListener('resize', updateHeight);
+    return () => {
+      window.removeEventListener('resize', updateHeight);
+      clearTimeout(timer);
+    };
+  }, []);
 
   // Fetch local info on mount
   useEffect(() => {
@@ -252,7 +270,7 @@ export default function PacketAnalysis() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Left 2/3: Packet Queue Viewer */}
-        <div className="lg:col-span-2 space-y-4 flex flex-col h-[520px]">
+        <div className="lg:col-span-2 space-y-4 flex flex-col h-[calc(100vh-230px)]">
           
           {/* Controls Bar */}
           <div className="flex flex-wrap justify-between items-center p-3 bg-[#0D1117] border border-white/5 rounded-xl gap-4 shadow-xl">
@@ -338,14 +356,14 @@ export default function PacketAnalysis() {
             </div>
 
             {/* Virtualized list row mapper */}
-            <div className="flex-1 min-h-[300px]">
+            <div className="flex-1 min-h-[200px]" ref={containerRef}>
               {filteredPackets.length > 0 ? (
                 <List
                   rowCount={filteredPackets.length}
                   rowHeight={28}
                   rowComponent={Row}
                   rowProps={{}}
-                  style={{ height: 300, width: '100%' }}
+                  style={{ height: listHeight, width: '100%' }}
                 />
               ) : (
                 <div className="text-center py-28 text-slate-500 font-mono text-[10px] space-y-1">
@@ -359,7 +377,7 @@ export default function PacketAnalysis() {
         </div>
 
         {/* Right 1/3: Detail Inspection drawers */}
-        <div className="lg:col-span-1 bg-[#0D1117] border border-white/5 rounded-xl h-[520px] flex flex-col shadow-xl overflow-hidden p-4 space-y-4">
+        <div className="lg:col-span-1 bg-[#0D1117] border border-white/5 rounded-xl h-[calc(100vh-230px)] flex flex-col shadow-xl overflow-hidden p-4 space-y-4">
           
           <div className="border-b border-white/5 pb-2">
             <h3 className="text-xs uppercase font-mono font-bold tracking-wider text-cyan-400 flex items-center gap-1.5">

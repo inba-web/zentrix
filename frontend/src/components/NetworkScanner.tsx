@@ -267,14 +267,14 @@ export default function NetworkScanner() {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         
         {/* Left Side: Hosts List Summary */}
-        <div className="lg:col-span-1 p-5 bg-[#0D1117] border border-white/5 rounded-xl h-[520px] flex flex-col justify-between overflow-y-auto shadow-xl">
+        <div className="lg:col-span-1 p-5 bg-[#0D1117] border border-white/5 rounded-xl h-[calc(100vh-230px)] flex flex-col justify-between overflow-y-auto shadow-xl">
           <div className="space-y-4">
             <div className="flex items-center gap-2 border-b border-white/5 pb-2">
               <Server className="w-4 h-4 text-cyan-400" />
               <span className="text-xs uppercase font-mono font-bold tracking-wider text-slate-200">Discovered Targets</span>
             </div>
             
-            <div className="space-y-2 select-text font-mono text-[10px] overflow-y-auto max-h-[420px]">
+            <div className="space-y-2 select-text font-mono text-[10px] overflow-y-auto max-h-[calc(100vh-340px)]">
               {hosts.map((host, idx) => (
                 <div key={idx} className="p-2.5 bg-black/40 border border-white/5 rounded-lg flex justify-between items-center hover:border-cyan-500/20 transition-all">
                   <div className="min-w-0">
@@ -307,7 +307,7 @@ export default function NetworkScanner() {
         </div>
 
         {/* Right Side: Tab Viewport */}
-        <div className="lg:col-span-3 bg-[#0D1117] border border-white/5 rounded-xl h-[520px] flex flex-col shadow-xl overflow-hidden">
+        <div className="lg:col-span-3 bg-[#0D1117] border border-white/5 rounded-xl h-[calc(100vh-230px)] flex flex-col shadow-xl overflow-hidden">
           
           {/* Tabs bar header */}
           <div className="flex border-b border-white/5 bg-black/20 text-xs font-mono">
@@ -441,9 +441,9 @@ export default function NetworkScanner() {
 
             {/* Tab 2: Topology Visualizer */}
             {activeTab === 'topology' && (
-              <div className="h-full flex flex-col justify-between items-center relative min-h-[360px]">
+              <div className="h-full flex flex-col justify-between items-center relative min-h-[calc(100vh-340px)]">
                 {hosts.length > 0 ? (
-                  <div className="relative w-full h-[360px] flex items-center justify-center bg-black/10 rounded-xl border border-white/5 overflow-hidden">
+                  <div className="relative w-full h-[calc(100vh-340px)] flex items-center justify-center bg-black/10 rounded-xl border border-white/5 overflow-hidden">
                     {/* Scanner Center Host */}
                     <div className="z-10 p-3 bg-black border border-cyan-500/40 rounded-lg text-cyan-400 text-center shadow-glow shadow-cyan-500/5 select-none cursor-pointer">
                       <Laptop className="w-5 h-5 text-cyan-400 mx-auto mb-1 animate-pulse" />
@@ -594,7 +594,7 @@ export default function NetworkScanner() {
 
             {/* Tab 4: Monaco Console Output Log */}
             {activeTab === 'console' && (
-              <div className="flex flex-col h-full space-y-3 min-h-[380px]">
+              <div className="flex flex-col h-full space-y-3 min-h-[calc(100vh-340px)]">
                 {/* Console action bar */}
                 <div className="flex justify-between items-center bg-black/40 border border-white/5 rounded-lg px-4 py-2 text-[10px]">
                   <span className="font-bold text-slate-500 uppercase">Interactive Log Stream</span>
@@ -616,7 +616,7 @@ export default function NetworkScanner() {
                   </div>
                 </div>
 
-                <div className="flex-1 bg-black p-4 border border-white/5 rounded-xl text-[10.5px] leading-relaxed h-[320px] overflow-y-auto font-mono text-slate-300 select-text">
+                <div className="flex-1 bg-black p-4 border border-white/5 rounded-xl text-[10.5px] leading-relaxed h-[calc(100vh-380px)] overflow-y-auto font-mono text-slate-300 select-text">
                   {logs.map((log, idx) => {
                     let textClass = 'text-slate-400';
                     if (log.includes('open')) textClass = 'text-emerald-400 font-bold';

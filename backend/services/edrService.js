@@ -7,7 +7,7 @@ let edrInterval = null;
 let fileWatcher = null;
 let lastProcesses = new Map(); // Store previous PID list
 
-const watchDir = path.join(__dirname, '..', 'data');
+const watchDir = path.join(__dirname, '..', '..', 'storage', 'uploads');
 const db = require('../db');
 
 // Setup EDR file watch
@@ -18,12 +18,12 @@ function setupFileWatcher(io) {
 
   try {
     fileWatcher = fs.watch(watchDir, (eventType, filename) => {
-      if (!filename || filename.endsWith('.json')) return;
-      const changeMsg = `EDR File Monitor: Event [${eventType}] triggered on file: ${filename} inside monitored workspace directory.`;
+      if (!filename || filename.endsWith('.tmp')) return;
+      const changeMsg = `EDR File Monitor: Event [${eventType}] triggered on file: ${filename} inside monitored uploads workspace directory.`;
       
       const alert = {
         timestamp: new Date(),
-        severity: 'MEDIUM',
+        severity: 'LOW',
         title: 'File Integrity Change Detected',
         description: changeMsg,
         category: 'EDR Alert',

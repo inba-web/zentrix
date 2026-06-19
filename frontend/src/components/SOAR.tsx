@@ -73,7 +73,7 @@ export default function SOAR({ token }: any) {
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 font-sans">
       
       {/* 1. LEFT PANEL: PLAYBOOK REGISTRY LIST */}
-      <div className="lg:col-span-1 p-5 bg-[#111625] border border-slate-800 rounded-lg h-[650px] flex flex-col justify-between overflow-y-auto">
+      <div className="lg:col-span-1 p-5 bg-[#111625] border border-slate-800 rounded-lg h-[calc(100vh-140px)] flex flex-col justify-between overflow-y-auto">
         <div>
           <div className="flex justify-between items-center mb-4">
             <div>
@@ -86,7 +86,7 @@ export default function SOAR({ token }: any) {
           {loading ? (
             <p className="text-xs font-mono text-slate-500">Retrieving automation lists...</p>
           ) : (
-            <div className="space-y-2 overflow-y-auto max-h-[500px] pr-1 select-none">
+            <div className="space-y-2 overflow-y-auto max-h-[calc(100vh-270px)] pr-1 select-none">
               {playbooks.map(p => {
                 const isActive = selectedPlaybook?._id === p._id;
                 return (
@@ -119,7 +119,7 @@ export default function SOAR({ token }: any) {
       </div>
 
       {/* 2. RIGHT PANEL: DETAILED STEP SEQUENCES & AUDITS */}
-      <div className="lg:col-span-2 space-y-6 h-[650px] overflow-y-auto pr-1">
+      <div className="lg:col-span-2 space-y-6 h-[calc(100vh-140px)] overflow-y-auto pr-1">
         
         {selectedPlaybook ? (
           <>

@@ -16,7 +16,8 @@ import {
   Loader2,
   ListCollapse,
   ShieldCheck,
-  Zap
+  Zap,
+  Database
 } from 'lucide-react';
 import { RootState } from '../store';
 
@@ -122,43 +123,68 @@ export default function Dashboard() {
     return () => clearTimeout(300);
   }, [liveTelemetry]);
 
+  // Sparkline history buffers for new metrics
+  const [diskHistory, setDiskHistory] = useState<number[]>([]);
+  const [incidentsHistory, setIncidentsHistory] = useState<number[]>([]);
+
+  // Resolve telemetry values
+  const liveOpenPorts = liveTelemetry?.openPorts ?? openPorts;
+  const liveActiveHosts = liveTelemetry?.activeHosts ?? activeHosts;
+  const liveRunningScans = liveTelemetry?.runningScans ?? runningScans;
+  const liveAlertsDistribution = liveTelemetry?.alertsDistribution ?? alertsDistribution;
+  const liveActiveConnections = liveTelemetry?.activeConnections ?? 0;
+  const liveActiveIncidents = liveTelemetry?.activeIncidents ?? 0;
+  const diskUsage = liveTelemetry?.disk ?? 0;
+  const healthScore = liveTelemetry?.healthScore ?? 100;
+  const rxSpeed = liveTelemetry?.downloadSpeed ?? '0.00';
+  const txSpeed = liveTelemetry?.uploadSpeed ?? '0.00';
+
   // Synchronize separate metric history counts
   useEffect(() => {
-    setPortsHistory(prev => [...prev, openPorts].slice(-30));
-  }, [openPorts]);
+    setPortsHistory(prev => [...prev, liveOpenPorts].slice(-30));
+  }, [liveOpenPorts]);
 
   useEffect(() => {
-    setHostsHistory(prev => [...prev, activeHosts].slice(-30));
-  }, [activeHosts]);
+    setHostsHistory(prev => [...prev, liveActiveHosts].slice(-30));
+  }, [liveActiveHosts]);
 
   useEffect(() => {
-    setScansHistory(prev => [...prev, runningScans].slice(-30));
-  }, [runningScans]);
+    setScansHistory(prev => [...prev, liveRunningScans].slice(-30));
+  }, [liveRunningScans]);
 
   useEffect(() => {
-    const totalAlerts = alertsDistribution.CRITICAL + alertsDistribution.HIGH + alertsDistribution.MEDIUM + alertsDistribution.LOW;
-    setAlertsHistory(prev => [...prev, alertsDistribution.CRITICAL].slice(-30));
-    setThreatsHistory(prev => [...prev, alertsDistribution.CRITICAL + alertsDistribution.HIGH].slice(-30));
-  }, [alertsDistribution]);
+    setDiskHistory(prev => [...prev, diskUsage].slice(-30));
+  }, [diskUsage]);
+
+  useEffect(() => {
+    setIncidentsHistory(prev => [...prev, liveActiveIncidents].slice(-30));
+  }, [liveActiveIncidents]);
+
+  useEffect(() => {
+    setAlertsHistory(prev => [...prev, liveAlertsDistribution.CRITICAL].slice(-30));
+    setThreatsHistory(prev => [...prev, liveAlertsDistribution.CRITICAL + liveAlertsDistribution.HIGH].slice(-30));
+  }, [liveAlertsDistribution]);
 
   // Calculate live threat severity metrics
-  const criticalCount = alertsDistribution.CRITICAL;
-  const highCount = alertsDistribution.HIGH;
-  const mediumCount = alertsDistribution.MEDIUM;
-  const lowCount = alertsDistribution.LOW;
+  const criticalCount = liveAlertsDistribution.CRITICAL;
+  const highCount = liveAlertsDistribution.HIGH;
+  const mediumCount = liveAlertsDistribution.MEDIUM;
+  const lowCount = liveAlertsDistribution.LOW;
 
   const totalUnresolved = criticalCount + highCount + mediumCount + lowCount;
   const threatsDetected = criticalCount + highCount;
-  const securityScore = Math.max(30, 100 - (criticalCount * 12 + highCount * 5 + mediumCount * 2));
+  const securityScore = healthScore;
   const riskScore = Math.min(100, (criticalCount * 18 + highCount * 8));
 
   // Animating values
-  const animatedPorts = useAnimatedCounter(openPorts);
-  const animatedHosts = useAnimatedCounter(activeHosts);
-  const animatedConns = useAnimatedCounter(liveTelemetry?.activeConnections || 0);
-  const animatedScans = useAnimatedCounter(runningScans);
+  const animatedPorts = useAnimatedCounter(liveOpenPorts);
+  const animatedHosts = useAnimatedCounter(liveActiveHosts);
+  const animatedConns = useAnimatedCounter(liveActiveConnections);
+  const animatedScans = useAnimatedCounter(liveRunningScans);
   const animatedAlerts = useAnimatedCounter(criticalCount);
   const animatedThreats = useAnimatedCounter(threatsDetected);
+  const animatedIncidents = useAnimatedCounter(liveActiveIncidents);
+  const animatedDisk = useAnimatedCounter(diskUsage);
 
   // Radial Bar Data
   const radialData = [
@@ -241,75 +267,85 @@ export default function Dashboard() {
       {/* KPI METRIC CARDS */}
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
         
-        {/* Open Ports */}
-        <div className="p-4 bg-[#0D1117] border border-white/5 rounded-xl hover:border-[#00D4FF]/30 transition-all shadow-md flex flex-col justify-between h-28">
+        {/* Health Score */}
+        <div className="p-4 bg-[#0D1117] border border-white/5 rounded-xl hover:border-[#00FF87]/30 transition-all shadow-md flex flex-col justify-between h-28 animate-fade-in">
           <div className="flex items-center justify-between">
-            <span className="text-[9px] uppercase font-mono text-slate-500">Open Ports</span>
-            <Server className="w-4 h-4 text-[#00D4FF]" />
+            <span className="text-[9px] uppercase font-mono text-slate-500">Security Posture</span>
+            <ShieldCheck className={`w-4 h-4 ${securityScore > 75 ? 'text-[#00FF87]' : 'text-[#EF4444]'}`} />
           </div>
           <div className="flex items-end justify-between mt-2">
-            <p className="text-2xl font-bold text-slate-200 font-mono leading-none">{animatedPorts}</p>
-            <Sparkline data={portsHistory} color="#00D4FF" />
+            <p className="text-2xl font-bold text-slate-200 font-mono leading-none">{securityScore}%</p>
+            <span className={`text-[8px] font-mono px-2 py-0.5 rounded ${securityScore > 75 ? 'bg-[#00FF87]/10 text-[#00FF87]' : 'bg-[#EF4444]/10 text-[#EF4444]'}`}>
+              {securityScore > 75 ? 'SECURE' : 'THREATS'}
+            </span>
+          </div>
+        </div>
+
+        {/* Active Incidents */}
+        <div className="p-4 bg-[#0D1117] border border-white/5 rounded-xl hover:border-[#EF4444]/30 transition-all shadow-md flex flex-col justify-between h-28">
+          <div className="flex items-center justify-between">
+            <span className="text-[9px] uppercase font-mono text-slate-500">Active Incidents</span>
+            <AlertOctagon className="w-4 h-4 text-[#EF4444] animate-pulse" />
+          </div>
+          <div className="flex items-end justify-between mt-2">
+            <p className="text-2xl font-bold text-slate-200 font-mono leading-none">{animatedIncidents}</p>
+            <Sparkline data={incidentsHistory} color="#EF4444" />
+          </div>
+        </div>
+
+        {/* Network Throughput */}
+        <div className="p-4 bg-[#0D1117] border border-white/5 rounded-xl hover:border-cyan-500/30 transition-all shadow-md flex flex-col justify-between h-28">
+          <div className="flex items-center justify-between">
+            <span className="text-[9px] uppercase font-mono text-slate-500">Network Speed</span>
+            <Activity className="w-4 h-4 text-cyan-400" />
+          </div>
+          <div className="flex flex-col mt-2">
+            <div className="flex justify-between items-end leading-none">
+              <p className="text-[10px] font-mono text-slate-400">DN: <span className="text-cyan-400 font-bold">{rxSpeed}</span> M</p>
+              <p className="text-[10px] font-mono text-slate-400">UP: <span className="text-cyan-400 font-bold">{txSpeed}</span> M</p>
+            </div>
+            <div className="w-full bg-white/5 h-1 rounded overflow-hidden mt-1.5">
+              <div 
+                className="bg-cyan-400 h-full transition-all duration-500" 
+                style={{ width: `${Math.min(100, (parseFloat(rxSpeed) + parseFloat(txSpeed)) * 10)}%` }}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Disk Usage */}
+        <div className="p-4 bg-[#0D1117] border border-white/5 rounded-xl hover:border-[#F59E0B]/30 transition-all shadow-md flex flex-col justify-between h-28">
+          <div className="flex items-center justify-between">
+            <span className="text-[9px] uppercase font-mono text-slate-500">Disk Usage</span>
+            <Database className="w-4 h-4 text-[#F59E0B]" />
+          </div>
+          <div className="flex items-end justify-between mt-2">
+            <p className="text-2xl font-bold text-slate-200 font-mono leading-none">{animatedDisk}%</p>
+            <Sparkline data={diskHistory} color="#F59E0B" />
           </div>
         </div>
 
         {/* Active Hosts */}
-        <div className="p-4 bg-[#0D1117] border border-white/5 rounded-xl hover:border-[#00FF87]/30 transition-all shadow-md flex flex-col justify-between h-28">
+        <div className="p-4 bg-[#0D1117] border border-white/5 rounded-xl hover:border-[#00D4FF]/30 transition-all shadow-md flex flex-col justify-between h-28">
           <div className="flex items-center justify-between">
             <span className="text-[9px] uppercase font-mono text-slate-500">Active Hosts</span>
-            <Cpu className="w-4 h-4 text-[#00FF87]" />
+            <Cpu className="w-4 h-4 text-[#00D4FF]" />
           </div>
           <div className="flex items-end justify-between mt-2">
             <p className="text-2xl font-bold text-slate-200 font-mono leading-none">{animatedHosts}</p>
-            <Sparkline data={hostsHistory} color="#00FF87" />
+            <Sparkline data={hostsHistory} color="#00D4FF" />
           </div>
         </div>
 
-        {/* Active Connections */}
-        <div className="p-4 bg-[#0D1117] border border-white/5 rounded-xl hover:border-cyan-500/30 transition-all shadow-md flex flex-col justify-between h-28">
+        {/* Open Ports */}
+        <div className="p-4 bg-[#0D1117] border border-white/5 rounded-xl hover:border-violet-500/30 transition-all shadow-md flex flex-col justify-between h-28">
           <div className="flex items-center justify-between">
-            <span className="text-[9px] uppercase font-mono text-slate-500">Active Connections</span>
-            <Activity className="w-4 h-4 text-cyan-400 animate-pulse" />
+            <span className="text-[9px] uppercase font-mono text-slate-500">Open Ports</span>
+            <Server className="w-4 h-4 text-violet-400" />
           </div>
           <div className="flex items-end justify-between mt-2">
-            <p className="text-2xl font-bold text-slate-200 font-mono leading-none">{animatedConns}</p>
-            <Sparkline data={connsHistory} color="#06b6d4" />
-          </div>
-        </div>
-
-        {/* Running Scans */}
-        <div className="p-4 bg-[#0D1117] border border-white/5 rounded-xl hover:border-[#F59E0B]/30 transition-all shadow-md flex flex-col justify-between h-28">
-          <div className="flex items-center justify-between">
-            <span className="text-[9px] uppercase font-mono text-slate-500">Running Scans</span>
-            <Radio className="w-4 h-4 text-[#F59E0B]" />
-          </div>
-          <div className="flex items-end justify-between mt-2">
-            <p className="text-2xl font-bold text-slate-200 font-mono leading-none">{animatedScans}</p>
-            <Sparkline data={scansHistory} color="#F59E0B" />
-          </div>
-        </div>
-
-        {/* Critical Alerts */}
-        <div className="p-4 bg-[#0D1117] border border-white/5 rounded-xl hover:border-[#EF4444]/30 transition-all shadow-md flex flex-col justify-between h-28">
-          <div className="flex items-center justify-between">
-            <span className="text-[9px] uppercase font-mono text-slate-500">Critical Alerts</span>
-            <AlertOctagon className="w-4 h-4 text-[#EF4444] animate-bounce" />
-          </div>
-          <div className="flex items-end justify-between mt-2">
-            <p className="text-2xl font-bold text-[#EF4444] font-mono leading-none">{animatedAlerts}</p>
-            <Sparkline data={alertsHistory} color="#EF4444" />
-          </div>
-        </div>
-
-        {/* Threats Detected */}
-        <div className="p-4 bg-[#0D1117] border border-white/5 rounded-xl hover:border-[#F97316]/30 transition-all shadow-md flex flex-col justify-between h-28">
-          <div className="flex items-center justify-between">
-            <span className="text-[9px] uppercase font-mono text-slate-500">Threats Detected</span>
-            <ShieldAlert className="w-4 h-4 text-[#F97316]" />
-          </div>
-          <div className="flex items-end justify-between mt-2">
-            <p className="text-2xl font-bold text-slate-200 font-mono leading-none">{animatedThreats}</p>
-            <Sparkline data={threatsHistory} color="#F97316" />
+            <p className="text-2xl font-bold text-slate-200 font-mono leading-none">{animatedPorts}</p>
+            <Sparkline data={portsHistory} color="#8b5cf6" />
           </div>
         </div>
 

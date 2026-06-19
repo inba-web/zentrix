@@ -23,7 +23,7 @@ router.get('/logs', authenticateToken, async (req, res) => {
   }
 });
 
-// Run KQL/SPL Style Query Mocks
+// Run KQL/SPL Style Query against stored database telemetry
 router.post('/search', authenticateToken, async (req, res) => {
   const { query } = req.body;
 
@@ -38,18 +38,28 @@ router.post('/search', authenticateToken, async (req, res) => {
     const allLogs = await db.logs.find({}, 1000);
     let results = [...allLogs];
 
-    // Simple parser for SPL/KQL
-    // Example: source="AuthLog" | where severity="WARNING"
+    // Parser for SPL/KQL
+    // Example: source="AuthLog" severity="WARNING" | limit 10
     // Example: host="WIN-SOC-AD-02" | stats count by severity
     const segments = query.split('|').map(s => s.trim());
     
     // Process base query (First segment)
     const base = segments[0];
     if (base && base !== '*') {
-      const match = base.match(/(\w+)[\s]*=[\s]*"([^"]+)"/);
-      if (match) {
-        const [, field, val] = match;
-        results = results.filter(item => String(item[field] || '').toLowerCase() === val.toLowerCase());
+      const matches = [...base.matchAll(/(\w+)[\s]*=[\s]*"([^"]+)"/g)];
+      if (matches.length > 0) {
+        matches.forEach(match => {
+          const [, field, val] = match;
+          const fLower = field.toLowerCase();
+          if (fLower === 'eventtype') {
+            results = results.filter(item => 
+              String(item.source || '').toLowerCase().includes(val.toLowerCase()) || 
+              String(item.message || '').toLowerCase().includes(val.toLowerCase())
+            );
+          } else {
+            results = results.filter(item => String(item[field] || '').toLowerCase() === val.toLowerCase());
+          }
+        });
       } else {
         // Fallback to text search across all logs
         const searchWord = base.replace(/"/g, '').toLowerCase();
@@ -69,15 +79,23 @@ router.post('/search', authenticateToken, async (req, res) => {
       // WHERE command
       if (cmd.startsWith('where ') || cmd.startsWith('filter ')) {
         const inner = cmd.replace(/^(where|filter)\s+/, '');
-        const match = inner.match(/(\w+)[\s]*=[\s]*"([^"]+)"/);
-        if (match) {
+        const matches = [...inner.matchAll(/(\w+)[\s]*=[\s]*"([^"]+)"/g)];
+        matches.forEach(match => {
           const [, field, val] = match;
-          results = results.filter(item => String(item[field] || '').toLowerCase() === val.toLowerCase());
-        }
+          const fLower = field.toLowerCase();
+          if (fLower === 'eventtype') {
+            results = results.filter(item => 
+              String(item.source || '').toLowerCase().includes(val.toLowerCase()) || 
+              String(item.message || '').toLowerCase().includes(val.toLowerCase())
+            );
+          } else {
+            results = results.filter(item => String(item[field] || '').toLowerCase() === val.toLowerCase());
+          }
+        });
       }
       
       // STATS command
-      if (cmd.startsWith('stats ')) {
+      else if (cmd.startsWith('stats ')) {
         const statsMatch = cmd.match(/stats\s+count\s+by\s+(\w+)/);
         if (statsMatch) {
           const field = statsMatch[1];
@@ -91,11 +109,28 @@ router.post('/search', authenticateToken, async (req, res) => {
       }
 
       // LIMIT command
-      if (cmd.startsWith('limit ')) {
+      else if (cmd.startsWith('limit ')) {
         const limitCount = parseInt(cmd.replace('limit ', ''), 10);
         if (!isNaN(limitCount)) {
           results = results.slice(0, limitCount);
         }
+      }
+
+      // Direct filter (e.g. severity="CRITICAL")
+      else {
+        const matches = [...cmd.matchAll(/(\w+)[\s]*=[\s]*"([^"]+)"/g)];
+        matches.forEach(match => {
+          const [, field, val] = match;
+          const fLower = field.toLowerCase();
+          if (fLower === 'eventtype') {
+            results = results.filter(item => 
+              String(item.source || '').toLowerCase().includes(val.toLowerCase()) || 
+              String(item.message || '').toLowerCase().includes(val.toLowerCase())
+            );
+          } else {
+            results = results.filter(item => String(item[field] || '').toLowerCase() === val.toLowerCase());
+          }
+        });
       }
     }
 
@@ -111,7 +146,7 @@ router.post('/search', authenticateToken, async (req, res) => {
     res.json({
       query,
       count: results.length,
-      results: stats ? null : results, // If it was a stats command, only return statistics
+      results: stats ? null : results, // If stats, only return stats
       statistics: stats
     });
 

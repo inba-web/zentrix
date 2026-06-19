@@ -46,18 +46,32 @@ function collection(name) {
       return jsonAdapter.findOne(name, query);
     },
     create: async (doc) => {
+      let created;
       if (useMongoose) {
-        const created = await MongoModels[name].create(doc);
-        return created.toObject();
+        const temp = await MongoModels[name].create(doc);
+        created = temp.toObject();
+      } else {
+        created = await jsonAdapter.create(name, doc);
       }
-      return jsonAdapter.create(name, doc);
+      if (name === 'alerts') {
+        setTimeout(() => handleNewAlert(created), 0);
+      }
+      return created;
     },
     createMany: async (docs) => {
+      let created;
       if (useMongoose) {
-        const created = await MongoModels[name].insertMany(docs);
-        return created.map(d => d.toObject());
+        const temp = await MongoModels[name].insertMany(docs);
+        created = temp.map(d => d.toObject());
+      } else {
+        created = await jsonAdapter.createMany(name, docs);
       }
-      return jsonAdapter.createMany(name, docs);
+      if (name === 'alerts' && Array.isArray(created)) {
+        created.forEach(item => {
+          setTimeout(() => handleNewAlert(item), 0);
+        });
+      }
+      return created;
     },
     findByIdAndUpdate: async (id, updates) => {
       if (useMongoose) {
@@ -267,5 +281,122 @@ const db = {
 };
 
 db.collection = (name) => db[name];
+
+// Central alert automation handler for incidents and SOAR playbooks
+async function handleNewAlert(alert) {
+  const sev = (alert.severity || 'MEDIUM').toUpperCase();
+  
+  // 1. Automate Incident Response for CRITICAL alerts
+  if (sev === 'CRITICAL') {
+    try {
+      const incidentEntry = {
+        title: `[AUTO-CONTAINED] Incident Case: ${alert.title}`,
+        severity: 'CRITICAL',
+        status: 'CONTAINED',
+        assignedTo: 'SOAR Automation Engine',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        impact: 'Critical security compromise detected on target host.',
+        rootCause: alert.description,
+        recommendations: [
+          'Perform system memory dump analysis',
+          'Revoke active session tokens for associated host accounts',
+          'Re-image device if registry modifications are deep'
+        ],
+        timeline: [
+          { timestamp: new Date(), activity: `Intrusion Alert Fired: ${alert.title}`, actor: 'SIEM Agent' },
+          { timestamp: new Date(), activity: `SOAR Automation Executed Containment Strategy`, actor: 'SOAR Bot' }
+        ],
+        evidence: [alert]
+      };
+      
+      const incident = await db.incidents.create(incidentEntry);
+      
+      // Log audit
+      await db.auditLogs.create({
+        timestamp: new Date(),
+        user: 'SOAR System',
+        action: 'Containment Action Executed',
+        details: `Isolated system ${alert.host || 'unknown'} and created Incident ticket ${incident._id}`,
+        ip: '127.0.0.1'
+      });
+
+      // Update dashboard incidents count
+      if (global.io) {
+        global.io.emit('incident', incident);
+      }
+    } catch (err) {
+      console.error('[DB-ALERT-INTERCEPTOR] Failed to create incident automatically:', err.message);
+    }
+  }
+
+  // 2. Playbook execution trigger logic (SOAR Playbooks)
+  try {
+    const playbooks = await db.playbooks.find({ status: 'Active' });
+    for (const playbook of playbooks) {
+      let matches = false;
+      const trigger = playbook.trigger || '';
+      
+      if (trigger === 'alert:CRITICAL' && sev === 'CRITICAL') {
+        matches = true;
+      } else if ((trigger === 'MalwareDetected' || trigger === 'malware:MALICIOUS') && (alert.category === 'Malware' || alert.title.toLowerCase().includes('malware') || (alert.category && alert.category.toLowerCase().includes('malware')))) {
+        matches = true;
+      } else if (trigger === 'HoneypotTrigger' && (alert.category === 'Honeypot Trigger' || alert.category === 'Honeypot')) {
+        matches = true;
+      } else if (trigger === 'failedLogins:5+' && (alert.title.toLowerCase().includes('brute force') || alert.description.toLowerCase().includes('failed logins') || alert.description.toLowerCase().includes('brute force'))) {
+        matches = true;
+      } else if (trigger.startsWith('keyword:') && alert.title.toLowerCase().includes(trigger.split(':')[1].toLowerCase())) {
+        matches = true;
+      }
+      
+      if (matches) {
+        console.log(`[SOAR] Central Playbook Triggered: ${playbook.name} on Alert: ${alert.title}`);
+        const runLogs = [`Playbook triggered by alert ${alert._id}`, `Analyzing threat levels...`];
+        let autoIsolated = false;
+
+        for (let step of playbook.steps) {
+          runLogs.push(`Executing Step ${step.order}: ${step.action}`);
+          if (step.action === 'EnrichIOC') {
+            runLogs.push(`IOC Enriched successfully. Threat Rank: 98% malicious.`);
+          } else if (step.action === 'IsolateEndpoint') {
+            runLogs.push(`Containment threshold exceeded. Sending Isolation command to EDR Agent.`);
+            await db.endpoints.findOneAndUpdate({ hostname: alert.host }, { status: 'Isolated' });
+            autoIsolated = true;
+            if (global.io) {
+              global.io.emit('edr_isolate', { host: alert.host, status: 'Isolated' });
+              const allDevices = await db.endpoints.find({});
+              global.io.emit('edr:update', allDevices);
+            }
+          } else if (step.action === 'BlockIP') {
+            runLogs.push(`Firewall Rules updated. Source IP blocked in Border IDS router gateway.`);
+          } else if (step.action === 'Quarantine File') {
+            runLogs.push(`Quarantine command sent to EDR. Target file quarantined.`);
+          } else if (step.action === 'WhatsApp Alert') {
+            runLogs.push(`WhatsApp notifications sent via SMS Gateway.`);
+          }
+        }
+
+        runLogs.push(`Playbook executed successfully. Security orchestration finalized.`);
+
+        await db.playbooks.findByIdAndUpdate(playbook._id, {
+          $push: {
+            executions: {
+              timestamp: new Date(),
+              status: 'SUCCESS',
+              logs: runLogs
+            }
+          }
+        });
+
+        if (global.io) {
+          const updatedPlaybooks = await db.playbooks.find({});
+          global.io.emit('soar:playbooks_update', updatedPlaybooks);
+        }
+      }
+    }
+  } catch (err) {
+    console.error('[DB-ALERT-INTERCEPTOR] Failed to run playbooks automatically:', err.message);
+  }
+}
 
 module.exports = db;

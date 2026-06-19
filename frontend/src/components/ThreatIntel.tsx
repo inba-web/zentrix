@@ -354,7 +354,7 @@ export default function ThreatIntel({ token }: any) {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           
           {/* 1. LEFT PANEL: IOC MANAGER REGISTRY */}
-          <div className="lg:col-span-1 p-5 bg-[#0D1117] border border-white/5 rounded-xl h-[560px] flex flex-col justify-between overflow-y-auto shadow-xl">
+          <div className="lg:col-span-1 p-5 bg-[#0D1117] border border-white/5 rounded-xl h-[calc(100vh-210px)] flex flex-col justify-between overflow-y-auto shadow-xl">
             <div className="space-y-5">
               <div>
                 <span className="text-xs uppercase font-mono font-bold tracking-wider text-slate-200">Indicator Catalog Setup</span>
@@ -452,7 +452,7 @@ export default function ThreatIntel({ token }: any) {
                   <button onClick={() => handleSort('reputation')} className="col-span-1 text-right flex items-center gap-0.5 hover:text-white justify-end">SCORE <ArrowUpDown className="w-2 h-2" /></button>
                 </div>
 
-                <div className="space-y-1.5 max-h-[140px] overflow-y-auto pr-1">
+                <div className="space-y-1.5 max-h-[calc(100vh-440px)] overflow-y-auto pr-1">
                   {sortedIOCs.map((ioc, idx) => (
                     <div key={ioc._id || idx} className="grid grid-cols-6 p-2 bg-black/40 border border-white/5 rounded-lg font-mono text-[9px] items-center hover:border-cyan-500/10 transition-colors">
                       <span className="col-span-2 text-slate-500 uppercase truncate pr-1">[{ioc.type}]</span>
@@ -482,7 +482,7 @@ export default function ThreatIntel({ token }: any) {
           </div>
 
           {/* 2. RIGHT PANEL: INTELLIGENCE MULTI-SOURCE SEARCH & REPUTATION WORKSPACE */}
-          <div className="lg:col-span-2 space-y-4 h-[560px] overflow-y-auto pr-1">
+          <div className="lg:col-span-2 space-y-4 h-[calc(100vh-210px)] overflow-y-auto pr-1">
             
             {/* Unified Search tool */}
             <div className="p-5 bg-[#0D1117] border border-white/5 rounded-xl shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -722,7 +722,7 @@ export default function ThreatIntel({ token }: any) {
       )}
 
       {activeTab === 'rules' && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[560px] select-text">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-210px)] select-text">
           
           {/* Rules inventory catalog */}
           <div className="lg:col-span-1 p-5 bg-[#0D1117] border border-white/5 rounded-xl h-full flex flex-col justify-between shadow-xl">
@@ -744,7 +744,7 @@ export default function ThreatIntel({ token }: any) {
               {/* Lists of YARA & Sigma rules */}
               <div className="space-y-3">
                 <span className="text-[9px] uppercase font-mono text-slate-500 font-bold block">ACTIVE SIGNATURES ({rules.length})</span>
-                <div className="space-y-1.5 overflow-y-auto max-h-[400px] pr-1">
+                <div className="space-y-1.5 overflow-y-auto max-h-[calc(100vh-320px)] pr-1">
                   {rules.map((rule, idx) => (
                     <div 
                       key={idx}
