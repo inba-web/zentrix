@@ -11,7 +11,6 @@
 Traditional SOC platforms are often cloud-dependent, expensive, and difficult to deploy in isolated environments.
 
 **ZENTRIX** delivers a powerful Local-First Security Operations Center that provides real-time telemetry, threat monitoring, malware analysis, phishing detection, honeypot monitoring, automated reporting, and alerting from a single unified platform.
-
 ---
 
 ## ✨ Key Features
