@@ -3418,5 +3418,15 @@
     "ip": "127.0.0.1",
     "createdAt": "2026-06-18T10:14:16.824Z",
     "updatedAt": "2026-06-18T10:14:16.824Z"
+  },
+  {
+    "_id": "ub0i20f",
+    "timestamp": "2026-06-29T17:07:18.103Z",
+    "user": "inba",
+    "action": "Profile Registered",
+    "details": "One-time ZENTRIX SOC workstation profile created for inba.",
+    "ip": "::1",
+    "createdAt": "2026-06-29T17:07:18.105Z",
+    "updatedAt": "2026-06-29T17:07:18.105Z"
   }
 ]
