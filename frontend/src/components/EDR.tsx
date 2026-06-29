@@ -121,6 +121,28 @@ function EDRComponent({ token }: any) {
     fetchDevices();
   }, []);
 
+  useEffect(() => {
+    const socket = (window as any).socket;
+    if (!socket) return;
+
+    const handleIsolate = (data: any) => {
+      if (data && data.host) {
+        setDeviceRecords(prev => ({
+          ...prev,
+          [data.host]: { ...(prev[data.host] || { hostname: data.host }), status: data.status || 'Isolated' }
+        }));
+      }
+    };
+
+    socket.on('edr_isolate', handleIsolate);
+    socket.on('edr:update', () => fetchDevices());
+
+    return () => {
+      socket.off('edr_isolate', handleIsolate);
+      socket.off('edr:update');
+    };
+  }, [fetchDevices]);
+
 
 
   const seedForensicTimeline = (device: any) => {

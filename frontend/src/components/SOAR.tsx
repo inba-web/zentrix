@@ -11,6 +11,26 @@ export default function SOAR({ token }: any) {
     fetchPlaybooks();
   }, []);
 
+  // Listen to real-time events to refresh playbook executions when automated playbooks run
+  useEffect(() => {
+    const socket = (window as any).socket;
+    if (!socket) return;
+
+    const handleRefresh = () => {
+      fetchPlaybooks();
+    };
+
+    socket.on('incident', handleRefresh);
+    socket.on('alert', handleRefresh);
+    socket.on('soar:execution', handleRefresh);
+
+    return () => {
+      socket.off('incident', handleRefresh);
+      socket.off('alert', handleRefresh);
+      socket.off('soar:execution', handleRefresh);
+    };
+  }, []);
+
   const fetchPlaybooks = async () => {
     setLoading(true);
     try {

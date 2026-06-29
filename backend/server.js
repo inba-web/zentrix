@@ -193,6 +193,7 @@ async function startServer() {
   scheduler.init(io);
   scannerService.init(io);
   packetCaptureService.init(io);
+  simulator.init(io);
 
   server.listen(PORT, () => {
     console.log(`[SYSTEM] Unified ZENTRIX SOC Backend services initialized on port ${PORT}`);

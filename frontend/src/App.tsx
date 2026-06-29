@@ -243,8 +243,20 @@ export default function App() {
       socket.on('siem_log', (log: any) => {
         dispatch(addWebsocketLog(log));
       });
+      socket.on('siem:log', (log: any) => {
+        dispatch(addWebsocketLog(log));
+      });
 
-      // Handle EDR stats (per-device update from agent check-ins)
+      // Handle EDR stats & isolate commands
+      socket.on('edr_isolate', (data: any) => {
+        if (data && data.host) {
+          dispatch(updateEdrStats({
+            id: data.host,
+            hostname: data.host,
+            status: data.status || 'Isolated'
+          }));
+        }
+      });
       socket.on('edr_stats', (stat: any) => {
         dispatch(updateEdrStats(stat));
       });

@@ -156,9 +156,12 @@ export default function IncidentResponse({ liveAlerts, token }: any) {
     const socket = (window as any).socket;
     if (!socket) return;
 
-    socket.on('incident:updated', () => {
+    const handleIncidentChange = () => {
       fetchCases();
-    });
+    };
+
+    socket.on('incident', handleIncidentChange);
+    socket.on('incident:updated', handleIncidentChange);
 
     socket.on('alert', (alert: any) => {
       if (alert.severity === 'CRITICAL' || alert.severity === 'HIGH') {
@@ -167,7 +170,8 @@ export default function IncidentResponse({ liveAlerts, token }: any) {
     });
 
     return () => {
-      socket.off('incident:updated');
+      socket.off('incident', handleIncidentChange);
+      socket.off('incident:updated', handleIncidentChange);
       socket.off('alert');
     };
   }, []);

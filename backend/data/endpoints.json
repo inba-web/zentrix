@@ -4,10 +4,10 @@
     "hostname": "anonymous",
     "ip": "127.0.0.1",
     "os": "Linux 6.17.10+kali-amd64 (x64)",
-    "cpuUsage": 48,
-    "ramUsage": 95,
+    "cpuUsage": 19,
+    "ramUsage": 48,
     "status": "Online",
-    "lastSeen": "2026-06-16T10:09:39.593Z",
+    "lastSeen": "2026-06-29T17:14:07.498Z",
     "processes": [
       {
         "pid": 1,
@@ -223,17 +223,17 @@
       }
     ],
     "createdAt": "2026-05-31T13:48:45.931Z",
-    "updatedAt": "2026-06-17T10:54:56.358Z"
+    "updatedAt": "2026-06-29T17:14:07.498Z"
   },
   {
     "_id": "2vj2eh1",
     "hostname": "hunter",
-    "ip": "10.99.144.149",
-    "os": "Linux 6.17.10+kali-amd64",
+    "ip": "127.0.0.1",
+    "os": "Linux 6.17.10+kali-amd64 (x64)",
     "status": "Online",
-    "cpuUsage": 27,
-    "ramUsage": 76,
-    "lastSeen": "2026-06-29T17:08:49.720Z",
+    "cpuUsage": 47,
+    "ramUsage": 95,
+    "lastSeen": "2026-06-29T17:14:08.482Z",
     "processes": [
       {
         "pid": 1,
@@ -285,12 +285,6 @@
       },
       {
         "pid": 10,
-        "name": "kworker",
-        "path": "system",
-        "parent": 0
-      },
-      {
-        "pid": 11,
         "name": "kworker",
         "path": "system",
         "parent": 0
@@ -352,6 +346,12 @@
       {
         "pid": 22,
         "name": "idle_inject",
+        "path": "system",
+        "parent": 0
+      },
+      {
+        "pid": 23,
+        "name": "migration",
         "path": "system",
         "parent": 0
       }
@@ -424,31 +424,31 @@
         "state": "LISTEN"
       },
       {
-        "localPort": "56172",
-        "remoteAddress": "216.58.203.3",
-        "remotePort": "443",
-        "state": "ESTABLISHED"
-      },
-      {
-        "localPort": "58032",
-        "remoteAddress": "216.198.79.195",
-        "remotePort": "443",
-        "state": "TIME_WAIT"
-      },
-      {
-        "localPort": "39172",
-        "remoteAddress": "216.239.34.223",
-        "remotePort": "443",
-        "state": "ESTABLISHED"
-      },
-      {
         "localPort": "39186",
         "remoteAddress": "216.239.34.223",
         "remotePort": "443",
         "state": "ESTABLISHED"
+      },
+      {
+        "localPort": "51334",
+        "remoteAddress": "104.18.32.47",
+        "remotePort": "443",
+        "state": "ESTABLISHED"
+      },
+      {
+        "localPort": "45082",
+        "remoteAddress": "172.66.154.160",
+        "remotePort": "443",
+        "state": "ESTABLISHED"
+      },
+      {
+        "localPort": "35774",
+        "remoteAddress": "142.251.163.190",
+        "remotePort": "443",
+        "state": "TIME_WAIT"
       }
     ],
     "createdAt": "2026-06-16T10:09:42.443Z",
-    "updatedAt": "2026-06-29T17:08:49.720Z"
+    "updatedAt": "2026-06-29T17:14:08.485Z"
   }
 ]
