@@ -232,7 +232,7 @@ export default function App() {
   useEffect(() => {
     if (token) {
       // Initialize WebSocket connection
-      const socket = io('http://localhost:5001');
+      const socket = io((import.meta as any).env.DEV ? 'http://localhost:5001' : window.location.origin);
       (window as any).socket = socket;
 
       socket.on('connect', () => {

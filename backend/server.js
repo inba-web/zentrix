@@ -4,6 +4,7 @@ const http = require('http');
 const socketIo = require('socket.io');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 const db = require('./db');
 const simulator = require('./simulator');
 const alertBus = require('./utils/alertBus');
@@ -43,7 +44,14 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // Serving reports directory statically
-app.use('/reports', express.static(path.join(__dirname, 'reports')));
+const reportsDir = process.env.ZENTRIX_USER_DATA 
+  ? path.join(process.env.ZENTRIX_USER_DATA, 'reports') 
+  : path.join(__dirname, 'reports');
+
+if (!fs.existsSync(reportsDir)) {
+  fs.mkdirSync(reportsDir, { recursive: true });
+}
+app.use('/reports', express.static(reportsDir));
 
 // Mount API routes
 app.use('/api/auth', auth.router);
@@ -67,6 +75,19 @@ app.get('/api/health', (req, res) => {
     timestamp: new Date()
   });
 });
+
+// Serving frontend built files statically in production
+const frontendDistPath = path.join(__dirname, '..', 'frontend', 'dist');
+if (fs.existsSync(frontendDistPath)) {
+  app.use(express.static(frontendDistPath));
+  app.get('*', (req, res, next) => {
+    // Avoid intercepting API / socket.io routes
+    if (req.path.startsWith('/api') || req.path.startsWith('/socket.io')) {
+      return next();
+    }
+    res.sendFile(path.join(frontendDistPath, 'index.html'));
+  });
+}
 
 // Real-Time WebSockets communication handler
 global.io = io;

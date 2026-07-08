@@ -7,7 +7,10 @@ let edrInterval = null;
 let fileWatcher = null;
 let lastProcesses = new Map(); // Store previous PID list
 
-const watchDir = path.join(__dirname, '..', '..', 'storage', 'uploads');
+const storageDir = process.env.ZENTRIX_USER_DATA 
+  ? path.join(process.env.ZENTRIX_USER_DATA, 'storage') 
+  : path.join(__dirname, '..', '..', 'storage');
+const watchDir = path.join(storageDir, 'uploads');
 const db = require('../db');
 
 // Setup EDR file watch

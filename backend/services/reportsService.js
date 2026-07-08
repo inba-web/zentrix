@@ -4,7 +4,9 @@ const PDFDocument = require('pdfkit');
 const db = require('../db');
 
 // Ensure base report directories exist
-const STORAGE_REPORTS_DIR = path.join(__dirname, '..', 'reports');
+const STORAGE_REPORTS_DIR = process.env.ZENTRIX_USER_DATA 
+  ? path.join(process.env.ZENTRIX_USER_DATA, 'reports') 
+  : path.join(__dirname, '..', 'reports');
 if (!fs.existsSync(STORAGE_REPORTS_DIR)) {
   fs.mkdirSync(STORAGE_REPORTS_DIR, { recursive: true });
 }

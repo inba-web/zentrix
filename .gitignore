@@ -1,8 +1,18 @@
+# Dependencies
 node_modules/
+
+# Build outputs
 dist/
-build/
-.env
-.env.local
-coverage/
-logs/
+frontend/dist/
+dist-electron/
+
+# Logs
 *.log
+
+# Environment
+.env
+.env.*
+
+# OS files
+.DS_Store
+Thumbs.db

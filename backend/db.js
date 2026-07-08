@@ -4,7 +4,8 @@ const path = require('path');
 const jsonAdapter = require('./adapters/jsonAdapter');
 
 // Path for fallback local storage
-const FALLBACK_DIR = path.join(__dirname, 'data');
+const baseDir = process.env.ZENTRIX_USER_DATA || __dirname;
+const FALLBACK_DIR = path.join(baseDir, 'data');
 if (!fs.existsSync(FALLBACK_DIR)) {
   fs.mkdirSync(FALLBACK_DIR, { recursive: true });
 }

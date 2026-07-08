@@ -1,0 +1,102 @@
+[
+  {
+    "_id": "0mbevlf",
+    "type": "Domain",
+    "value": "c2-server-botnet.top",
+    "threatType": "Active Cobalt Strike Command & Control server",
+    "reputation": 100,
+    "source": "AlienVault OTX",
+    "notes": "Active beacon target.",
+    "createdAt": "2026-05-31T14:49:30.296Z",
+    "updatedAt": "2026-05-31T14:49:30.296Z"
+  },
+  {
+    "_id": "49iiuho",
+    "type": "URL",
+    "value": "http://94.23.111.4/miners/xmrig.sh",
+    "threatType": "XMRig Cryptomining Payload",
+    "reputation": 95,
+    "source": "VirusTotal",
+    "notes": "Downloaded script in honeypot logs.",
+    "createdAt": "2026-05-31T14:49:30.296Z",
+    "updatedAt": "2026-05-31T14:49:30.296Z"
+  },
+  {
+    "_id": "g67xio7",
+    "type": "Domain",
+    "value": "google.com",
+    "threatType": "Active C2 Controller",
+    "reputation": 7,
+    "source": "Correlated Intel Engine",
+    "createdAt": "2026-06-18T09:37:07.998Z",
+    "cachedAt": "2026-06-18T09:37:07.998Z",
+    "notes": "Lookup target matching indicators of active security compromises. Risk Index registered at 7%.",
+    "enrichment": {
+      "category": "Active C2 Controller",
+      "advisory": "Lookup target matching indicators of active security compromises. Risk Index registered at 7%.",
+      "virusTotal": {
+        "maliciousVotes": 0,
+        "harmlessVotes": 68,
+        "reputationScore": 7,
+        "lastScanDate": "2026-06-18T09:37:07.998Z",
+        "category": "Tor Exit Node"
+      },
+      "abuseIPDB": {
+        "abuseScore": 0,
+        "totalReports": 0,
+        "isp": "N/A",
+        "country": "N/A"
+      },
+      "alienVaultOTX": {
+        "pulseCount": 0,
+        "adversaries": [],
+        "industriesTargeted": []
+      },
+      "urlHaus": {
+        "status": "offline",
+        "threatType": "N/A",
+        "reporter": "ZENTRIX Scanner"
+      }
+    },
+    "updatedAt": "2026-06-18T09:37:07.999Z"
+  },
+  {
+    "_id": "aj6q3c5",
+    "type": "Domain",
+    "value": "inba.com",
+    "threatType": "Active C2 Controller",
+    "reputation": 11,
+    "source": "Correlated Intel Engine",
+    "createdAt": "2026-06-18T09:37:16.635Z",
+    "cachedAt": "2026-06-18T09:37:16.635Z",
+    "notes": "Lookup target matching indicators of active security compromises. Risk Index registered at 11%.",
+    "enrichment": {
+      "category": "Active C2 Controller",
+      "advisory": "Lookup target matching indicators of active security compromises. Risk Index registered at 11%.",
+      "virusTotal": {
+        "maliciousVotes": 0,
+        "harmlessVotes": 68,
+        "reputationScore": 11,
+        "lastScanDate": "2026-06-18T09:37:16.635Z",
+        "category": "Tor Exit Node"
+      },
+      "abuseIPDB": {
+        "abuseScore": 0,
+        "totalReports": 0,
+        "isp": "N/A",
+        "country": "N/A"
+      },
+      "alienVaultOTX": {
+        "pulseCount": 0,
+        "adversaries": [],
+        "industriesTargeted": []
+      },
+      "urlHaus": {
+        "status": "offline",
+        "threatType": "N/A",
+        "reporter": "ZENTRIX Scanner"
+      }
+    },
+    "updatedAt": "2026-06-18T09:37:16.635Z"
+  }
+]

@@ -4,7 +4,11 @@ const fs = require('fs');
 const path = require('path');
 
 // Base directory for JSON storage
-const DATA_DIR = path.join(__dirname, '..', 'data');
+const baseDir = process.env.ZENTRIX_USER_DATA || path.join(__dirname, '..');
+const DATA_DIR = path.join(baseDir, 'data');
+if (!fs.existsSync(DATA_DIR)) {
+  fs.mkdirSync(DATA_DIR, { recursive: true });
+}
 
 function getFilePath(collection) {
   return path.join(DATA_DIR, `${collection}.json`);

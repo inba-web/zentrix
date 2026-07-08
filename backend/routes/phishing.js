@@ -6,7 +6,10 @@ const db = require('../db');
 const { authenticateToken } = require('./auth');
 const phishingAnalyzer = require('../services/phishingAnalyzer');
 
-const PHISHING_DIR = path.join(__dirname, '..', '..', 'storage', 'phishing');
+const storageDir = process.env.ZENTRIX_USER_DATA 
+  ? path.join(process.env.ZENTRIX_USER_DATA, 'storage') 
+  : path.join(__dirname, '..', '..', 'storage');
+const PHISHING_DIR = path.join(storageDir, 'phishing');
 if (!fs.existsSync(PHISHING_DIR)) {
   fs.mkdirSync(PHISHING_DIR, { recursive: true });
 }

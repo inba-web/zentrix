@@ -11,13 +11,63 @@
     "dev:frontend": "cd frontend && npm run dev",
     "dev:desktop": "electron .",
     "dev:agent": "python3 -u agent/agent.py",
-    "start": "concurrently --kill-others-on-fail \"npm run dev:backend\" \"npm run dev:frontend\" \"npm run dev:desktop\" \"npm run dev:agent\""
+    "start": "concurrently --kill-others-on-fail \"npm run dev:backend\" \"npm run dev:frontend\" \"npm run dev:desktop\" \"npm run dev:agent\"",
+    "build:frontend": "cd frontend && npm run build",
+    "package": "npm run build:frontend && electron-builder build --dir",
+    "dist": "npm run build:frontend && electron-builder build"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
-    "electron": "^30.0.6"
+    "electron": "^30.0.6",
+    "electron-builder": "^24.13.3"
   },
   "dependencies": {
-    "twilio": "^6.0.2"
+    "twilio": "^6.0.2",
+    "axios": "^1.16.1",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.4.1",
+    "multer": "^2.1.1",
+    "node-cron": "^4.2.1",
+    "nodemailer": "^6.9.13",
+    "pdfkit": "^0.15.0",
+    "socket.io": "^4.7.5",
+    "systeminformation": "^5.31.7",
+    "uuid": "^9.0.1"
+  },
+  "build": {
+    "appId": "com.zentrix.soc",
+    "productName": "ZENTRIX",
+    "directories": {
+      "output": "dist-electron"
+    },
+    "files": [
+      "desktop/**/*",
+      "backend/**/*",
+      "frontend/dist/**/*",
+      "agent/**/*",
+      "package.json"
+    ],
+    "asar": true,
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "category": "Utility"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    },
+    "mac": {
+      "target": [
+        "dmg"
+      ]
+    }
   }
 }
