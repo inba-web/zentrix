@@ -16,3 +16,7 @@ dist-electron/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Data files (database/logs)
+backend/data/*.json
+backend/data/*.log

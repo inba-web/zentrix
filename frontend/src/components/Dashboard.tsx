@@ -233,13 +233,14 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="space-y-6 font-sans text-white select-none">
+    <div className="space-y-6 font-sans text-slate-200 select-none">
       
       {/* HEADER SECTION WITH QUICK REPORT BUTTONS */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center p-5 bg-[#0D1117] border border-white/5 rounded-xl shadow-lg backdrop-blur-md">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center p-6 glass-panel rounded-2xl border-white/5 shadow-xl relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-[1.5px] bg-gradient-to-r from-transparent via-cyber-accent/40 to-transparent"></div>
         <div>
-          <h1 className="text-lg font-bold tracking-widest text-slate-100 font-mono">SOC COMMAND METRICS OVERVIEW</h1>
-          <p className="text-[10px] text-[#00D4FF] font-mono uppercase tracking-wider mt-1">Real-time status of threat intelligence and endpoint arrays</p>
+          <h1 className="text-lg font-extrabold tracking-widest text-slate-100 font-mono glow-text-cyan">SOC COMMAND METRICS OVERVIEW</h1>
+          <p className="text-[9px] text-cyber-accent font-mono uppercase tracking-widest mt-1">Real-time telemetry and network intelligence analytics</p>
         </div>
         <div className="flex gap-3 mt-4 md:mt-0 items-center">
           {reportMsg && (
@@ -248,7 +249,7 @@ export default function Dashboard() {
           <button
             onClick={() => handleGenerateReport('Executive Summary')}
             disabled={reportGenerating}
-            className="flex items-center gap-1.5 bg-[#111827] border border-white/10 hover:border-[#00D4FF] px-3 py-1.5 rounded-lg font-mono text-[10px] uppercase font-bold text-[#00D4FF] transition-all shadow-md hover:shadow-cyan-500/10"
+            className="flex items-center gap-1.5 bg-[#03060c]/60 border border-cyber-border/80 hover:border-cyber-accent px-4 py-2 rounded-xl font-mono text-[10px] uppercase font-bold text-cyber-accent hover:text-[#00ffff] transition-all shadow-md shadow-cyber-accent/5 hover:shadow-glow hover:glow-cyan"
           >
             {reportGenerating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
             Download PDF
@@ -256,7 +257,7 @@ export default function Dashboard() {
           <button
             onClick={() => handleGenerateReport('CSV')}
             disabled={reportGenerating}
-            className="flex items-center gap-1.5 bg-[#111827] border border-white/10 hover:border-[#00D4FF] px-3 py-1.5 rounded-lg font-mono text-[10px] uppercase font-bold text-[#00D4FF] transition-all shadow-md hover:shadow-cyan-500/10"
+            className="flex items-center gap-1.5 bg-[#03060c]/60 border border-cyber-border/80 hover:border-cyber-accent px-4 py-2 rounded-xl font-mono text-[10px] uppercase font-bold text-cyber-accent hover:text-[#00ffff] transition-all shadow-md shadow-cyber-accent/5 hover:shadow-glow hover:glow-cyan"
           >
             {reportGenerating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
             Download CSV
@@ -268,45 +269,45 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
         
         {/* Health Score */}
-        <div className="p-4 bg-[#0D1117] border border-white/5 rounded-xl hover:border-[#00FF87]/30 transition-all shadow-md flex flex-col justify-between h-28 animate-fade-in">
+        <div className="p-4 glass-panel-interactive rounded-2xl hover:border-cyber-success/35 flex flex-col justify-between h-28 animate-fade-in">
           <div className="flex items-center justify-between">
-            <span className="text-[9px] uppercase font-mono text-slate-500">Security Posture</span>
-            <ShieldCheck className={`w-4 h-4 ${securityScore > 75 ? 'text-[#00FF87]' : 'text-[#EF4444]'}`} />
+            <span className="text-[9px] uppercase font-mono text-slate-500 font-bold tracking-wider">Security Posture</span>
+            <ShieldCheck className={`w-4 h-4 ${securityScore > 75 ? 'text-cyber-success' : 'text-cyber-danger'}`} />
           </div>
           <div className="flex items-end justify-between mt-2">
-            <p className="text-2xl font-bold text-slate-200 font-mono leading-none">{securityScore}%</p>
-            <span className={`text-[8px] font-mono px-2 py-0.5 rounded ${securityScore > 75 ? 'bg-[#00FF87]/10 text-[#00FF87]' : 'bg-[#EF4444]/10 text-[#EF4444]'}`}>
-              {securityScore > 75 ? 'SECURE' : 'THREATS'}
+            <p className="text-2xl font-extrabold text-slate-100 font-mono leading-none">{securityScore}%</p>
+            <span className={`text-[8px] font-mono px-2 py-0.5 rounded-md font-bold ${securityScore > 75 ? 'bg-cyber-success/10 border border-cyber-success/20 text-cyber-success' : 'bg-cyber-danger/10 border border-cyber-danger/20 text-cyber-danger'}`}>
+              {securityScore > 75 ? 'SECURE' : 'COMPROMISED'}
             </span>
           </div>
         </div>
 
         {/* Active Incidents */}
-        <div className="p-4 bg-[#0D1117] border border-white/5 rounded-xl hover:border-[#EF4444]/30 transition-all shadow-md flex flex-col justify-between h-28">
+        <div className="p-4 glass-panel-interactive rounded-2xl hover:border-cyber-danger/35 flex flex-col justify-between h-28">
           <div className="flex items-center justify-between">
-            <span className="text-[9px] uppercase font-mono text-slate-500">Active Incidents</span>
-            <AlertOctagon className="w-4 h-4 text-[#EF4444] animate-pulse" />
+            <span className="text-[9px] uppercase font-mono text-slate-500 font-bold tracking-wider">Active Incidents</span>
+            <AlertOctagon className="w-4 h-4 text-cyber-danger animate-pulse" />
           </div>
           <div className="flex items-end justify-between mt-2">
-            <p className="text-2xl font-bold text-slate-200 font-mono leading-none">{animatedIncidents}</p>
-            <Sparkline data={incidentsHistory} color="#EF4444" />
+            <p className="text-2xl font-extrabold text-slate-100 font-mono leading-none">{animatedIncidents}</p>
+            <Sparkline data={incidentsHistory} color="#f43f5e" />
           </div>
         </div>
 
         {/* Network Throughput */}
-        <div className="p-4 bg-[#0D1117] border border-white/5 rounded-xl hover:border-cyan-500/30 transition-all shadow-md flex flex-col justify-between h-28">
+        <div className="p-4 glass-panel-interactive rounded-2xl hover:border-cyber-accent/35 flex flex-col justify-between h-28">
           <div className="flex items-center justify-between">
-            <span className="text-[9px] uppercase font-mono text-slate-500">Network Speed</span>
-            <Activity className="w-4 h-4 text-cyan-400" />
+            <span className="text-[9px] uppercase font-mono text-slate-500 font-bold tracking-wider">Network Speed</span>
+            <Activity className="w-4 h-4 text-cyber-accent" />
           </div>
           <div className="flex flex-col mt-2">
             <div className="flex justify-between items-end leading-none">
-              <p className="text-[10px] font-mono text-slate-400">DN: <span className="text-cyan-400 font-bold">{rxSpeed}</span> M</p>
-              <p className="text-[10px] font-mono text-slate-400">UP: <span className="text-cyan-400 font-bold">{txSpeed}</span> M</p>
+              <p className="text-[10px] font-mono text-slate-400">DN: <span className="text-cyber-accent font-bold">{rxSpeed}</span> M</p>
+              <p className="text-[10px] font-mono text-slate-400">UP: <span className="text-cyber-accent font-bold">{txSpeed}</span> M</p>
             </div>
-            <div className="w-full bg-white/5 h-1 rounded overflow-hidden mt-1.5">
+            <div className="w-full bg-white/5 h-1 rounded-full overflow-hidden mt-2">
               <div 
-                className="bg-cyan-400 h-full transition-all duration-500" 
+                className="bg-cyber-accent h-full transition-all duration-500" 
                 style={{ width: `${Math.min(100, (parseFloat(rxSpeed) + parseFloat(txSpeed)) * 10)}%` }}
               />
             </div>
@@ -314,37 +315,37 @@ export default function Dashboard() {
         </div>
 
         {/* Disk Usage */}
-        <div className="p-4 bg-[#0D1117] border border-white/5 rounded-xl hover:border-[#F59E0B]/30 transition-all shadow-md flex flex-col justify-between h-28">
+        <div className="p-4 glass-panel-interactive rounded-2xl hover:border-cyber-warning/35 flex flex-col justify-between h-28">
           <div className="flex items-center justify-between">
-            <span className="text-[9px] uppercase font-mono text-slate-500">Disk Usage</span>
-            <Database className="w-4 h-4 text-[#F59E0B]" />
+            <span className="text-[9px] uppercase font-mono text-slate-500 font-bold tracking-wider">Disk Usage</span>
+            <Database className="w-4 h-4 text-cyber-warning" />
           </div>
           <div className="flex items-end justify-between mt-2">
-            <p className="text-2xl font-bold text-slate-200 font-mono leading-none">{animatedDisk}%</p>
-            <Sparkline data={diskHistory} color="#F59E0B" />
+            <p className="text-2xl font-extrabold text-slate-100 font-mono leading-none">{animatedDisk}%</p>
+            <Sparkline data={diskHistory} color="#f59e0b" />
           </div>
         </div>
 
         {/* Active Hosts */}
-        <div className="p-4 bg-[#0D1117] border border-white/5 rounded-xl hover:border-[#00D4FF]/30 transition-all shadow-md flex flex-col justify-between h-28">
+        <div className="p-4 glass-panel-interactive rounded-2xl hover:border-cyber-accent/35 flex flex-col justify-between h-28">
           <div className="flex items-center justify-between">
-            <span className="text-[9px] uppercase font-mono text-slate-500">Active Hosts</span>
-            <Cpu className="w-4 h-4 text-[#00D4FF]" />
+            <span className="text-[9px] uppercase font-mono text-slate-500 font-bold tracking-wider">Active Hosts</span>
+            <Cpu className="w-4 h-4 text-cyber-accent" />
           </div>
           <div className="flex items-end justify-between mt-2">
-            <p className="text-2xl font-bold text-slate-200 font-mono leading-none">{animatedHosts}</p>
-            <Sparkline data={hostsHistory} color="#00D4FF" />
+            <p className="text-2xl font-extrabold text-slate-100 font-mono leading-none">{animatedHosts}</p>
+            <Sparkline data={hostsHistory} color="#00f0ff" />
           </div>
         </div>
 
         {/* Open Ports */}
-        <div className="p-4 bg-[#0D1117] border border-white/5 rounded-xl hover:border-violet-500/30 transition-all shadow-md flex flex-col justify-between h-28">
+        <div className="p-4 glass-panel-interactive rounded-2xl hover:border-violet-500/35 flex flex-col justify-between h-28">
           <div className="flex items-center justify-between">
-            <span className="text-[9px] uppercase font-mono text-slate-500">Open Ports</span>
+            <span className="text-[9px] uppercase font-mono text-slate-500 font-bold tracking-wider">Open Ports</span>
             <Server className="w-4 h-4 text-violet-400" />
           </div>
           <div className="flex items-end justify-between mt-2">
-            <p className="text-2xl font-bold text-slate-200 font-mono leading-none">{animatedPorts}</p>
+            <p className="text-2xl font-extrabold text-slate-100 font-mono leading-none">{animatedPorts}</p>
             <Sparkline data={portsHistory} color="#8b5cf6" />
           </div>
         </div>
@@ -355,13 +356,13 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Network Activity Timeline (CPU & RAM Chart) */}
-        <div className="lg:col-span-2 p-5 bg-[#0D1117] border border-white/5 rounded-xl flex flex-col justify-between h-[340px] relative shadow-lg">
+        <div className="lg:col-span-2 p-5 glass-panel rounded-2xl flex flex-col justify-between h-[340px] relative shadow-lg">
           <div className="flex justify-between items-center mb-3">
             <div>
               <span className="text-xs uppercase font-mono font-bold tracking-wider text-slate-200">Network Activity Timeline</span>
-              <p className="text-[10px] text-slate-500 font-mono">REAL-TIME CPU & MEMORY WORKSTATION PROFILE</p>
+              <p className="text-[9px] text-slate-500 font-mono">REAL-TIME WORKSTATION COMPONENT PROFILE</p>
             </div>
-            <div className="bg-black border border-white/10 px-3 py-1.5 rounded-lg text-[9px] font-mono text-[#00D4FF] font-bold uppercase leading-none">
+            <div className="bg-black/40 border border-white/5 px-3 py-1.5 rounded-lg text-[9px] font-mono text-cyber-accent font-bold uppercase leading-none shadow-inner">
               CPU: {liveTelemetry.cpu}% | RAM: {liveTelemetry.ram}% ({liveTelemetry.ramUsedGB} GB / {liveTelemetry.ramTotalGB} GB)
             </div>
           </div>
@@ -372,24 +373,24 @@ export default function Dashboard() {
                 <AreaChart data={telemetryHistory} margin={{ left: -25, right: 10, top: 10, bottom: 0 }}>
                   <defs>
                     <linearGradient id="cpuGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#00D4FF" stopOpacity={0.4}/>
-                      <stop offset="95%" stopColor="#00D4FF" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#00f0ff" stopOpacity={0.4}/>
+                      <stop offset="95%" stopColor="#00f0ff" stopOpacity={0}/>
                     </linearGradient>
                     <linearGradient id="ramGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#00FF87" stopOpacity={0.25}/>
-                      <stop offset="95%" stopColor="#00FF87" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#00ff9d" stopOpacity={0.25}/>
+                      <stop offset="95%" stopColor="#00ff9d" stopOpacity={0}/>
                     </linearGradient>
                   </defs>
-                  <XAxis dataKey="time" stroke="#222" strokeWidth={0.5} tick={{ fill: '#71717a', fontSize: 8 }} />
-                  <YAxis stroke="#222" strokeWidth={0.5} tick={{ fill: '#71717a', fontSize: 8 }} domain={[0, 100]} />
+                  <XAxis dataKey="time" stroke="#161d30" strokeWidth={0.5} tick={{ fill: '#64748b', fontSize: 8 }} />
+                  <YAxis stroke="#161d30" strokeWidth={0.5} tick={{ fill: '#64748b', fontSize: 8 }} domain={[0, 100]} />
                   <Tooltip 
-                    contentStyle={{ backgroundColor: '#090d16', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '6px' }}
-                    labelStyle={{ color: '#71717a', fontFamily: 'monospace' }}
+                    contentStyle={{ backgroundColor: 'rgba(7, 11, 20, 0.85)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', backdropFilter: 'blur(8px)' }}
+                    labelStyle={{ color: '#64748b', fontFamily: 'monospace' }}
                     itemStyle={{ fontFamily: 'monospace' }}
                   />
                   <Legend wrapperStyle={{ fontSize: '9px', fontFamily: 'monospace' }} />
-                  <Area type="monotone" dataKey="cpu" stroke="#00D4FF" strokeWidth={2} fillOpacity={1} fill="url(#cpuGrad)" name="CPU Usage %" />
-                  <Area type="monotone" dataKey="ram" stroke="#00FF87" strokeWidth={1.5} fillOpacity={1} fill="url(#ramGrad)" name="RAM Usage %" />
+                  <Area type="monotone" dataKey="cpu" stroke="#00f0ff" strokeWidth={2} fillOpacity={1} fill="url(#cpuGrad)" name="CPU Usage %" />
+                  <Area type="monotone" dataKey="ram" stroke="#00ff9d" strokeWidth={1.5} fillOpacity={1} fill="url(#ramGrad)" name="RAM Usage %" />
                 </AreaChart>
               </ResponsiveContainer>
             ) : (
@@ -399,19 +400,19 @@ export default function Dashboard() {
         </div>
 
         {/* Alert Severity Distribution */}
-        <div className="p-5 bg-[#0D1117] border border-white/5 rounded-xl flex flex-col justify-between h-[340px] shadow-lg">
+        <div className="p-5 glass-panel rounded-2xl flex flex-col justify-between h-[340px] shadow-lg">
           <div>
             <span className="text-xs uppercase font-mono font-bold tracking-wider text-slate-200">Alert Severity Distribution</span>
-            <p className="text-[10px] text-slate-500 font-mono">PIE SEVERITY SUBCLASSIFICATIONS</p>
+            <p className="text-[9px] text-slate-500 font-mono">PIE SEVERITY SUBCLASSIFICATIONS</p>
           </div>
 
           <div className="flex-1 flex justify-center items-center min-h-0 relative my-2">
             {totalUnresolved === 0 ? (
               <div className="flex flex-col items-center justify-center text-center space-y-2">
-                <div className="p-3 bg-emerald-950/20 border border-emerald-500/20 rounded-full text-[#00FF87] animate-pulse">
+                <div className="p-3 bg-emerald-950/20 border border-emerald-500/25 rounded-full text-cyber-success animate-pulse shadow-glow glow-green">
                   <ShieldCheck className="w-8 h-8" />
                 </div>
-                <p className="text-xs font-mono font-bold text-slate-350">NO ACTIVE ALERTS</p>
+                <p className="text-xs font-mono font-bold text-slate-300">NO ACTIVE ALERTS</p>
                 <p className="text-[9px] font-mono text-slate-500">System is fully monitored and operational.</p>
               </div>
             ) : (
@@ -434,15 +435,15 @@ export default function Dashboard() {
                 </ResponsiveContainer>
                 
                 <div className="absolute flex flex-col items-center justify-center leading-none pointer-events-none">
-                  <span className="text-2xl font-extrabold text-slate-100 font-mono">{totalUnresolved}</span>
-                  <span className="text-[7px] text-slate-500 font-mono uppercase mt-1">Total Cases</span>
+                  <span className="text-2xl font-extrabold text-slate-100 font-mono text-shadow">{totalUnresolved}</span>
+                  <span className="text-[8px] text-slate-500 font-mono uppercase mt-1">Total Cases</span>
                 </div>
                 
                 <div className="absolute right-0 bottom-2 space-y-1 text-[8px] font-mono leading-none">
-                  <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#EF4444]"></span><span className="text-slate-400">CRIT ({criticalCount})</span></div>
-                  <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#F97316]"></span><span className="text-slate-400">HIGH ({highCount})</span></div>
-                  <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#F59E0B]"></span><span className="text-slate-400">MED ({mediumCount})</span></div>
-                  <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#00D4FF]"></span><span className="text-slate-400">LOW ({lowCount})</span></div>
+                  <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-cyber-danger"></span><span className="text-slate-400">CRIT ({criticalCount})</span></div>
+                  <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#f97316]"></span><span className="text-slate-400">HIGH ({highCount})</span></div>
+                  <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-cyber-warning"></span><span className="text-slate-400">MED ({mediumCount})</span></div>
+                  <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-cyber-info"></span><span className="text-slate-400">LOW ({lowCount})</span></div>
                 </div>
               </>
             )}
@@ -455,21 +456,21 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Active Workstation Process Monitors */}
-        <div className="lg:col-span-2 p-5 bg-[#0D1117] border border-white/5 rounded-xl flex flex-col justify-between h-[300px] shadow-lg">
+        <div className="lg:col-span-2 p-5 glass-panel rounded-2xl flex flex-col justify-between h-[300px] shadow-lg">
           <div className="flex justify-between items-center mb-2">
             <div>
               <span className="text-xs uppercase font-mono font-bold tracking-wider text-slate-200">Active Workstation Process Monitors</span>
-              <p className="text-[10px] text-slate-500 font-mono">TOP DYNAMIC RUNNING THREADS BY CPU LOAD</p>
+              <p className="text-[9px] text-slate-500 font-mono">TOP DYNAMIC RUNNING THREADS BY CPU LOAD</p>
             </div>
             <div className="flex items-center gap-3">
               {/* Spinning data pulse indicator */}
-              <span className={`w-2 h-2 rounded-full bg-[#00D4FF] shrink-0 ${pulseDot ? 'scale-125 opacity-100' : 'scale-75 opacity-40'} transition-all duration-300`} />
+              <span className={`w-2 h-2 rounded-full bg-cyber-accent shrink-0 ${pulseDot ? 'scale-125 opacity-100' : 'scale-75 opacity-40'} transition-all duration-300`} />
               
               <button 
                 onClick={() => setShowAllProcs(true)}
-                className="flex items-center gap-1 bg-[#111827] hover:bg-zinc-800 border border-white/10 px-2 py-1 rounded text-[9px] font-mono text-slate-350"
+                className="flex items-center gap-1 bg-[#03060c] hover:bg-zinc-900 border border-white/10 hover:border-cyber-accent/40 px-2 py-1 rounded text-[9px] font-mono text-slate-300 transition-colors"
               >
-                <ListCollapse className="w-3 h-3" />
+                <ListCollapse className="w-3 h-3 text-cyber-accent" />
                 View All
               </button>
             </div>
@@ -478,7 +479,7 @@ export default function Dashboard() {
           <div className="flex-1 overflow-y-auto select-text min-h-0">
             <table className="w-full text-left border-collapse text-xs font-mono">
               <thead>
-                <tr className="bg-black/55 text-slate-500 border-b border-white/5 uppercase text-[9px] tracking-wider font-mono">
+                <tr className="bg-[#03050a]/40 text-slate-500 border-b border-white/5 uppercase text-[8px] tracking-wider font-mono">
                   <th className="p-2">PID</th>
                   <th className="p-2">Image Process Name</th>
                   <th className="p-2 text-right">CPU</th>
@@ -490,19 +491,19 @@ export default function Dashboard() {
                 {(liveTelemetry.topProcesses || []).slice(0, 10).map((proc: any, index: number) => {
                   const cpuVal = parseFloat(proc.cpu);
                   const rowStyle = cpuVal > 70 
-                    ? 'bg-red-500/10 hover:bg-red-500/15' 
+                    ? 'bg-cyber-danger/10 hover:bg-cyber-danger/15' 
                     : cpuVal > 30 
-                    ? 'bg-amber-500/10 hover:bg-amber-500/15' 
+                    ? 'bg-cyber-warning/10 hover:bg-cyber-warning/15' 
                     : 'hover:bg-white/5';
                   return (
                     <tr key={index} className={`transition-colors ${rowStyle}`}>
                       <td className="p-2 text-slate-500 font-bold">{proc.pid}</td>
-                      <td className="p-2 text-slate-200 font-semibold">{proc.name}</td>
-                      <td className="p-2 text-right text-cyber-accent font-bold">{proc.cpu}%</td>
+                      <td className="p-2 text-slate-250 font-semibold">{proc.name}</td>
+                      <td className="p-2 text-right text-cyber-primary font-bold">{proc.cpu}%</td>
                       <td className="p-2 text-right text-slate-400">{proc.ram} MB</td>
                       <td className="p-2 text-center">
                         <span className={`px-2 py-0.5 bg-black/60 border rounded text-[7px] font-bold uppercase ${
-                          cpuVal > 70 ? 'border-red-500/30 text-red-400' : 'border-white/10 text-slate-400'
+                          cpuVal > 70 ? 'border-cyber-danger/30 text-cyber-danger' : 'border-white/10 text-slate-400'
                         }`}>
                           {proc.state || 'running'}
                         </span>
@@ -516,10 +517,10 @@ export default function Dashboard() {
         </div>
 
         {/* Asset Safety Posture Circular Meter */}
-        <div className="p-5 bg-[#0D1117] border border-white/5 rounded-xl flex flex-col justify-between h-[300px] shadow-lg">
+        <div className="p-5 glass-panel rounded-2xl flex flex-col justify-between h-[300px] shadow-lg">
           <div>
             <span className="text-xs uppercase font-mono font-bold tracking-wider text-slate-200">Asset Safety Posture</span>
-            <p className="text-[10px] text-slate-500 font-mono">ACTIVE SYSTEM ANOMALY CALCULATIONS</p>
+            <p className="text-[9px] text-slate-500 font-mono">ACTIVE SYSTEM ANOMALY CALCULATIONS</p>
           </div>
 
           <div className="flex-1 flex flex-col justify-center items-center relative py-2 select-text">
@@ -533,7 +534,7 @@ export default function Dashboard() {
                 />
                 <circle 
                   cx="72" cy="72" r="54" 
-                  stroke={securityScore > 75 ? '#00FF87' : '#EF4444'} 
+                  stroke={securityScore > 75 ? '#00ff9d' : '#f43f5e'} 
                   strokeWidth="6" fill="transparent"
                   strokeDasharray={340}
                   strokeDashoffset={340 - (340 * securityScore) / 100}
@@ -544,7 +545,7 @@ export default function Dashboard() {
               <div className="absolute flex flex-col items-center justify-center leading-none">
                 <span className="text-[9px] uppercase font-mono text-slate-500">POSTURE</span>
                 <span className="text-2xl font-bold text-slate-100 mt-1">{securityScore}%</span>
-                <span className={`text-[8px] font-mono font-bold mt-1.5 uppercase ${securityScore > 75 ? 'text-[#00FF87]' : 'text-red-500'}`}>
+                <span className={`text-[8px] font-mono font-bold mt-1.5 uppercase ${securityScore > 75 ? 'text-cyber-primary' : 'text-cyber-danger'}`}>
                   {securityScore > 75 ? 'SAFE' : 'ATTACKED'}
                 </span>
               </div>
@@ -553,12 +554,12 @@ export default function Dashboard() {
             <div className="w-full mt-3 flex justify-between border-t border-white/5 pt-3 text-[9px] font-mono text-slate-500">
               <div>
                 <span>RISK RATIO:</span>
-                <span className="text-[#EF4444] font-bold ml-1">{riskScore}%</span>
+                <span className="text-cyber-danger font-bold ml-1">{riskScore}%</span>
               </div>
               <div>
                 <span>STATUS:</span>
-                <span className="text-[#00D4FF] font-bold ml-1 flex items-center gap-1">
-                  <Zap className="w-3 h-3 text-[#00D4FF] animate-pulse" />
+                <span className="text-cyber-accent font-bold ml-1 flex items-center gap-1">
+                  <Zap className="w-3 h-3 text-cyber-accent animate-pulse" />
                   MONITORED
                 </span>
               </div>
@@ -571,16 +572,16 @@ export default function Dashboard() {
 
       {/* PROCESSES MODAL */}
       {showAllProcs && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-6 select-text">
-          <div className="bg-[#0d1117] border border-white/10 rounded-xl max-w-3xl w-full h-[500px] flex flex-col p-6 shadow-2xl">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-6 select-text">
+          <div className="glass-panel border border-white/10 rounded-2xl max-w-3xl w-full h-[500px] flex flex-col p-6 shadow-2xl">
             <div className="flex justify-between items-center border-b border-white/5 pb-3 mb-4">
               <div>
                 <h3 className="font-bold font-mono text-sm uppercase text-slate-200">Workstation Running Threads List</h3>
-                <p className="text-[9px] font-mono text-[#00D4FF]">Dynamic full report filtered by CPU load</p>
+                <p className="text-[9px] font-mono text-cyber-accent">Dynamic full report filtered by CPU load</p>
               </div>
               <button 
                 onClick={() => setShowAllProcs(false)}
-                className="bg-[#111827] border border-white/10 text-slate-400 hover:text-white px-3 py-1.5 rounded-lg font-mono text-[10px] uppercase font-bold"
+                className="bg-[#03060c] border border-white/10 hover:border-cyber-accent/40 text-slate-400 hover:text-white px-4 py-2 rounded-xl font-mono text-[10px] uppercase font-bold transition-all"
               >
                 Close
               </button>
@@ -589,7 +590,7 @@ export default function Dashboard() {
             <div className="flex-1 overflow-y-auto min-h-0">
               <table className="w-full text-left border-collapse text-xs font-mono">
                 <thead>
-                  <tr className="bg-black text-slate-500 border-b border-white/5 uppercase text-[9px] tracking-wider">
+                  <tr className="bg-black/40 text-slate-500 border-b border-white/5 uppercase text-[8px] tracking-wider">
                     <th className="p-2">PID</th>
                     <th className="p-2">Process Name</th>
                     <th className="p-2 text-right">CPU</th>
@@ -597,18 +598,18 @@ export default function Dashboard() {
                     <th className="p-2 text-center">State</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-white/5 font-mono text-slate-350">
+                <tbody className="divide-y divide-white/5 font-mono text-slate-300">
                   {(liveTelemetry.topProcesses || []).map((proc: any, index: number) => {
                     const cpuVal = parseFloat(proc.cpu);
                     return (
-                      <tr key={index} className={`transition-colors ${cpuVal > 70 ? 'bg-red-500/10' : cpuVal > 30 ? 'bg-amber-500/10' : 'hover:bg-white/5'}`}>
+                      <tr key={index} className={`transition-colors ${cpuVal > 70 ? 'bg-cyber-danger/10' : cpuVal > 30 ? 'bg-cyber-warning/10' : 'hover:bg-white/5'}`}>
                         <td className="p-2 text-slate-500 font-bold">{proc.pid}</td>
                         <td className="p-2 text-slate-100 font-semibold">{proc.name}</td>
-                        <td className="p-2 text-right text-cyber-accent font-bold">{proc.cpu}%</td>
+                        <td className="p-2 text-right text-cyber-primary font-bold">{proc.cpu}%</td>
                         <td className="p-2 text-right text-slate-400">{proc.ram} MB</td>
                         <td className="p-2 text-center">
                           <span className={`px-2 py-0.5 bg-black/60 border rounded text-[7px] font-bold uppercase ${
-                            cpuVal > 70 ? 'border-red-500/30 text-red-400' : 'border-white/10 text-slate-400'
+                            cpuVal > 70 ? 'border-cyber-danger/30 text-cyber-danger' : 'border-white/10 text-slate-400'
                           }`}>
                             {proc.state || 'running'}
                           </span>

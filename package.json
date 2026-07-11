@@ -22,20 +22,22 @@
     "electron-builder": "^24.13.3"
   },
   "dependencies": {
-    "twilio": "^6.0.2",
     "axios": "^1.16.1",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
+    "knex": "^3.3.0",
     "mongoose": "^8.4.1",
     "multer": "^2.1.1",
     "node-cron": "^4.2.1",
     "nodemailer": "^6.9.13",
     "pdfkit": "^0.15.0",
     "socket.io": "^4.7.5",
+    "sqlite3": "^6.0.1",
     "systeminformation": "^5.31.7",
+    "twilio": "^6.0.2",
     "uuid": "^9.0.1"
   },
   "build": {

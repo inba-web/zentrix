@@ -175,12 +175,12 @@ export default function NetworkScanner() {
   };
 
   return (
-    <div className="space-y-6 font-sans text-white select-none">
+    <div className="space-y-6 font-sans text-slate-200 select-none">
       
       {/* 3.1 — System Info Bar */}
       {localInfo && (
-        <div className="flex flex-wrap items-center gap-4 px-4 py-2.5 bg-[#0D1117] border border-cyan-500/20 rounded-lg text-[10px] font-mono shadow-md">
-          <div className="flex items-center gap-1.5 text-cyan-400 font-bold uppercase">
+        <div className="flex flex-wrap items-center gap-4 px-4 py-2.5 glass-panel border border-cyber-accent/20 rounded-xl text-[10px] font-mono shadow-md">
+          <div className="flex items-center gap-1.5 text-cyber-accent font-bold uppercase glow-text-cyan animate-pulse">
             <Laptop className="w-3.5 h-3.5" />
             <span>[ 🖥 DEVICE ]</span>
           </div>
@@ -197,30 +197,30 @@ export default function NetworkScanner() {
       )}
 
       {/* Target Config Header Form */}
-      <form onSubmit={handleStartScan} className="grid grid-cols-1 md:grid-cols-4 gap-4 p-5 bg-[#0D1117] border border-white/5 rounded-xl shadow-xl items-end relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent"></div>
+      <form onSubmit={handleStartScan} className="grid grid-cols-1 md:grid-cols-4 gap-4 p-5 glass-panel border border-white/5 rounded-2xl shadow-xl items-end relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-[1.5px] bg-gradient-to-r from-transparent via-cyber-accent/40 to-transparent"></div>
         
         <div className="md:col-span-2">
-          <label className="block text-[10px] uppercase font-mono text-slate-500 mb-1">Target Address Range</label>
+          <label className="block text-[10px] uppercase font-mono text-slate-500 mb-1.5 font-bold tracking-wider">Target Address Range</label>
           <input 
             type="text"
             required
             value={target}
             onChange={e => setTarget(e.target.value)}
             placeholder="e.g. 192.168.1.1/24 or 127.0.0.1"
-            className="w-full bg-[#111827] border border-white/10 px-3 py-2 text-xs font-mono text-cyan-400 rounded-lg focus:outline-none focus:border-cyan-500/40 transition-colors"
+            className="w-full bg-[#03060c] border border-cyber-border pl-3 pr-3 py-2 text-xs font-mono text-cyber-accent rounded-xl focus:outline-none focus:border-cyber-accent focus:shadow-glow focus:glow-cyan transition-all"
           />
         </div>
         
         <div>
-          <label className="block text-[10px] uppercase font-mono text-slate-500 mb-1">Scan Profile</label>
+          <label className="block text-[10px] uppercase font-mono text-slate-500 mb-1.5 font-bold tracking-wider">Scan Profile</label>
           <select 
             value={profile}
             onChange={e => setProfile(e.target.value)}
-            className="w-full bg-[#111827] border border-white/10 px-2 py-2 text-xs font-mono text-slate-300 rounded-lg focus:outline-none focus:border-cyan-500/40 transition-colors"
+            className="w-full bg-[#03060c] border border-cyber-border px-2 py-2 text-xs font-mono text-slate-300 rounded-xl focus:outline-none focus:border-cyber-accent transition-all cursor-pointer"
           >
             {SCAN_PROFILES.map(p => (
-              <option key={p.id} value={p.id}>{p.label}</option>
+              <option key={p.id} value={p.id} className="bg-cyber-card">{p.label}</option>
             ))}
           </select>
         </div>
@@ -229,10 +229,10 @@ export default function NetworkScanner() {
           <button
             type="submit"
             disabled={isScanning}
-            className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-4 rounded-lg text-xs font-mono font-bold uppercase transition-all shadow-md ${
+            className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-4 rounded-xl text-xs font-mono font-bold uppercase transition-all shadow-md ${
               isScanning 
-                ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed border border-zinc-900' 
-                : 'bg-black border border-cyan-500/30 hover:border-cyan-500 hover:bg-cyan-500/10 text-cyan-400 shadow-cyan-500/5 hover:shadow-cyan-500/10'
+                ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed border border-zinc-900 shadow-inner' 
+                : 'bg-[#03060c]/60 border border-cyber-accent/30 hover:border-cyber-accent hover:bg-cyber-accent/10 text-cyber-accent shadow-cyber-accent/5 hover:shadow-glow hover:glow-cyan'
             }`}
           >
             <Play className="w-3.5 h-3.5" />
@@ -242,10 +242,10 @@ export default function NetworkScanner() {
             type="button"
             onClick={handleCancelScan}
             disabled={!isScanning}
-            className={`flex items-center justify-center p-2.5 rounded-lg text-xs font-mono font-bold uppercase transition-all border ${
+            className={`flex items-center justify-center p-2.5 rounded-xl text-xs font-mono font-bold uppercase transition-all border ${
               isScanning 
-                ? 'border-red-500/50 text-red-500 bg-red-950/10 hover:bg-red-950/20' 
-                : 'border-zinc-800 text-zinc-600 cursor-not-allowed'
+                ? 'border-cyber-danger/50 text-cyber-danger bg-cyber-danger/10 hover:bg-cyber-danger/20 shadow-glow glow-red' 
+                : 'border-zinc-800 text-zinc-650 cursor-not-allowed'
             }`}
           >
             <Square className="w-3.5 h-3.5 fill-current" />
@@ -255,10 +255,11 @@ export default function NetworkScanner() {
 
       {/* Dynamic Loader */}
       {isScanning && (
-        <div className="w-full bg-[#0D1117] border border-cyan-500/20 p-3 rounded-lg flex items-center gap-4 shadow-inner">
-          <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase animate-pulse">Scan Engine In Progress...</span>
-          <div className="flex-1 bg-black h-2 rounded-full overflow-hidden relative">
-            <div className="bg-gradient-to-r from-cyan-500 to-emerald-400 h-full w-full absolute left-0 top-0 animate-pulse transition-all"></div>
+        <div className="w-full glass-panel border border-cyber-accent/20 p-3.5 rounded-xl flex items-center gap-4 shadow-inner relative overflow-hidden">
+          <div className="scan-line" />
+          <span className="text-[10px] font-mono text-cyber-accent font-bold uppercase animate-pulse glow-text-cyan shrink-0">Scan Engine Running...</span>
+          <div className="flex-1 bg-black/60 border border-white/5 h-2 rounded-full overflow-hidden relative shadow-inner">
+            <div className="bg-gradient-to-r from-cyber-accent to-cyber-primary h-full w-full absolute left-0 top-0 animate-pulse transition-all"></div>
           </div>
         </div>
       )}
@@ -267,23 +268,23 @@ export default function NetworkScanner() {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         
         {/* Left Side: Hosts List Summary */}
-        <div className="lg:col-span-1 p-5 bg-[#0D1117] border border-white/5 rounded-xl h-[calc(100vh-230px)] flex flex-col justify-between overflow-y-auto shadow-xl">
+        <div className="lg:col-span-1 p-5 glass-panel rounded-2xl h-[calc(100vh-230px)] flex flex-col justify-between overflow-y-auto shadow-xl">
           <div className="space-y-4">
             <div className="flex items-center gap-2 border-b border-white/5 pb-2">
-              <Server className="w-4 h-4 text-cyan-400" />
+              <Server className="w-4 h-4 text-cyber-accent" />
               <span className="text-xs uppercase font-mono font-bold tracking-wider text-slate-200">Discovered Targets</span>
             </div>
             
             <div className="space-y-2 select-text font-mono text-[10px] overflow-y-auto max-h-[calc(100vh-340px)]">
               {hosts.map((host, idx) => (
-                <div key={idx} className="p-2.5 bg-black/40 border border-white/5 rounded-lg flex justify-between items-center hover:border-cyan-500/20 transition-all">
+                <div key={idx} className="p-2.5 bg-[#03060c]/40 border border-white/5 rounded-xl flex justify-between items-center hover:border-cyber-accent/30 hover:bg-[#03060c]/85 transition-all">
                   <div className="min-w-0">
                     <p className="text-slate-200 font-bold truncate">{host.host || host.ip}</p>
                     <p className="text-[8px] text-slate-500 mt-0.5">{host.ip}</p>
                   </div>
-                  <span className={`px-1.5 py-0.5 rounded text-[7px] font-bold border ${
+                  <span className={`px-1.5 py-0.5 rounded-md text-[7px] font-bold border ${
                     host.status === 'Up' 
-                      ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' 
+                      ? 'bg-cyber-primary/10 border-cyber-primary/20 text-cyber-primary' 
                       : 'bg-zinc-800 border-zinc-700 text-zinc-500'
                   }`}>
                     {host.status}
@@ -293,8 +294,8 @@ export default function NetworkScanner() {
 
               {hosts.length === 0 && (
                 <div className="text-center py-20 text-slate-500 font-mono text-[10px] space-y-2">
-                  <p>Grid node inactive.</p>
-                  <p className="text-[8px] text-slate-600">Trigger scan payload above to audit network.</p>
+                  <p className="text-slate-400 font-semibold uppercase">Scanner Grid Unpopulated</p>
+                  <p className="text-[8px] text-slate-600">Trigger scan above to capture network targets.</p>
                 </div>
               )}
             </div>
@@ -307,14 +308,14 @@ export default function NetworkScanner() {
         </div>
 
         {/* Right Side: Tab Viewport */}
-        <div className="lg:col-span-3 bg-[#0D1117] border border-white/5 rounded-xl h-[calc(100vh-230px)] flex flex-col shadow-xl overflow-hidden">
+        <div className="lg:col-span-3 glass-panel rounded-2xl h-[calc(100vh-230px)] flex flex-col shadow-xl overflow-hidden">
           
           {/* Tabs bar header */}
-          <div className="flex border-b border-white/5 bg-black/20 text-xs font-mono">
+          <div className="flex border-b border-white/5 bg-black/10 text-xs font-mono select-none">
             <button 
               onClick={() => setActiveTab('ports')}
               className={`px-5 py-3 border-r border-white/5 transition-all ${
-                activeTab === 'ports' ? 'bg-[#0D1117] text-cyan-400 font-bold border-b border-b-cyan-400' : 'text-slate-400 hover:text-slate-200'
+                activeTab === 'ports' ? 'bg-transparent text-cyber-accent font-bold border-b-2 border-b-cyber-accent' : 'text-slate-400 hover:text-slate-200'
               }`}
             >
               Ports & Hosts
@@ -322,7 +323,7 @@ export default function NetworkScanner() {
             <button 
               onClick={() => setActiveTab('topology')}
               className={`px-5 py-3 border-r border-white/5 transition-all ${
-                activeTab === 'topology' ? 'bg-[#0D1117] text-cyan-400 font-bold border-b border-b-cyan-400' : 'text-slate-400 hover:text-slate-200'
+                activeTab === 'topology' ? 'bg-transparent text-cyber-accent font-bold border-b-2 border-b-cyber-accent' : 'text-slate-400 hover:text-slate-200'
               }`}
             >
               Topology Mapping
@@ -330,7 +331,7 @@ export default function NetworkScanner() {
             <button 
               onClick={() => setActiveTab('details')}
               className={`px-5 py-3 border-r border-white/5 transition-all ${
-                activeTab === 'details' ? 'bg-[#0D1117] text-cyan-400 font-bold border-b border-b-cyan-400' : 'text-slate-400 hover:text-slate-200'
+                activeTab === 'details' ? 'bg-transparent text-cyber-accent font-bold border-b-2 border-b-cyber-accent' : 'text-slate-400 hover:text-slate-200'
               }`}
             >
               Host Profile Card
@@ -338,7 +339,7 @@ export default function NetworkScanner() {
             <button 
               onClick={() => setActiveTab('console')}
               className={`px-5 py-3 transition-all ${
-                activeTab === 'console' ? 'bg-[#0D1117] text-cyan-400 font-bold border-b border-b-cyan-400' : 'text-slate-400 hover:text-slate-200'
+                activeTab === 'console' ? 'bg-transparent text-cyber-accent font-bold border-b-2 border-b-cyber-accent' : 'text-slate-400 hover:text-slate-200'
               }`}
             >
               Live Console Output
@@ -356,19 +357,19 @@ export default function NetworkScanner() {
                   const isExpanded = expandedHosts[host.ip] !== false;
 
                   return (
-                    <div key={hIdx} className="border border-white/5 rounded-lg overflow-hidden bg-black/10">
+                    <div key={hIdx} className="border border-white/5 rounded-xl overflow-hidden glass-card">
                       <div 
                         onClick={() => toggleHostExpand(host.ip)}
-                        className="flex items-center justify-between p-3 bg-black/40 cursor-pointer hover:bg-black/60 transition-colors"
+                        className="flex items-center justify-between p-3 bg-black/20 cursor-pointer hover:bg-black/40 transition-colors"
                       >
                         <div className="flex items-center gap-2">
-                          {isExpanded ? <ChevronDown className="w-4 h-4 text-cyan-400" /> : <ChevronRight className="w-4 h-4 text-slate-500" />}
+                          {isExpanded ? <ChevronDown className="w-4 h-4 text-cyber-accent" /> : <ChevronRight className="w-4 h-4 text-slate-500" />}
                           <span className="font-bold text-slate-200">{host.host || 'Unknown Host'}</span>
                           <span className="text-[10px] text-slate-500">({host.ip})</span>
                         </div>
                         <div className="flex items-center gap-3">
-                          {host.os !== 'N/A' && <span className="text-[9px] text-slate-400 bg-white/5 px-2 py-0.5 rounded-full">{host.os}</span>}
-                          <span className="text-[9px] text-cyan-400 font-bold bg-cyan-950/20 border border-cyan-500/20 px-2 py-0.5 rounded">
+                          {host.os !== 'N/A' && <span className="text-[9px] text-slate-400 bg-white/5 px-2.5 py-0.5 rounded-full">{host.os}</span>}
+                          <span className="text-[9px] text-cyber-accent font-bold bg-cyber-accent/10 border border-cyber-accent/20 px-2 py-0.5 rounded-md">
                             {hostPorts.length} Open Ports
                           </span>
                         </div>
@@ -384,7 +385,7 @@ export default function NetworkScanner() {
                           >
                             <table className="w-full text-left border-collapse text-[11px] font-mono">
                               <thead>
-                                <tr className="bg-black/20 text-slate-500 border-b border-white/5 text-[9px] uppercase">
+                                <tr className="bg-black/30 text-[#64748b] border-b border-white/5 text-[9px] uppercase font-bold">
                                   <th className="p-2.5">Port</th>
                                   <th className="p-2.5">Protocol</th>
                                   <th className="p-2.5">State</th>
@@ -397,14 +398,14 @@ export default function NetworkScanner() {
                                   const [portNum, proto] = port.port.split('/');
                                   return (
                                     <tr key={pIdx} className="hover:bg-white/5 transition-colors">
-                                      <td className="p-2.5 text-cyan-400 font-bold">{portNum}</td>
-                                      <td className="p-2.5 text-slate-500 uppercase">{proto || 'tcp'}</td>
+                                      <td className="p-2.5 text-cyber-accent font-bold">{portNum}</td>
+                                      <td className="p-2.5 text-slate-550 uppercase">{proto || 'tcp'}</td>
                                       <td className="p-2.5">
-                                        <span className={`px-1.5 py-0.5 rounded-[4px] text-[8px] font-bold border uppercase ${
+                                        <span className={`px-1.5 py-0.5 rounded-md text-[8px] font-bold border uppercase ${
                                           port.state === 'open' 
-                                            ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' 
+                                            ? 'bg-cyber-primary/10 border-cyber-primary/20 text-cyber-primary' 
                                             : port.state === 'filtered'
-                                            ? 'bg-amber-500/10 border-amber-500/20 text-amber-400'
+                                            ? 'bg-cyber-warning/10 border-cyber-warning/20 text-cyber-warning'
                                             : 'bg-zinc-800 border-zinc-700 text-zinc-500'
                                         }`}>
                                           {port.state}
@@ -443,10 +444,10 @@ export default function NetworkScanner() {
             {activeTab === 'topology' && (
               <div className="h-full flex flex-col justify-between items-center relative min-h-[calc(100vh-340px)]">
                 {hosts.length > 0 ? (
-                  <div className="relative w-full h-[calc(100vh-340px)] flex items-center justify-center bg-black/10 rounded-xl border border-white/5 overflow-hidden">
+                  <div className="relative w-full h-[calc(100vh-340px)] flex items-center justify-center bg-black/20 rounded-2xl border border-white/5 overflow-hidden shadow-inner">
                     {/* Scanner Center Host */}
-                    <div className="z-10 p-3 bg-black border border-cyan-500/40 rounded-lg text-cyan-400 text-center shadow-glow shadow-cyan-500/5 select-none cursor-pointer">
-                      <Laptop className="w-5 h-5 text-cyan-400 mx-auto mb-1 animate-pulse" />
+                    <div className="z-10 p-3 bg-[#03060c] border border-cyber-accent/40 rounded-xl text-cyber-accent text-center shadow-glow shadow-cyber-accent/5 select-none cursor-pointer">
+                      <Laptop className="w-5 h-5 text-cyber-accent mx-auto mb-1 animate-pulse" />
                       <p className="text-[8px] font-bold">LOCAL SCAN NODE</p>
                       <p className="text-[9px] font-bold text-slate-200">{localInfo?.ip || '127.0.0.1'}</p>
                     </div>
@@ -470,7 +471,7 @@ export default function NetworkScanner() {
                               y1="50%" 
                               x2={`calc(50% + ${x}px)`} 
                               y2={`calc(50% + ${y}px)`} 
-                              stroke={isNodeSelected ? 'rgba(0, 212, 255, 0.4)' : 'rgba(255, 255, 255, 0.05)'}
+                              stroke={isNodeSelected ? 'rgba(0, 240, 255, 0.4)' : 'rgba(255, 255, 255, 0.05)'}
                               strokeWidth={isNodeSelected ? 2 : 1}
                               strokeDasharray={isScanning ? '5,5' : '0'}
                               className={isScanning ? 'animate-pulse' : ''}
@@ -479,15 +480,15 @@ export default function NetworkScanner() {
 
                           {/* Node Elements */}
                           <div 
-                            className={`pointer-events-auto absolute p-2 bg-[#0D1117] border rounded-lg text-center cursor-pointer transition-all hover:scale-105 z-10 ${
+                            className={`pointer-events-auto absolute p-2 bg-[#0a0e1a]/85 border rounded-xl text-center cursor-pointer transition-all hover:scale-105 z-10 ${
                               isNodeSelected 
-                                ? 'border-cyan-500 shadow-glow shadow-cyan-500/10' 
-                                : 'border-white/10 hover:border-cyan-500/30'
+                                ? 'border-cyber-accent shadow-glow glow-cyan bg-[#0a0e1a]' 
+                                : 'border-white/10 hover:border-cyber-accent/30'
                             }`}
                             style={{ transform: `translate(${x}px, ${y}px)` }}
                             onClick={() => setSelectedNode(host)}
                           >
-                            <Server className={`w-3.5 h-3.5 mx-auto mb-0.5 ${isNodeSelected ? 'text-cyan-400' : 'text-slate-400'}`} />
+                            <Server className={`w-3.5 h-3.5 mx-auto mb-0.5 ${isNodeSelected ? 'text-cyber-accent animate-bounce' : 'text-slate-450'}`} />
                             <p className="text-[7.5px] font-bold text-slate-200 truncate max-w-[80px]">{host.host || 'Host'}</p>
                             <p className="text-[7px] text-slate-500">{host.ip}</p>
                           </div>
@@ -497,16 +498,16 @@ export default function NetworkScanner() {
 
                     {/* Node Click Details Panel overlay */}
                     {selectedNode && (
-                      <div className="absolute right-4 bottom-4 w-52 bg-black/90 backdrop-blur-md border border-cyan-500/20 rounded-lg p-3 text-[10px] space-y-1.5 z-20">
-                        <p className="text-xs font-bold text-cyan-400 border-b border-white/5 pb-1 uppercase">{selectedNode.host || 'Host'}</p>
-                        <p className="text-slate-400">IP: <span className="text-slate-200">{selectedNode.ip}</span></p>
-                        <p className="text-slate-400">MAC: <span className="text-slate-200">{selectedNode.mac}</span></p>
-                        <p className="text-slate-400">OS: <span className="text-slate-200">{selectedNode.os}</span></p>
-                        <p className="text-slate-400">Latency: <span className="text-emerald-400">{selectedNode.latency || 'N/A'}</span></p>
-                        <p className="text-slate-400">Status: <span className="text-emerald-400 font-bold">UP</span></p>
+                      <div className="absolute right-4 bottom-4 w-52 glass-panel border border-cyber-accent/20 rounded-xl p-4 text-[10px] space-y-1.5 z-20 shadow-2xl animate-fade-in">
+                        <p className="text-xs font-bold text-cyber-accent border-b border-white/5 pb-1 uppercase tracking-wider">{selectedNode.host || 'Host'}</p>
+                        <p className="text-slate-400">IP: <span className="text-slate-200 font-bold">{selectedNode.ip}</span></p>
+                        <p className="text-slate-400">MAC: <span className="text-slate-200">{selectedNode.mac || 'N/A'}</span></p>
+                        <p className="text-slate-400">OS: <span className="text-slate-200">{selectedNode.os || 'N/A'}</span></p>
+                        <p className="text-slate-400">Latency: <span className="text-cyber-primary">{selectedNode.latency || 'N/A'}</span></p>
+                        <p className="text-slate-400">Status: <span className="text-cyber-primary font-bold">UP</span></p>
                         <button 
                           onClick={() => setSelectedNode(null)}
-                          className="w-full text-center py-1 mt-1 border border-white/5 hover:border-white/20 text-slate-500 hover:text-slate-300 rounded transition-colors text-[8px]"
+                          className="w-full text-center py-1.5 mt-2 border border-white/10 hover:border-white/20 text-slate-400 hover:text-slate-200 bg-white/5 rounded-lg transition-all text-[8px] uppercase tracking-wider font-bold"
                         >
                           Close Details
                         </button>
@@ -529,53 +530,53 @@ export default function NetworkScanner() {
                     {hosts.map((host, idx) => {
                       const hostPorts = ports.filter(p => p.host === host.ip || p.host === host.host);
                       return (
-                        <div key={idx} className="p-4 bg-black/30 border border-white/5 rounded-xl space-y-3 relative overflow-hidden">
-                          <div className="absolute top-0 left-0 w-1.5 h-full bg-cyan-500/20"></div>
+                        <div key={idx} className="p-4 glass-panel border border-white/5 rounded-xl space-y-3 relative overflow-hidden shadow-md">
+                          <div className="absolute top-0 left-0 w-1 h-full bg-cyber-accent/40"></div>
                           <div className="pl-2">
                             <div className="flex justify-between items-start">
                               <div>
-                                <h4 className="text-xs font-bold text-slate-200 font-mono">{host.host || 'Discovered Target'}</h4>
+                                <h4 className="text-xs font-extrabold text-slate-200 font-mono tracking-wider">{host.host || 'Discovered Target'}</h4>
                                 <p className="text-[9px] text-slate-500 font-mono mt-0.5">{host.ip}</p>
                               </div>
-                              <span className="text-[9px] text-cyan-400 font-bold bg-cyan-950/20 border border-cyan-500/20 px-2 py-0.5 rounded">
+                              <span className="text-[9px] text-cyber-accent font-bold bg-cyber-accent/10 border border-cyber-accent/20 px-2 py-0.5 rounded-md">
                                 {hostPorts.length} PORTS
                               </span>
                             </div>
                             
                             <div className="mt-3 grid grid-cols-2 gap-y-2 text-[10px] text-slate-400 font-mono">
                               <div>
-                                <span className="text-slate-600 block text-[8px] uppercase">MAC Address</span>
+                                <span className="text-slate-500 block text-[8px] uppercase font-bold tracking-wider">MAC Address</span>
                                 <span className="text-slate-200">{host.mac || 'N/A'}</span>
                               </div>
                               <div>
-                                <span className="text-slate-600 block text-[8px] uppercase">Operating System</span>
+                                <span className="text-slate-500 block text-[8px] uppercase font-bold tracking-wider">Operating System</span>
                                 <span className="text-slate-200 truncate block max-w-[130px]" title={host.os}>{host.os || 'Generic Linux/Windows'}</span>
                               </div>
                               <div>
-                                <span className="text-slate-600 block text-[8px] uppercase">Latency</span>
-                                <span className="text-emerald-400">{host.latency || '0.002s'}</span>
+                                <span className="text-slate-500 block text-[8px] uppercase font-bold tracking-wider">Latency</span>
+                                <span className="text-cyber-primary font-bold">{host.latency || '0.002s'}</span>
                               </div>
                               <div>
-                                <span className="text-slate-600 block text-[8px] uppercase">Scanner Target</span>
+                                <span className="text-slate-500 block text-[8px] uppercase font-bold tracking-wider">Scanner Target</span>
                                 <span className="text-slate-200">Active</span>
                               </div>
                             </div>
 
-                            <div className="mt-3 pt-2 border-t border-white/5">
-                              <span className="text-slate-600 block text-[8px] uppercase mb-1">Open Badges</span>
+                            <div className="mt-3 pt-2.5 border-t border-white/5">
+                              <span className="text-slate-500 block text-[8px] uppercase font-bold tracking-wider mb-1">Open Badges</span>
                               <div className="flex flex-wrap gap-1">
                                 {hostPorts.slice(0, 10).map((p, pIdx) => (
-                                  <span key={pIdx} className="bg-black border border-white/10 px-1.5 py-0.5 rounded text-[8px] text-cyan-400">
+                                  <span key={pIdx} className="bg-[#03060c] border border-white/10 px-1.5 py-0.5 rounded text-[8px] text-cyber-accent font-bold">
                                     {p.port.split('/')[0]}
                                   </span>
                                 ))}
                                 {hostPorts.length > 10 && (
-                                  <span className="bg-black border border-white/10 px-1.5 py-0.5 rounded text-[8px] text-slate-500">
+                                  <span className="bg-[#03060c] border border-white/10 px-1.5 py-0.5 rounded text-[8px] text-slate-500">
                                     +{hostPorts.length - 10} more
                                   </span>
                                 )}
                                 {hostPorts.length === 0 && (
-                                  <span className="text-[8px] text-slate-600 italic">No open ports</span>
+                                  <span className="text-[8px] text-slate-650 italic">No open ports</span>
                                 )}
                               </div>
                             </div>
@@ -596,19 +597,19 @@ export default function NetworkScanner() {
             {activeTab === 'console' && (
               <div className="flex flex-col h-full space-y-3 min-h-[calc(100vh-340px)]">
                 {/* Console action bar */}
-                <div className="flex justify-between items-center bg-black/40 border border-white/5 rounded-lg px-4 py-2 text-[10px]">
-                  <span className="font-bold text-slate-500 uppercase">Interactive Log Stream</span>
+                <div className="flex justify-between items-center bg-[#03060c]/40 border border-white/5 rounded-xl px-4 py-2 text-[10px]">
+                  <span className="font-bold text-slate-500 uppercase tracking-wider">Interactive Log Stream</span>
                   <div className="flex gap-2">
                     <button 
                       onClick={copyConsoleLogs}
-                      className="flex items-center gap-1 hover:text-cyan-400 border border-white/5 hover:border-cyan-500/20 px-2 py-1 bg-black rounded transition-all"
+                      className="flex items-center gap-1 text-slate-400 hover:text-cyber-accent border border-white/5 hover:border-cyber-accent/30 px-2 py-1 bg-black rounded-lg transition-all"
                     >
                       <Copy className="w-3 h-3" />
                       Copy
                     </button>
                     <button 
                       onClick={clearConsoleLogs}
-                      className="flex items-center gap-1 hover:text-red-400 border border-white/5 hover:border-red-500/20 px-2 py-1 bg-black rounded transition-all"
+                      className="flex items-center gap-1 text-slate-400 hover:text-cyber-danger border border-white/5 hover:border-cyber-danger/30 px-2 py-1 bg-black rounded-lg transition-all"
                     >
                       <Trash2 className="w-3 h-3" />
                       Clear
@@ -616,14 +617,14 @@ export default function NetworkScanner() {
                   </div>
                 </div>
 
-                <div className="flex-1 bg-black p-4 border border-white/5 rounded-xl text-[10.5px] leading-relaxed h-[calc(100vh-380px)] overflow-y-auto font-mono text-slate-300 select-text">
+                <div className="flex-1 terminal-box p-4 border border-white/5 rounded-xl text-[10.5px] leading-relaxed h-[calc(100vh-380px)] overflow-y-auto font-mono text-slate-300 select-text">
                   {logs.map((log, idx) => {
                     let textClass = 'text-slate-400';
-                    if (log.includes('open')) textClass = 'text-emerald-400 font-bold';
-                    else if (log.includes('filtered')) textClass = 'text-amber-400';
+                    if (log.includes('open')) textClass = 'text-cyber-primary font-bold';
+                    else if (log.includes('filtered')) textClass = 'text-cyber-warning';
                     else if (log.includes('closed')) textClass = 'text-slate-600';
-                    else if (log.includes('WARN') || log.includes('[ERROR]') || log.includes('failed')) textClass = 'text-red-400 font-bold';
-                    else if (log.includes('Nmap scan report') || log.includes('Nmap done')) textClass = 'text-cyan-400 font-bold';
+                    else if (log.includes('WARN') || log.includes('[ERROR]') || log.includes('failed')) textClass = 'text-cyber-danger font-bold';
+                    else if (log.includes('Nmap scan report') || log.includes('Nmap done')) textClass = 'text-cyber-accent font-bold';
 
                     return (
                       <div key={idx} className={`${textClass} whitespace-pre-wrap`}>
@@ -632,7 +633,7 @@ export default function NetworkScanner() {
                     );
                   })}
                   {isScanning && (
-                    <div className="animate-pulse text-cyan-400 font-bold mt-2">
+                    <div className="animate-pulse text-cyber-accent font-bold mt-2">
                       &gt; Listening for incoming port diagnostics...
                     </div>
                   )}

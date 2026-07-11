@@ -84,10 +84,9 @@ function ToastItem({ toast, onClose }: { toast: any; onClose: (id: string) => vo
       initial={{ opacity: 0, y: 30, scale: 0.9 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: -20, scale: 0.9, transition: { duration: 0.2 } }}
-      className="p-4 bg-[#0d1117]/95 backdrop-blur-md border border-[#ef4444]/30 rounded-xl text-slate-100 shadow-2xl relative overflow-hidden flex gap-3 select-text group"
-      style={{ boxShadow: '0 0 15px rgba(239, 68, 68, 0.15)' }}
+      className="p-4 glass-panel border border-[#f43f5e]/30 rounded-xl text-slate-100 shadow-glow glow-red relative overflow-hidden flex gap-3 select-text group"
     >
-      <AlertTriangle className="w-5 h-5 text-red-500 shrink-0 animate-pulse mt-0.5" />
+      <AlertTriangle className="w-5 h-5 text-cyber-danger shrink-0 animate-pulse mt-0.5" />
       <div className="flex-1 min-w-0">
         <div className="flex justify-between items-start">
           <span className={`text-[8px] uppercase font-mono font-bold px-2 py-0.5 border rounded ${badgeColor}`}>
@@ -101,13 +100,13 @@ function ToastItem({ toast, onClose }: { toast: any; onClose: (id: string) => vo
         <p className="text-[10px] text-slate-400 mt-1 leading-snug">{toast.description}</p>
         
         <div className="flex justify-between items-center mt-3 pt-2 border-t border-white/5">
-          <span className="text-[8px] text-slate-500 font-mono uppercase bg-zinc-900 px-2 py-0.5 border border-white/5 rounded">
+          <span className="text-[8px] text-slate-500 font-mono uppercase bg-[#080d16] px-2 py-0.5 border border-white/5 rounded">
             HOST: {toast.host || 'UNKNOWN'}
           </span>
           <div className="flex gap-2">
             <button 
               onClick={() => onClose(toast.id)}
-              className="text-[9px] text-slate-500 hover:text-slate-350 px-2 py-0.5 font-mono"
+              className="text-[9px] text-slate-400 hover:text-slate-200 px-2 py-0.5 font-mono transition-colors"
             >
               Dismiss
             </button>
@@ -117,7 +116,7 @@ function ToastItem({ toast, onClose }: { toast: any; onClose: (id: string) => vo
                 (window as any).setActiveTabModule?.('incidents');
                 onClose(toast.id);
               }}
-              className="text-[9px] text-[#00D4FF] hover:underline font-mono font-bold"
+              className="text-[9px] text-cyber-accent hover:text-[#00ffff] font-mono font-bold transition-colors"
             >
               → View
             </button>
@@ -436,24 +435,28 @@ export default function App() {
   ];
 
   return (
-    <div className="flex h-screen bg-cyber-bg overflow-hidden text-slate-350 font-sans select-none relative">
+    <div className="flex h-screen bg-cyber-bg overflow-hidden text-slate-300 font-sans select-none relative">
       
+      {/* BACKGROUND DECORATIVE GLOWS */}
+      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-cyber-accent/5 blur-[150px] pointer-events-none rounded-full" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-cyber-primary/3 blur-[150px] pointer-events-none rounded-full" />
+
       {/* 1. LEFT SIDEBAR COMPONENT */}
-      <aside className="w-64 bg-cyber-card border-r border-cyber-border flex flex-col justify-between shrink-0 z-20">
+      <aside className="w-64 bg-[#070b14]/70 backdrop-blur-xl border-r border-cyber-border/40 flex flex-col justify-between shrink-0 z-20 shadow-2xl">
         <div>
           {/* Logo brand */}
-          <div className="flex items-center gap-3 p-5 border-b border-cyber-border bg-cyber-card">
-            <div className="p-1.5 bg-black border border-cyber-primary/20 rounded-lg shadow-glow glow-green">
+          <div className="flex items-center gap-3 p-5 border-b border-cyber-border/40">
+            <div className="p-1.5 bg-[#03060c] border border-cyber-primary/30 rounded-lg shadow-glow glow-green">
               <ShieldAlert className="w-5 h-5 text-cyber-primary animate-pulse" />
             </div>
             <div>
-              <span className="font-bold text-slate-100 text-sm tracking-widest font-mono">ZENTRIX</span>
-              <p className="text-[10px] text-cyber-primary font-mono leading-tight">CYBER TASK FORCE</p>
+              <span className="font-extrabold text-slate-100 text-sm tracking-widest font-mono glow-text-green">ZENTRIX</span>
+              <p className="text-[9px] text-cyber-primary/70 font-mono tracking-wider leading-none">CYBER TASK FORCE</p>
             </div>
           </div>
 
           {/* Navigation drawer links */}
-          <nav className="p-3 space-y-1 overflow-y-auto max-h-[calc(100vh-210px)]">
+          <nav className="p-3 space-y-1 overflow-y-auto max-h-[calc(100vh-220px)]">
             {menuItems.map(item => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
@@ -461,10 +464,10 @@ export default function App() {
                 <button
                   key={item.id}
                   onClick={() => setActiveTab(item.id)}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 text-xs font-semibold rounded transition-all leading-none ${
+                  className={`w-full flex items-center gap-3 px-3 py-2.5 text-xs font-semibold rounded-lg transition-all leading-none border border-transparent ${
                     isActive 
-                      ? 'bg-cyber-primary/10 border border-cyber-primary/30 text-cyber-primary font-bold shadow-md shadow-cyber-primary/5' 
-                      : 'hover:bg-zinc-950 border border-transparent text-slate-400 hover:text-slate-200'
+                      ? 'bg-cyber-primary/10 border-l-2 border-l-cyber-primary border-t-white/5 border-r-white/5 border-b-white/5 text-cyber-primary font-bold shadow-glow shadow-cyber-primary/5' 
+                      : 'hover:bg-cyber-card/40 text-slate-400 hover:text-slate-200'
                   }`}
                 >
                   <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-cyber-primary' : 'text-slate-400'}`} />
@@ -476,9 +479,9 @@ export default function App() {
         </div>
 
         {/* User context footer - Dashboard Profile Widget */}
-        <div className="p-4 border-t border-cyber-border bg-cyber-card space-y-2">
+        <div className="p-4 border-t border-cyber-border/40 bg-transparent space-y-2">
           {user && (
-            <div className="p-3 bg-black border border-cyber-border rounded-lg space-y-2 text-[10px] font-mono leading-snug">
+            <div className="p-3 glass-card border border-white/5 rounded-xl space-y-2 text-[10px] font-mono leading-snug shadow-md">
               <div className="flex items-center gap-2">
                 <img src={user.avatar} alt="Profile" className="w-9 h-9 rounded-full border border-cyber-primary/30 shrink-0 object-cover" />
                 <div className="overflow-hidden leading-tight">
@@ -486,7 +489,7 @@ export default function App() {
                   <p className="text-[9px] text-cyber-primary truncate">{user.role}</p>
                 </div>
               </div>
-              <div className="pt-2 border-t border-cyber-border space-y-1 text-slate-500">
+              <div className="pt-2 border-t border-cyber-border/45 space-y-1 text-slate-500">
                 <p className="truncate">Email: <span className="text-slate-300">{user.email}</span></p>
                 <p>WhatsApp: <span className="text-slate-300">{user.whatsapp}</span></p>
                 <p>Registered: <span className="text-slate-300">{new Date(user.joinedAt).toLocaleDateString()}</span></p>
@@ -500,25 +503,25 @@ export default function App() {
       </aside>
 
       {/* 2. MAIN SYSTEM CONSOLE FRAME */}
-      <main className="flex-1 flex flex-col min-w-0 bg-cyber-bg">
+      <main className="flex-1 flex flex-col min-w-0 bg-transparent z-10">
         
         {/* Core Header section */}
-        <header className="h-14 bg-cyber-card border-b border-cyber-border px-6 flex items-center justify-between shrink-0 font-sans z-10 shadow-md">
+        <header className="h-14 bg-[#070b14]/50 backdrop-blur-xl border-b border-cyber-border/30 px-6 flex items-center justify-between shrink-0 font-sans z-10 shadow-md">
           <div className="flex items-center gap-6">
-            <h2 className="text-xs font-bold tracking-wider uppercase text-slate-200 font-mono flex items-center gap-2">
+            <h2 className="text-xs font-bold tracking-wider uppercase text-slate-100 font-mono flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-cyber-primary animate-ping"></span>
               {menuItems.find(m => m.id === activeTab)?.label} MODULE
             </h2>
             <div className="flex items-center gap-4">
-              <div className="flex items-center gap-1.5 text-[10px] text-slate-500 font-mono">
-                <Database className="w-3.5 h-3.5 text-cyber-primary" />
+              <div className="flex items-center gap-1.5 text-[10px] text-slate-400 font-mono bg-white/5 border border-white/5 rounded-full px-2.5 py-0.5">
+                <Database className="w-3.5 h-3.5 text-cyber-primary animate-pulse" />
                 <span>DB:</span>
-                <span className="text-slate-300 font-medium">{dbHealth}</span>
+                <span className="text-slate-200 font-medium">{dbHealth}</span>
               </div>
-              <div className="flex items-center gap-1.5 text-[10px] text-slate-500 font-mono">
+              <div className="flex items-center gap-1.5 text-[10px] text-slate-400 font-mono bg-white/5 border border-white/5 rounded-full px-2.5 py-0.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-cyber-primary animate-pulse"></span>
                 <span>Workstation:</span>
-                <span className="text-slate-300 font-medium uppercase font-mono">LOCAL NODE</span>
+                <span className="text-slate-200 font-medium uppercase font-mono">LOCAL NODE</span>
               </div>
             </div>
           </div>
@@ -530,7 +533,7 @@ export default function App() {
               <input 
                 type="text" 
                 placeholder="Global search..." 
-                className="bg-black border border-cyber-border pl-7 pr-3 py-1 text-[10px] rounded focus:outline-none focus:border-cyber-primary text-cyber-primary w-40 transition-all focus:w-48"
+                className="bg-[#03060c] border border-cyber-border/80 pl-7 pr-3 py-1 text-[10px] rounded-lg focus:outline-none focus:border-cyber-accent focus:shadow-glow focus:glow-cyan text-cyber-accent w-40 transition-all focus:w-48"
               />
             </div>
 
@@ -538,22 +541,22 @@ export default function App() {
             <div className="relative">
               <button 
                 onClick={() => setShowNotificationDropdown(!showNotificationDropdown)}
-                className="p-1 bg-black border border-cyber-border rounded hover:border-cyber-primary transition-all relative"
+                className="p-1 bg-[#03060c] border border-cyber-border/80 rounded-lg hover:border-cyber-accent transition-all relative shadow-md"
               >
-                <Bell className="w-3.5 h-3.5 text-cyber-primary" />
+                <Bell className="w-3.5 h-3.5 text-cyber-accent" />
                 {liveAlerts.length > 0 && (
-                  <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full animate-ping"></span>
+                  <span className="absolute -top-1 -right-1 w-2 h-2 bg-cyber-danger rounded-full animate-ping"></span>
                 )}
               </button>
 
               {showNotificationDropdown && (
-                <div className="absolute right-0 mt-2 w-72 bg-black border border-cyber-border rounded-lg shadow-2xl z-50 p-3 space-y-2 select-text text-[10px] max-h-80 overflow-y-auto">
-                  <p className="text-slate-500 uppercase tracking-widest text-[8px] font-bold border-b border-cyber-border pb-1">
+                <div className="absolute right-0 mt-2 w-72 glass-panel rounded-xl shadow-2xl z-50 p-3 space-y-2 select-text text-[10px] max-h-80 overflow-y-auto border border-white/10">
+                  <p className="text-slate-500 uppercase tracking-widest text-[8px] font-bold border-b border-white/5 pb-1">
                     RECENT THREAT ALERTS ({liveAlerts.length})
                   </p>
                   {liveAlerts.slice(0, 5).map((a: any, idx: number) => (
-                    <div key={idx} className="p-2 border-b border-cyber-border last:border-b-0 hover:bg-cyber-card rounded transition-all">
-                      <p className="font-bold text-red-400 uppercase leading-none">{a.title}</p>
+                    <div key={idx} className="p-2 border-b border-white/5 last:border-b-0 hover:bg-white/5 rounded-lg transition-all">
+                      <p className="font-bold text-cyber-danger uppercase leading-none">{a.title}</p>
                       <p className="text-[8px] text-slate-400 mt-1 truncate">{a.description}</p>
                       <p className="text-[7px] text-slate-500 mt-0.5">{a.host} | {new Date(a.timestamp).toLocaleTimeString()}</p>
                     </div>
@@ -566,7 +569,7 @@ export default function App() {
             </div>
 
             {/* IST Clock */}
-            <div className="flex items-center gap-1.5 bg-black px-3 py-1.5 border border-cyber-border rounded text-cyber-primary font-bold">
+            <div className="flex items-center gap-1.5 bg-[#03060c] px-3 py-1.5 border border-cyber-border/85 rounded-lg text-cyber-primary font-bold shadow-md shadow-cyber-primary/5">
               <span className="w-1.5 h-1.5 rounded-full bg-cyber-primary animate-pulse shrink-0"></span>
               <Clock className="w-3.5 h-3.5 text-cyber-primary" />
               <span>{istTime} IST</span>
@@ -575,7 +578,7 @@ export default function App() {
         </header>
 
         {/* 3. DYNAMIC INTERNAL VIEWPORTS */}
-        <section className="flex-1 overflow-auto bg-black p-6 relative">
+        <section className="flex-1 overflow-auto bg-transparent p-6 relative">
           
           {activeTab === 'dashboard' && (
             <Dashboard />
@@ -670,22 +673,22 @@ export default function App() {
 
       {/* 5. FULL-SCREEN CRITICAL SECURITY ALERT OVERLAY */}
       {criticalPopup && (
-        <div className="fixed inset-0 bg-red-950/80 backdrop-blur-md z-50 flex items-center justify-center p-6 select-text animate-fade-in">
-          <div className="bg-[#0b0505] border-2 border-red-500 rounded-2xl max-w-2xl w-full p-8 shadow-[0_0_50px_rgba(239,68,68,0.4)] relative overflow-hidden flex flex-col font-mono">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-6 select-text animate-fade-in">
+          <div className="glass-panel border-2 border-cyber-danger/45 rounded-2xl max-w-2xl w-full p-8 shadow-glow glow-red relative overflow-hidden flex flex-col font-mono">
             {/* Pulsing hazard lights background */}
-            <div className="absolute inset-0 bg-radial-gradient from-red-500/10 to-transparent pointer-events-none animate-pulse" />
+            <div className="absolute inset-0 bg-radial-gradient from-cyber-danger/10 to-transparent pointer-events-none animate-pulse" />
             
-            <div className="flex items-center gap-4 border-b border-red-500/30 pb-4 mb-6">
-              <div className="p-3 bg-red-500/20 border border-red-500 rounded-xl text-red-500 animate-pulse">
+            <div className="flex items-center gap-4 border-b border-cyber-danger/25 pb-4 mb-6">
+              <div className="p-3 bg-cyber-danger/10 border border-cyber-danger rounded-xl text-cyber-danger animate-pulse shadow-glow glow-red">
                 <ShieldAlert className="w-8 h-8" />
               </div>
               <div>
-                <h1 className="text-lg font-bold tracking-widest text-red-500 uppercase">CRITICAL SYSTEM THREAT DETECTED</h1>
-                <p className="text-[10px] text-red-400 uppercase tracking-wider mt-0.5">SOAR Containment Protocol Active</p>
+                <h1 className="text-lg font-bold tracking-widest text-cyber-danger uppercase glow-text-red">CRITICAL THREAT DETECTED</h1>
+                <p className="text-[9px] text-[#fda4af] uppercase tracking-wider mt-0.5">SOAR Containment Protocol In Effect</p>
               </div>
               {criticalPopup.count > 1 && (
-                <span className="ml-auto bg-red-500 text-black text-xs font-bold px-3 py-1 rounded-full animate-bounce">
-                  {criticalPopup.count} OCCURRENCES
+                <span className="ml-auto bg-cyber-danger text-white text-xs font-bold px-3 py-1 rounded-full animate-bounce">
+                  {criticalPopup.count} ATTEMPTS
                 </span>
               )}
             </div>
@@ -693,26 +696,26 @@ export default function App() {
             <div className="space-y-4 text-xs flex-1">
               <div className="grid grid-cols-2 gap-4 bg-black/40 p-4 border border-white/5 rounded-xl font-mono text-[10px] text-slate-400">
                 <div>
-                  <span className="text-slate-500 block">THREAT CLASSIFICATION:</span>
-                  <span className="text-red-400 font-bold text-xs uppercase">{criticalPopup.category || 'Malicious Intrusion'}</span>
+                  <span className="text-slate-500 block text-[8px] tracking-wider">THREAT CLASSIFICATION</span>
+                  <span className="text-cyber-danger font-bold text-xs uppercase">{criticalPopup.category || 'Malicious Intrusion'}</span>
                 </div>
                 <div>
-                  <span className="text-slate-500 block">TARGET ENDPOINT:</span>
-                  <span className="text-white font-bold text-xs">{criticalPopup.host || 'LOCAL NODE'}</span>
+                  <span className="text-slate-500 block text-[8px] tracking-wider">TARGET ENDPOINT</span>
+                  <span className="text-slate-200 font-bold text-xs">{criticalPopup.host || 'LOCAL NODE'}</span>
                 </div>
                 <div>
-                  <span className="text-slate-500 block">DETECTED TIMESTAMP:</span>
+                  <span className="text-slate-500 block text-[8px] tracking-wider">DETECTED TIMESTAMP</span>
                   <span className="text-slate-350">{new Date(criticalPopup.timestamp).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })} IST</span>
                 </div>
                 <div>
-                  <span className="text-slate-500 block">MITRE ATT&CK:</span>
-                  <span className="text-[#00D4FF]">{criticalPopup.evidence?.mitreTactic || 'Execution'}</span>
+                  <span className="text-slate-500 block text-[8px] tracking-wider">MITRE ATT&CK TACTIC</span>
+                  <span className="text-cyber-accent font-bold">{criticalPopup.evidence?.mitreTactic || 'Execution'}</span>
                 </div>
               </div>
 
               <div className="space-y-1">
                 <span className="text-[9px] text-slate-500 uppercase block font-bold">Threat Indicators Details</span>
-                <div className="p-4 bg-black border border-white/5 rounded-xl text-slate-300 text-xs leading-relaxed max-h-36 overflow-y-auto">
+                <div className="p-4 bg-black/50 border border-white/5 rounded-xl text-slate-300 text-xs leading-relaxed max-h-36 overflow-y-auto">
                   {criticalPopup.description}
                 </div>
               </div>
@@ -720,17 +723,17 @@ export default function App() {
               {criticalPopup.evidence && (
                 <div className="space-y-1">
                   <span className="text-[9px] text-slate-500 uppercase block font-bold">Active Evidence Package</span>
-                  <pre className="p-3 bg-zinc-950 border border-white/5 rounded-xl text-[9px] text-emerald-400 overflow-x-auto max-h-32">
+                  <pre className="p-3 bg-black border border-cyber-accent/15 rounded-xl text-[9px] text-cyber-primary overflow-x-auto max-h-32 shadow-inner">
                     {JSON.stringify(criticalPopup.evidence, null, 2)}
                   </pre>
                 </div>
               )}
             </div>
 
-            <div className="mt-8 flex justify-between gap-4 border-t border-red-500/20 pt-6">
+            <div className="mt-8 flex justify-between gap-4 border-t border-white/10 pt-6">
               <button 
                 onClick={() => setCriticalPopup(null)}
-                className="flex-1 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-slate-300 font-bold text-xs py-3 rounded-xl uppercase transition-colors"
+                className="flex-1 bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 font-bold text-xs py-3 rounded-xl uppercase transition-colors"
               >
                 Acknowledge Alert
               </button>
@@ -750,7 +753,7 @@ export default function App() {
                   }
                   setCriticalPopup(null);
                 }}
-                className="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold text-xs py-3 rounded-xl uppercase transition-colors shadow-lg shadow-red-600/20"
+                className="flex-1 bg-cyber-danger hover:bg-[#e11d48] text-white font-bold text-xs py-3 rounded-xl uppercase transition-colors shadow-lg shadow-cyber-danger/20 border border-cyber-danger/30"
               >
                 Isolate Host Endpoint
               </button>
