@@ -7,7 +7,9 @@ const { authenticateToken } = require('./auth');
 const reportsService = require('../services/reportsService');
 const scheduler = require('../services/scheduler');
 
-const REPORTS_DIR = path.join(__dirname, '..', 'reports');
+const REPORTS_DIR = process.env.ZENTRIX_USER_DATA 
+  ? path.join(process.env.ZENTRIX_USER_DATA, 'reports') 
+  : path.join(__dirname, '..', 'reports');
 
 // Get all PDF Report logs
 router.get('/', authenticateToken, async (req, res) => {
@@ -49,7 +51,7 @@ router.post('/generate', authenticateToken, async (req, res) => {
     });
 
     // Send immediate simulated email & WhatsApp
-    const fsSimLogs = path.join(__dirname, '..', 'reports', 'logs');
+    const fsSimLogs = path.join(REPORTS_DIR, 'logs');
     if (!fs.existsSync(fsSimLogs)) fs.mkdirSync(fsSimLogs, { recursive: true });
     
     fs.appendFileSync(

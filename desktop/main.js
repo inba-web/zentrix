@@ -36,8 +36,11 @@ function waitForServer(url, retries = 60, intervalMs = 500) {
 }
 
 function startAgent() {
-  const agentScriptPath = path.join(__dirname, '../agent/agent.py');
-  console.log('[ELECTRON] Attempting to start EDR agent...');
+  let agentScriptPath = path.join(__dirname, '../agent/agent.py');
+  if (app.isPackaged) {
+    agentScriptPath = agentScriptPath.replace('app.asar', 'app.asar.unpacked');
+  }
+  console.log('[ELECTRON] Attempting EDR agent execution at:', agentScriptPath);
   
   // Try python3 first, fallback to python
   let pythonCmd = 'python3';

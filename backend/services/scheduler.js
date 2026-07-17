@@ -6,7 +6,11 @@ const db = require('../db');
 const reportsService = require('./reportsService');
 
 // Local simulator logs paths
-const LOGS_DIR = path.join(__dirname, '..', 'reports', 'logs');
+const REPORTS_DIR = process.env.ZENTRIX_USER_DATA 
+  ? path.join(process.env.ZENTRIX_USER_DATA, 'reports') 
+  : path.join(__dirname, '..', 'reports');
+
+const LOGS_DIR = path.join(REPORTS_DIR, 'logs');
 if (!fs.existsSync(LOGS_DIR)) {
   fs.mkdirSync(LOGS_DIR, { recursive: true });
 }
@@ -168,7 +172,7 @@ async function processRetries() {
         const report = await db.reports.findOne({ _id: log.reportId });
         if (!report) continue;
 
-        const pdfPath = path.join(__dirname, '..', 'reports', report.fileName);
+        const pdfPath = path.join(REPORTS_DIR, report.fileName);
         const nextRetryCount = log.retryCount + 1;
         const updates = { retryCount: nextRetryCount };
 

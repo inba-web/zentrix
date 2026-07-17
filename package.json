@@ -28,14 +28,12 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
-    "knex": "^3.3.0",
     "mongoose": "^8.4.1",
     "multer": "^2.1.1",
     "node-cron": "^4.2.1",
     "nodemailer": "^6.9.13",
     "pdfkit": "^0.15.0",
     "socket.io": "^4.7.5",
-    "sqlite3": "^6.0.1",
     "systeminformation": "^5.31.7",
     "twilio": "^6.0.2",
     "uuid": "^9.0.1"
@@ -54,6 +52,9 @@
       "package.json"
     ],
     "asar": true,
+    "asarUnpack": [
+      "agent/**/*"
+    ],
     "linux": {
       "target": [
         "AppImage",

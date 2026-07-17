@@ -9,7 +9,8 @@ const db = require('../db');
 let ioInstance = null;
 let tailInterval = null;
 
-const localLogPath = path.join(__dirname, '..', 'data', 'zentrix_siem.log');
+const baseDir = process.env.ZENTRIX_USER_DATA || path.join(__dirname, '..');
+const localLogPath = path.join(baseDir, 'data', 'zentrix_siem.log');
 
 // Ensure local fallback log file exists
 if (!fs.existsSync(path.dirname(localLogPath))) {
