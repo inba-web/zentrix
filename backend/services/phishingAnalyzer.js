@@ -49,11 +49,15 @@ function analyzePhishing(rawContent) {
     const domain = parts[parts.length - 1]?.trim().toLowerCase();
 
     // Check display name mismatch
-    const displayName = sender.split('<')[0]?.trim().toLowerCase();
-    if (displayName && !displayName.includes(domain.split('.')[0])) {
-      // e.g. "PayPal Support <hackers@gmail.com>"
-      headerAnomalies.push(`Display Name Mismatch: Display says "${displayName}" but emails from domain: "${domain}"`);
-      senderReputation = 'Poor';
+    const displayNameRaw = sender.split('<')[0]?.trim();
+    const displayName = displayNameRaw?.replace(/['"]/g, '').toLowerCase();
+    if (sender.includes('<') && displayName) {
+      const brands = ['paypal', 'google', 'microsoft', 'apple', 'netflix', 'facebook', 'amazon', 'dhl', 'fedex', 'ups', 'linkedin', 'yahoo', 'steam', 'instagram', 'bank'];
+      const matchedBrand = brands.find(brand => displayName.includes(brand));
+      if (matchedBrand && !domain.includes(matchedBrand)) {
+        headerAnomalies.push(`Display Name Spoofing: Display says "${displayNameRaw}" but email is from domain: "${domain}"`);
+        senderReputation = 'Poor';
+      }
     }
 
     // High risk keywords in sender domain

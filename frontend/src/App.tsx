@@ -424,6 +424,7 @@ export default function App() {
     { id: 'scanner', label: 'Network Scanner', icon: Search },
     { id: 'packets', label: 'Packet Analysis', icon: Radio },
     { id: 'edr', label: 'EDR', icon: Cpu },
+    { id: 'ids', label: 'IDS', icon: ShieldAlert },
     { id: 'siem', label: 'SIEM', icon: Terminal },
     { id: 'soar', label: 'SOAR', icon: Workflow },
     { id: 'intel', label: 'Threat Intelligence', icon: Compass },

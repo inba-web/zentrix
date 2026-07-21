@@ -66,8 +66,11 @@ function tailLogFile(filePath, io, sourceName = null) {
     setInterval(() => {
       try {
         const stat = fs.statSync(filePath);
-        if (stat.size <= lastSize) return;
-        const stream = fs.createReadStream(filePath, { start: lastSize, end: stat.size });
+        if (stat.size < lastSize) {
+          lastSize = 0; // Reset read index if file is truncated/rotated
+        }
+        if (stat.size === lastSize) return;
+        const stream = fs.createReadStream(filePath, { start: lastSize });
         lastSize = stat.size;
         const rl = readline.createInterface({ input: stream });
         rl.on('line', async line => {

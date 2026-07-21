@@ -13,16 +13,29 @@ export default function IDS({ token }: any) {
   const [idsLogs, setIdsLogs] = useState<any[]>([]);
   const [selectedLog, setSelectedLog] = useState<any>(null);
 
+  // Fetch initial IDS logs once on mount
+  useEffect(() => {
+    fetchInitialIDSLogs();
+  }, []);
+
   // Sync WebSocket IDS logs
   useEffect(() => {
-    // Filter Suricata logs from SIEM logs stream
     const filtered = websocketLogs.filter((log: any) => log.source === 'Suricata');
     if (filtered.length > 0) {
-      setIdsLogs(prev => [...filtered, ...prev].slice(0, 50));
-    } else {
-      fetchInitialIDSLogs();
+      setIdsLogs(prev => {
+        const newLogs = filtered.filter(f => !prev.some(p => p._id === f._id));
+        if (newLogs.length === 0) return prev;
+        return [...newLogs, ...prev].slice(0, 50);
+      });
     }
   }, [websocketLogs]);
+
+  // Handle selected log default fallback
+  useEffect(() => {
+    if (idsLogs.length > 0 && !selectedLog) {
+      setSelectedLog(idsLogs[0]);
+    }
+  }, [idsLogs, selectedLog]);
 
   const fetchInitialIDSLogs = async () => {
     try {
@@ -32,9 +45,6 @@ export default function IDS({ token }: any) {
       if (res.ok) {
         const data = await res.json();
         setIdsLogs(data);
-        if (data.length > 0) {
-          setSelectedLog(data[0]);
-        }
       }
     } catch (err) {
       console.error('Failed to fetch IDS logs:', err);

@@ -37,6 +37,48 @@ function writeCollection(collection, data) {
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
 }
 
+function matchItem(item, query) {
+  if (!query || Object.keys(query).length === 0) return true;
+  
+  return Object.entries(query).every(([k, v]) => {
+    if (k === '$or') {
+      if (!Array.isArray(v)) return false;
+      return v.some(subQuery => matchItem(item, subQuery));
+    }
+    if (k === '$and') {
+      if (!Array.isArray(v)) return false;
+      return v.every(subQuery => matchItem(item, subQuery));
+    }
+    
+    // Normal field query
+    const itemVal = item[k];
+    if (v && typeof v === 'object' && !Array.isArray(v)) {
+      if ('$ne' in v) {
+        return itemVal !== v.$ne;
+      }
+      if ('$lt' in v) {
+        return itemVal < v.$lt;
+      }
+      if ('$gt' in v) {
+        return itemVal > v.$gt;
+      }
+      if ('$in' in v) {
+        return Array.isArray(v.$in) && v.$in.includes(itemVal);
+      }
+      if ('$nin' in v) {
+        return Array.isArray(v.$nin) && !v.$nin.includes(itemVal);
+      }
+      if ('$regex' in v) {
+        const pattern = v.$regex;
+        const flags = v.$options || '';
+        const re = new RegExp(pattern, flags);
+        return re.test(itemVal || '');
+      }
+    }
+    return itemVal === v;
+  });
+}
+
 module.exports = {
   // Create a single record
   async create(collection, doc) {
@@ -70,28 +112,7 @@ module.exports = {
   async find(collection, query = {}) {
     const list = readCollection(collection);
     if (Object.keys(query).length === 0) return list;
-    return list.filter(item => {
-      return Object.entries(query).every(([k, v]) => {
-        if (v && typeof v === 'object' && !Array.isArray(v)) {
-          if ('$ne' in v) {
-            return item[k] !== v.$ne;
-          }
-          if ('$lt' in v) {
-            return item[k] < v.$lt;
-          }
-          if ('$gt' in v) {
-            return item[k] > v.$gt;
-          }
-          if ('$in' in v) {
-            return Array.isArray(v.$in) && v.$in.includes(item[k]);
-          }
-          if ('$nin' in v) {
-            return Array.isArray(v.$nin) && !v.$nin.includes(item[k]);
-          }
-        }
-        return item[k] === v;
-      });
-    });
+    return list.filter(item => matchItem(item, query));
   },
 
   // Find one record
@@ -159,9 +180,7 @@ module.exports = {
   // Delete one (by query)
   async delete(collection, query) {
     const list = readCollection(collection);
-    const idx = list.findIndex(item => {
-      return Object.entries(query).every(([k, v]) => item[k] === v);
-    });
+    const idx = list.findIndex(item => matchItem(item, query));
     if (idx === -1) return { deletedCount: 0 };
     list.splice(idx, 1);
     writeCollection(collection, list);
@@ -172,20 +191,7 @@ module.exports = {
   async deleteMany(collection, query = {}) {
     const list = readCollection(collection);
     const initialLength = list.length;
-    const filtered = list.filter(item => {
-      // Return true if the item should KEEP (i.e. does NOT match the delete query)
-      return !Object.entries(query).every(([k, v]) => {
-        if (v && typeof v === 'object') {
-          if ('$lt' in v) {
-            return item[k] < v.$lt;
-          }
-          if ('$gt' in v) {
-            return item[k] > v.$gt;
-          }
-        }
-        return item[k] === v;
-      });
-    });
+    const filtered = list.filter(item => !matchItem(item, query));
     writeCollection(collection, filtered);
     return { deletedCount: initialLength - filtered.length };
   },

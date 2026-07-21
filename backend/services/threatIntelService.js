@@ -31,7 +31,7 @@ async function lookupReputation(type, value) {
       if (type === 'Hash') vtType = 'files';
       else if (type === 'Domain') vtType = 'domains';
       else if (type === 'URL') {
-        const b64 = Buffer.from(value).toString('base64').replace(/=/g, '');
+        const b64 = Buffer.from(value).toString('base64url');
         vtType = `urls`;
         vtValue = b64;
       }
