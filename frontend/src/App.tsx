@@ -492,7 +492,6 @@ export default function App() {
               </div>
               <div className="pt-2 border-t border-cyber-border/45 space-y-1 text-slate-500">
                 <p className="truncate">Email: <span className="text-slate-300">{user.email}</span></p>
-                <p>WhatsApp: <span className="text-slate-300">{user.whatsapp}</span></p>
                 <p>Registered: <span className="text-slate-300">{new Date(user.joinedAt).toLocaleDateString()}</span></p>
                 <p className="text-[9px] text-cyber-primary leading-none mt-1">
                   Active: {time.substring(11, 19)}

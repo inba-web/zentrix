@@ -1,410 +1,117 @@
-# 🛡️ ZENTRIX
+# 🛡️ ZENTRIX — OFFLINE-FIRST DESKTOP SECURITY PLATFORM
 
-### Local-First Security Operations Center (SOC) Platform
-
-> Enterprise-grade Cybersecurity Command Center built for Security Analysts, SOC Teams, Researchers, and Security Enthusiasts.
+> **Local-First, Cross-Platform Desktop Security Operations Center (SOC) for Linux, Windows, and macOS.**
 
 ---
 
-## 🚀 Vision
+## 🚀 Vision & Core Principles
 
-Traditional SOC platforms are often cloud-dependent, expensive, and difficult to deploy in isolated environments.
+ZENTRIX is a lightweight, cross-platform, local-first desktop security application engineered to continuously monitor the local endpoint, collect security telemetry, detect suspicious behavior, manage incidents, perform threat hunting, and provide automated containment without relying on cloud infrastructure, SaaS dependencies, or remote database servers.
 
-**ZENTRIX** delivers a powerful Local-First Security Operations Center that provides real-time telemetry, threat monitoring, malware analysis, phishing detection, honeypot monitoring, automated reporting, and alerting from a single unified platform.
----
+### 🛡️ Non-Negotiable Operating Rule
+**Internet availability NEVER determines whether ZENTRIX operates.**
 
-## ✨ Key Features
-
-### 📊 Executive Security Dashboard
-
-- Real-time CPU Monitoring
-- Memory Utilization Tracking
-- Disk Health Monitoring
-- Network Throughput Analytics
-- Process Visibility
-- System Uptime Metrics
-- Live WebSocket Telemetry
-
----
-
-### 🔍 Security Information & Event Management (SIEM)
-
-- Live System Log Ingestion
-- Authentication Log Monitoring
-- Security Event Correlation
-- Event Timeline Visualization
-- Alert Generation Engine
-- Real-Time Log Streaming
-
-#### Supported Sources
-
-- Linux Syslog
-- Authentication Logs
-- Custom Security Events
-- Simulated Events (Fallback Mode)
+All core features operate 100% offline:
+- Executive Dashboard & Real-Time System Metrics
+- Endpoint Detection & Response (EDR)
+- Security Information & Event Management (SIEM)
+- Intrusion Detection System (IDS)
+- File Integrity Monitoring (FIM)
+- Local Network Interface & Port Monitoring
+- Threat Hunting & Rules Engine
+- Incident Response & Containment
+- Local Threat Intelligence Database & Hash Lookups
+- Local PDF/CSV/JSON Security Reports
+- Local Embedded SQLite Database
+- Local AI Security Analyst (when Ollama is installed)
 
 ---
 
-### 🖥️ Endpoint Detection & Response (EDR)
+## 🔌 Optional Online Integrations
 
-Monitor endpoint activities in real-time.
+Online integrations are **strictly optional** and must be explicitly enabled by the user when Internet connectivity is available:
 
-#### Capabilities
-
-- Running Process Monitoring
-- Suspicious Process Detection
-- Network Connection Tracking
-- File Activity Monitoring
-- Threat Indicator Detection
-
-#### Threat Indicators
-
-- Netcat
-- Mimikatz
-- XMRig
-- Unauthorized Processes
+1. **VirusTotal**: Optional URL analysis, file submission (with explicit user consent), and hash reputation lookup with local SQLite caching.
+2. **Resend**: Optional external email report delivery for transmitting locally generated PDF security reports to registered email addresses.
 
 ---
 
-### 🌐 Intrusion Detection System (IDS)
+## ✨ Key Capabilities
 
-Gain visibility into network activity.
+### 📊 Local EDR & System Monitoring
+- Process tree hierarchy and parent-child relationship tracking
+- File integrity monitoring (inotify / FSEvents / ReadDirectoryChangesW)
+- Local network connection & listening port monitoring
+- Process-to-network-connection mapping
 
-#### Features
+### ⚡ Local Threat Intelligence & Detection
+- Local IOC database, blocklists, and detection rules (YARA & Sigma)
+- MITRE ATT&CK technique mapping and automated risk scoring
+- Local hash cache for immediate offline lookup before optional VirusTotal queries
 
-- Protocol Statistics
-- Bandwidth Analytics
-- Source/Destination Tracking
-- Packet Monitoring
-- Suricata Integration Support
-
----
-
-### 🍯 Honeypot Monitoring
-
-Capture and analyze unauthorized activities.
-
-#### Features
-
-- Port Scan Detection
-- Unauthorized Connection Logging
-- Attack Visualization
-- Lightweight Built-in Honeypot
-- Cowrie Integration Support
-- OpenCanary Integration Support
-
----
-
-### 🦠 Malware Analysis Engine
-
-Upload and analyze suspicious files.
-
-#### Analysis Capabilities
-
-- MD5 Hash Generation
-- SHA1 Hash Generation
-- SHA256 Hash Generation
-- Entropy Analysis
-- Metadata Extraction
-- String Extraction
-- VirusTotal Lookups
-- YARA Rule Matching
-- Sigma Rule Matching
-
-#### File Limits
-
-```text
-Maximum Upload Size: 500 MB
-```
-
----
-
-### 🎣 Phishing Detection Engine
-
-Analyze suspicious emails and headers.
-
-#### Features
-
-- EML Parsing
-- Email Header Analysis
-- SPF Validation
-- DKIM Validation
-- DMARC Validation
-- URL Reputation Analysis
-- Credential Harvesting Detection
-- Confidence Scoring
-
----
-
-### 📄 Automated Security Reporting
-
-Generate professional reports automatically.
-
-#### Supported Formats
-
-- PDF
-- CSV
-- JSON
-
-#### Report Types
-
-- Executive Reports
-- Security Reports
-- Audit Reports
-
----
-
-### 📱 Alert Delivery System
-
-Receive alerts directly through:
-
-- WhatsApp
-- Email
-- Scheduled Reports
-- Incident Notifications
-
-#### Additional Features
-
-- Delivery Logging
-- Retry Mechanism
-- Alert History
-- Delivery Tracking
+### 📄 Local Security Reporting & Notifications
+- Offline report generator compiling PDF, CSV, and JSON formats
+- In-App Alerts, Audio Alarms, and Native Desktop OS Notifications
+- Optional Resend email dispatch when online
 
 ---
 
 ## 🏗️ Architecture
 
 ```text
-┌─────────────────────────────────────────┐
-│                ZENTRIX                  │
-├─────────────────────────────────────────┤
-│ React + TypeScript Frontend             │
-├─────────────────────────────────────────┤
-│ Express.js API Layer                    │
-├─────────────────────────────────────────┤
-│ WebSocket Event Streaming               │
-├─────────────────────────────────────────┤
-│ SIEM │ EDR │ IDS │ Honeypot │ Reports   │
-├─────────────────────────────────────────┤
-│ MongoDB / JSON Fallback Storage         │
-├─────────────────────────────────────────┤
-│ Local Operating System Telemetry        │
-└─────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────┐
+│                     ZENTRIX DESKTOP                        │
+│             React + TypeScript + Desktop Shell             │
+└───────────────────────────┬────────────────────────────────┘
+                            │ (Secure IPC)
+┌───────────────────────────▼────────────────────────────────┐
+│                 ZENTRIX SECURITY CORE                      │
+│  EDR │ SIEM │ IDS │ FIM │ Threat Hunting │ Local Reports   │
+└───────────────────────────┬────────────────────────────────┘
+                            │ (OS Abstraction)
+             ┌──────────────┼──────────────┐
+             │              │              │
+           Linux         Windows         macOS
+             │              │              │
+             └──────────────┼──────────────┘
+                            │
+                      SQLite Engine
+                            │
+               Optional Online Integrations
+               ┌────────────┴────────────┐
+               │                         │
+           VirusTotal                  Resend
 ```
 
 ---
 
-## 🧠 Local-First Architecture
+## 📁 Data Storage Path
 
-### Primary Database
+All database records, logs, audit trails, and configuration vault data are stored locally in the native OS application directory:
 
-```bash
-mongodb://localhost:27017/zentrix
-```
-
-### Automatic Fallback Database
-
-```text
-backend/data/
-```
-
-If MongoDB is unavailable, ZENTRIX automatically switches to JSON-based storage.
-
----
-
-## 👤 Profile-Based Authentication
-
-Unlike traditional SOC platforms, ZENTRIX uses a streamlined single-user registration model.
-
-### Registration Fields
-
-- Full Name
-- Email Address
-- WhatsApp Number
-- Profile Photo
-
-### Benefits
-
-✅ No Password Required
-
-✅ No OAuth Dependency
-
-✅ Instant Future Access
-
-✅ Simplified User Experience
-
----
-
-## 📁 Storage Structure
-
-```text
-storage/
-│
-├── uploads/
-├── reports/
-├── malware/
-├── phishing/
-├── logs/
-└── backups/
-```
+- **Linux**: `~/.local/share/zentrix/database/zentrix.db`
+- **Windows**: `%LOCALAPPDATA%\Zentrix\database\zentrix.db`
+- **macOS**: `~/Library/Application Support/Zentrix/database/zentrix.db`
 
 ---
 
 ## 🛠️ Technology Stack
 
-### Frontend
-
-- React
-- TypeScript
-- Redux Toolkit
-- React Router
-- Socket.IO Client
-
-### Backend
-
-- Node.js
-- Express.js
-- Socket.IO
-- System Information
-
-### Database
-
-- MongoDB
-- JSON File Storage
-
-### Security Technologies
-
-- YARA
-- Sigma Rules
-- VirusTotal API
-- SPF Validation
-- DKIM Validation
-- DMARC Validation
-
-### Reporting
-
-- PDFKit
-- Node Cron
-
-### Notifications
-
-- Twilio WhatsApp API
-- WhatsApp Business Cloud API
-- SMTP Email
+- **Desktop Shell**: Electron with `contextIsolation: true` & safe IPC bridge (`preload.js`).
+- **Frontend**: React 18, TypeScript, Redux Toolkit, TailwindCSS.
+- **Backend Core**: Node.js Express server with SQLite embedded engine.
+- **Database**: SQLite with Write-Ahead Logging (WAL mode).
+- **Credentials**: OS-backed secure credential vault for optional API keys.
 
 ---
 
-## ⚡ Real-Time Telemetry
+## 🔐 Privacy & Security Model
 
-Telemetry updates every:
-
-```text
-2 Seconds
-```
-
-### Monitored Metrics
-
-- CPU Usage
-- RAM Usage
-- Disk Utilization
-- Network Throughput
-- Active Connections
-- Process Count
-- System Uptime
-
----
-
-## 🔐 Security Principles
-
-- Local-First Architecture
-- Privacy-Focused Design
-- Offline Capability
-- Least Privilege Approach
-- Secure Report Generation
-- Comprehensive Audit Logging
-
----
-
-## 📈 Development Roadmap
-
-### Phase 1 — Foundation
-
-- [x] Architecture Planning
-- [x] ZENTRIX Rebranding
-- [x] Authentication Redesign
-
-### Phase 2 — Core Monitoring
-
-- [ ] Real-Time Telemetry
-- [ ] SIEM Integration
-- [ ] EDR Monitoring
-- [ ] IDS Monitoring
-
-### Phase 3 — Threat Analysis
-
-- [ ] Malware Analysis Engine
-- [ ] Phishing Detection Engine
-- [ ] Honeypot Monitoring
-
-### Phase 4 — Automation
-
-- [ ] Automated Reporting
-- [ ] WhatsApp Integration
-- [ ] Email Alerting
-
-### Phase 5 — Production Release
-
-- [ ] Stable Release
-- [ ] Documentation
-- [ ] Installer Packaging
-
----
-
-## 🎯 Target Audience
-
-- SOC Analysts
-- Security Engineers
-- Blue Team Operators
-- Incident Responders
-- Security Researchers
-- Cybersecurity Students
-- Enterprise Security Teams
-
----
-
-## 📸 Screenshots
-
-```text
-Coming Soon...
-```
-
----
-
-## 🤝 Contributing
-
-Contributions, feature suggestions, and security improvements are welcome.
-
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Open a Pull Request
-
----
-
-## 📜 License
-
-```text
-MIT License
-```
-
----
-
-## 🛡️ Built With Security In Mind
-
-ZENTRIX is designed to bring enterprise-grade visibility, monitoring, detection, and response capabilities directly to local environments while maintaining simplicity, performance, and operational control.
+- **Zero Cloud Dependency**: No telemetry, logs, or file contents leave your device automatically.
+- **User Consent**: External VirusTotal file uploads require explicit UI confirmation.
+- **Secure Credentials**: API keys are encrypted in OS-backed credential storage and never stored in plaintext or Git repositories.
 
 ---
 
 # ⚡ Observe. Detect. Analyze. Defend.
-
 # 🔥 ZENTRIX — Your Local Cyber Defense Command Center.

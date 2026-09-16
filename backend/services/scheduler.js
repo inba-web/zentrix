@@ -5,7 +5,6 @@ const path = require('path');
 const db = require('../db');
 const reportsService = require('./reportsService');
 
-// Local simulator logs paths
 const REPORTS_DIR = process.env.ZENTRIX_USER_DATA 
   ? path.join(process.env.ZENTRIX_USER_DATA, 'reports') 
   : path.join(__dirname, '..', 'reports');
@@ -15,13 +14,12 @@ if (!fs.existsSync(LOGS_DIR)) {
   fs.mkdirSync(LOGS_DIR, { recursive: true });
 }
 const emailSimPath = path.join(LOGS_DIR, 'email_simulator.log');
-const whatsappSimPath = path.join(LOGS_DIR, 'whatsapp_simulator.log');
 
 let activeCronJob = null;
 
 // Dynamic SMTP / Mail Transport
 async function sendEmailReport(recipient, pdfPath, pdfName) {
-  const smtpUrl = process.env.SMTP_URL; // e.g. smtps://user:pass@smtp.gmail.com
+  const smtpUrl = process.env.SMTP_URL;
   if (smtpUrl) {
     try {
       const transporter = nodemailer.createTransport(smtpUrl);
@@ -37,37 +35,8 @@ async function sendEmailReport(recipient, pdfPath, pdfName) {
       return { success: false, error: e.message };
     }
   } else {
-    // Falls back to high-fidelity Simulator Logging (offline local-first)
     const logMsg = `[${new Date().toISOString()}] EMAIL SIMULATOR: Dispatched report "${pdfName}" to: ${recipient}. File attached locally at: ${pdfPath}\n`;
     fs.appendFileSync(emailSimPath, logMsg);
-    return { success: true, simulated: true };
-  }
-}
-
-// Dynamic Twilio/WhatsApp Transport
-async function sendWhatsAppReport(number, pdfPath, pdfName, score) {
-  const accountSid = process.env.TWILIO_ACCOUNT_SID;
-  const authToken = process.env.TWILIO_AUTH_TOKEN;
-  const twilioNumber = process.env.TWILIO_WHATSAPP_NUMBER || 'whatsapp:+14155238886'; // Twilio sandbox default
-
-  if (accountSid && authToken) {
-    try {
-      const client = require('twilio')(accountSid, authToken);
-      const downloadLink = `http://localhost:5001/reports/${pdfName}`;
-      
-      await client.messages.create({
-        from: twilioNumber,
-        to: `whatsapp:${number}`,
-        body: `*ZENTRIX SECURITY AUDIT*\nLatest Executive Summary Compiled.\n*Safety Posture Score:* ${score}%\nDownload secure PDF: ${downloadLink}`
-      });
-      return { success: true };
-    } catch (e) {
-      return { success: false, error: e.message };
-    }
-  } else {
-    // Offline local-first simulator logs
-    const logMsg = `[${new Date().toISOString()}] WHATSAPP SIMULATOR: Dispatched secure notification for report "${pdfName}" to target: ${number}. Posture safety: ${score}%. Local PDF Path: ${pdfPath}\n`;
-    fs.appendFileSync(whatsappSimPath, logMsg);
     return { success: true, simulated: true };
   }
 }
@@ -76,45 +45,34 @@ async function sendWhatsAppReport(number, pdfPath, pdfName, score) {
 async function runScheduledReportGeneration() {
   console.log('[SCHEDULER] Initiating automated report compilation cycle...');
   
-  // 1. Fetch registered profile settings
   let recipientEmail = 'admin@zentrix.local';
-  let whatsappNumber = '+1234567890';
   let emailEnabled = true;
-  let whatsappEnabled = true;
 
   try {
     const list = await db.users.find({});
     if (list && list.length > 0) {
       const user = list[0];
       recipientEmail = user.email || recipientEmail;
-      whatsappNumber = user.whatsapp || whatsappNumber;
-      // Default configurations or customized properties inside user settings
       emailEnabled = user.emailReportsEnabled !== false;
-      whatsappEnabled = user.whatsAppReportsEnabled !== false;
     }
   } catch (e) {
     // Fallback to defaults
   }
 
   try {
-    // 2. Generate Reports
     const result = await reportsService.compileSecurityReports(recipientEmail, 'Executive Summary');
     const { report, pdfPath, pdfName } = result;
 
     const emailStatus = emailEnabled ? 'Pending' : 'Disabled';
-    const whatsappStatus = whatsappEnabled ? 'Pending' : 'Disabled';
 
-    // 3. Register delivery log in DB
     const delivery = await db.deliveryLogs.create({
       reportId: report._id,
       emailStatus,
-      whatsAppStatus,
       deliveryTimestamp: new Date(),
       failureReason: '',
       retryCount: 0
     });
 
-    // 4. Send Email
     if (emailEnabled) {
       const mailRes = await sendEmailReport(recipientEmail, pdfPath, pdfName);
       if (mailRes.success) {
@@ -127,33 +85,19 @@ async function runScheduledReportGeneration() {
       }
     }
 
-    // 5. Send WhatsApp
-    if (whatsappEnabled) {
-      const waRes = await sendWhatsAppReport(whatsappNumber, pdfPath, pdfName, report.securityScore);
-      if (waRes.success) {
-        await db.deliveryLogs.findByIdAndUpdate(delivery._id, { whatsAppStatus: 'Delivered' });
-      } else {
-        await db.deliveryLogs.findByIdAndUpdate(delivery._id, { 
-          whatsAppStatus: 'Failed', 
-          failureReason: `WhatsApp Error: ${waRes.error}` 
-        });
-      }
-    }
-
-    // Update main report status to dispatched
-    await db.reports.findByIdAndUpdate(report._id, { deliveryStatus: 'Dispatched' });
-    console.log('[SCHEDULER] Automated reports successfully generated and queued for delivery.');
+    await db.reports.findByIdAndUpdate(report._id, { deliveryStatus: 'Generated Locally' });
+    console.log('[SCHEDULER] Automated reports successfully generated.');
 
   } catch (err) {
     console.error('[SCHEDULER] Scheduled report compilation failed:', err.message);
   }
 }
 
-// Active Delivery Retry Poller Loop (Runs every minute to process failures after 5, 15, and 30 minutes)
+// Active Delivery Retry Poller Loop
 async function processRetries() {
   try {
     const failedLogs = await db.deliveryLogs.find({
-      $or: [{ emailStatus: 'Failed' }, { whatsAppStatus: 'Failed' }],
+      emailStatus: 'Failed',
       retryCount: { $lt: 3 }
     });
 
@@ -161,14 +105,12 @@ async function processRetries() {
       const diffMs = new Date() - new Date(log.deliveryTimestamp);
       const diffMins = Math.floor(diffMs / (1000 * 60));
 
-      // Retry intervals: 5, 15, 30 minutes
       const expectedIntervals = [5, 15, 30];
       const nextInterval = expectedIntervals[log.retryCount];
 
       if (diffMins >= nextInterval) {
-        console.log(`[RETRY] Triggering automated delivery retry #${log.retryCount + 1} for delivery log ${log._id} (age: ${diffMins}m, expected: ${nextInterval}m)`);
+        console.log(`[RETRY] Triggering automated delivery retry #${log.retryCount + 1} for delivery log ${log._id}`);
         
-        // Fetch report meta
         const report = await db.reports.findOne({ _id: log.reportId });
         if (!report) continue;
 
@@ -176,28 +118,12 @@ async function processRetries() {
         const nextRetryCount = log.retryCount + 1;
         const updates = { retryCount: nextRetryCount };
 
-        // Retry Email
         if (log.emailStatus === 'Failed') {
           const mailRes = await sendEmailReport(report.recipient, pdfPath, report.fileName);
           if (mailRes.success) {
             updates.emailStatus = 'Delivered';
           } else {
             updates.failureReason = `Retry Fail: ${mailRes.error}`;
-          }
-        }
-
-        // Retry WhatsApp
-        if (log.whatsAppStatus === 'Failed') {
-          // Retrieve whatsapp number from user
-          let whatsappNumber = '+1234567890';
-          const uList = await db.users.find({});
-          if (uList && uList.length > 0) whatsappNumber = uList[0].whatsapp || whatsappNumber;
-
-          const waRes = await sendWhatsAppReport(whatsappNumber, pdfPath, report.fileName, report.securityScore);
-          if (waRes.success) {
-            updates.whatsAppStatus = 'Delivered';
-          } else {
-            updates.failureReason = `Retry Fail: ${waRes.error}`;
           }
         }
 
@@ -209,50 +135,11 @@ async function processRetries() {
   }
 }
 
-// Immediate WhatsApp alert trigger for critical events
-async function triggerImmediateWhatsAppAlert(alertTitle, alertDetails) {
-  let whatsappNumber = '+1234567890';
-  let alertsEnabled = true;
-
-  try {
-    const list = await db.users.find({});
-    if (list && list.length > 0) {
-      whatsappNumber = list[0].whatsapp || whatsappNumber;
-      alertsEnabled = list[0].whatsAppReportsEnabled !== false;
-    }
-  } catch (e) {
-    // Ignore
-  }
-
-  if (alertsEnabled) {
-    const accountSid = process.env.TWILIO_ACCOUNT_SID;
-    const authToken = process.env.TWILIO_AUTH_TOKEN;
-    const twilioNumber = process.env.TWILIO_WHATSAPP_NUMBER || 'whatsapp:+14155238886';
-
-    if (accountSid && authToken) {
-      try {
-        const client = require('twilio')(accountSid, authToken);
-        await client.messages.create({
-          from: twilioNumber,
-          to: `whatsapp:${whatsappNumber}`,
-          body: `*ZENTRIX IMMEDIATE SECURITY ALERT*\n*Event:* ${alertTitle}\n*Details:* ${alertDetails}`
-        });
-      } catch (e) {
-        console.error('[MAIL/ALERT] Failed to dispatch Twilio WhatsApp alert:', e.message);
-      }
-    } else {
-      const logMsg = `[${new Date().toISOString()}] WHATSAPP IMMEDIATE ALERT SIMULATOR: Target: ${whatsappNumber}. Event: ${alertTitle}. Details: ${alertDetails}\n`;
-      fs.appendFileSync(whatsappSimPath, logMsg);
-    }
-  }
-}
-
-// Main Scheduler configuration
 function init(io) {
   // Prune logs job: daily at 02:00 AM
   cron.schedule('0 2 * * *', async () => {
     try {
-      const cutoff = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000); // 3 days ago
+      const cutoff = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000);
       const prunedLogs = await db.logs.deleteMany({ timestamp: { $lt: cutoff.toISOString() } });
       const prunedAudits = await db.auditLogs.deleteMany({ timestamp: { $lt: cutoff.toISOString() } });
       console.log(`[Scheduler] Auto-pruned ${prunedLogs.deletedCount || 0} logs and ${prunedAudits.deletedCount || 0} audit logs older than 3 days.`);
@@ -261,7 +148,6 @@ function init(io) {
     }
   });
 
-  // Read user-defined scheduler interval on load
   let currentFreq = 12;
 
   const scheduleJob = (freq) => {
@@ -279,7 +165,7 @@ function init(io) {
     else if (freq === 6 || freq === '6') cronStr = '0 */6 * * *';
     else if (freq === 12 || freq === '12') cronStr = '0 */12 * * *';
     else if (freq === 24 || freq === '24') cronStr = '0 8 * * *';
-    else cronStr = `0 */${freq} * * *`; // Fallback
+    else cronStr = `0 */${freq} * * *`;
 
     activeCronJob = cron.schedule(cronStr, () => {
       runScheduledReportGeneration();
@@ -289,7 +175,6 @@ function init(io) {
 
   scheduleJob(currentFreq);
 
-  // Poll user settings profile to handle dynamic frequency changes
   setInterval(async () => {
     try {
       const uList = await db.users.find({});
@@ -307,12 +192,10 @@ function init(io) {
     }
   }, 30000);
 
-  // Spin up delivery retry poller loop every 1 minute
   setInterval(processRetries, 60000);
 }
 
 module.exports = {
   init,
-  runScheduledReportGeneration,
-  triggerImmediateWhatsAppAlert
+  runScheduledReportGeneration
 };

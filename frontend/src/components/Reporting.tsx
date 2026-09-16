@@ -127,11 +127,10 @@ export default function Reporting({ token }: { token: string }) {
   const getDeliveryStatus = (reportId: string) => {
     const log = deliveryLogs.find(l => l.reportId === reportId);
     if (!log) {
-      return { email: 'Pending', whatsapp: 'Pending' };
+      return { email: 'Generated Locally' };
     }
     return {
-      email: log.emailStatus || 'Pending',
-      whatsapp: log.whatsAppStatus || 'Pending'
+      email: log.emailStatus || 'Generated Locally'
     };
   };
 
@@ -151,9 +150,8 @@ export default function Reporting({ token }: { token: string }) {
     // Status filter
     if (statusFilter !== 'ALL') {
       const matchEmail = delivery.email.toUpperCase() === statusFilter.toUpperCase();
-      const matchWa = delivery.whatsapp.toUpperCase() === statusFilter.toUpperCase();
       const matchReport = report.deliveryStatus?.toUpperCase() === statusFilter.toUpperCase();
-      if (!matchEmail && !matchWa && !matchReport) return false;
+      if (!matchEmail && !matchReport) return false;
     }
 
     // Search query filter
@@ -262,7 +260,7 @@ export default function Reporting({ token }: { token: string }) {
 
           <div className="border-t border-slate-800/80 pt-3 text-[10px] font-mono text-slate-500 leading-normal">
             <p className="font-bold text-slate-400">Important Note:</p>
-            <p className="mt-1">Manual generation initiates live logs telemetry audits. Real SMTP and WhatsApp dispatches default to configured settings triggers.</p>
+            <p className="mt-1">Manual generation compiles security reports locally in PDF, CSV, and JSON formats.</p>
           </div>
         </div>
 
@@ -369,25 +367,15 @@ export default function Reporting({ token }: { token: string }) {
                   </div>
 
                   {/* Delivery status logs */}
-                  <div className="p-2.5 bg-slate-950/40 border border-slate-900 rounded-lg space-y-2 text-[10px] font-mono select-none">
+                  <div className="p-2.5 bg-slate-950/40 border border-slate-900 rounded-lg text-[10px] font-mono select-none">
                     <div className="flex justify-between items-center">
-                      <span className="text-slate-500">EMAIL GATEWAY</span>
+                      <span className="text-slate-500">DELIVERY STATUS</span>
                       <span className={`font-bold uppercase tracking-wider ${
                         delivery.email === 'Delivered' 
                           ? 'text-emerald-400' 
-                          : (delivery.email === 'Failed' ? 'text-red-400 animate-pulse' : 'text-amber-500')
+                          : (delivery.email === 'Failed' ? 'text-red-400 animate-pulse' : 'text-blue-400')
                       }`}>
-                        {delivery.email === 'Delivered' ? '✓ Sent' : (delivery.email === 'Failed' ? '✗ Failed' : 'Pending')}
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-slate-500">WHATSAPP GATEWAY</span>
-                      <span className={`font-bold uppercase tracking-wider ${
-                        delivery.whatsapp === 'Delivered' 
-                          ? 'text-emerald-400' 
-                          : (delivery.whatsapp === 'Failed' ? 'text-red-400 animate-pulse' : 'text-amber-500')
-                      }`}>
-                        {delivery.whatsapp === 'Delivered' ? '✓ Sent' : (delivery.whatsapp === 'Failed' ? '✗ Failed' : 'Pending')}
+                        {delivery.email === 'Delivered' ? '✓ Sent' : (delivery.email === 'Failed' ? '✗ Failed' : 'Local Storage')}
                       </span>
                     </div>
                   </div>

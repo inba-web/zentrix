@@ -81,9 +81,9 @@ router.post('/register', async (req, res) => {
     if (existing) {
       return res.status(409).json({ error: 'Account already exists. Please log in.' });
     }
-    const { name, email, password, whatsapp, avatar } = req.body;
-    if (!name || !email || !password || !whatsapp) {
-      return res.status(400).json({ error: 'Full Name, Email, Password, and WhatsApp are required.' });
+    const { name, email, password, avatar } = req.body;
+    if (!name || !email || !password) {
+      return res.status(400).json({ error: 'Full Name, Email, and Password are required.' });
     }
 
     const passwordHash = await bcrypt.hash(password, 12);
@@ -93,7 +93,6 @@ router.post('/register', async (req, res) => {
       name,
       email,
       passwordHash,
-      whatsapp,
       avatar: avatar || defaultAvatar,
       role: 'Administrator',
       joinedAt: new Date().toISOString(),
@@ -119,12 +118,9 @@ router.post('/register', async (req, res) => {
 // Update Profile
 router.post('/update', authenticateToken, async (req, res) => {
   const fields = [
-    'name', 'email', 'whatsapp', 'avatar',
-    'emailReportsEnabled', 'whatsAppReportsEnabled', 'reportFrequency',
-    'smtpHost', 'smtpPort', 'smtpUsername', 'smtpPassword', 'smtpUseTls',
-    'twilioSid', 'twilioToken', 'twilioFrom', 'twilioTo',
-    'alarmEnabled', 'popupEnabled', 'popupDuration', 'showSimulatedThreats', 'desktopNotifications',
-    'mongodbUri'
+    'name', 'email', 'avatar',
+    'emailReportsEnabled', 'reportFrequency',
+    'alarmEnabled', 'popupEnabled', 'popupDuration', 'showSimulatedThreats', 'desktopNotifications'
   ];
   const updates = {};
   fields.forEach(field => {

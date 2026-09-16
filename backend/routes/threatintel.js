@@ -2,44 +2,74 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 const { authenticateToken } = require('./auth');
-const threatIntelService = require('../services/threatIntelService');
+const vtAdapter = require('../services/vtAdapter');
+const integrationManager = require('../services/integrationManager');
 
-// GET /api/intel/status
-router.get('/status', authenticateToken, (req, res) => {
-  res.json({
-    virustotal: !!process.env.VIRUSTOTAL_API_KEY,
-    abuseipdb: !!process.env.ABUSEIPDB_API_KEY,
-    otx: !!process.env.OTX_API_KEY
-  });
+// GET /api/intel/status - Check external integrations status
+router.get('/status', authenticateToken, async (req, res) => {
+  try {
+    const overview = await integrationManager.getIntegrationOverview();
+    res.json(overview);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-// Perform real-time external intelligence lookup (VT, AbuseIPDB, AlienVault OTX, URLHaus)
+// GET /api/intel/virustotal/status
+router.get('/virustotal/status', authenticateToken, async (req, res) => {
+  try {
+    const vtStatus = await vtAdapter.checkStatus();
+    res.json(vtStatus);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST /api/intel/virustotal/config
+router.post('/virustotal/config', authenticateToken, async (req, res) => {
+  const { apiKey, enabled } = req.body;
+  try {
+    const overview = await integrationManager.configureIntegration('virustotal', { apiKey, enabled });
+    res.json(overview);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Perform threat intelligence search
 router.post('/search', authenticateToken, async (req, res) => {
-  const { type, value } = req.body; // type: IP, Hash, Domain, URL
+  const { type, value } = req.body; // type: Hash, URL, IP, Domain
 
   if (!type || !value) {
     return res.status(400).json({ error: 'Lookup Type and Value are required.' });
   }
 
   try {
-    // Invoke Correlated Intel Engine
-    const results = await threatIntelService.lookupReputation(type, value);
+    let vtResult = null;
+    if (type.toLowerCase() === 'hash' || type.toLowerCase() === 'sha256' || type.toLowerCase() === 'md5') {
+      vtResult = await vtAdapter.lookupHash(value);
+    } else if (type.toLowerCase() === 'url') {
+      vtResult = await vtAdapter.lookupUrl(value);
+    }
 
-    // Write to audit log
+    // Check local database for IOCs
+    const localMatch = await db.iocs.findOne({ value });
+
+    // Record audit log
     await db.auditLogs.create({
       timestamp: new Date(),
       user: req.user.name || 'system',
-      action: 'Threat Intel Query',
-      details: `Queried ${type}: "${value}". Risk Score resolved to ${results.enrichment.virusTotal.reputationScore}%.`,
+      action: 'THREAT_INTEL_QUERY',
+      details: `Queried ${type}: "${value}". Local match: ${Boolean(localMatch)}`,
       ip: req.ip || '127.0.0.1'
     });
 
     res.json({
       value,
       type,
-      localMatch: results.cacheHit,
-      localNotes: results.enrichment.advisory,
-      enrichment: results.enrichment
+      localMatch: Boolean(localMatch),
+      localDetails: localMatch || null,
+      virusTotal: vtResult
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -75,7 +105,6 @@ router.post('/iocs', authenticateToken, async (req, res) => {
       createdAt: new Date()
     });
 
-    // Write to audit log
     await db.auditLogs.create({
       timestamp: new Date(),
       user: req.user.name || 'system',
@@ -96,7 +125,6 @@ router.delete('/iocs/:id', authenticateToken, async (req, res) => {
     const target = await db.iocs.deleteOne({ _id: req.params.id });
     if (!target) return res.status(404).json({ error: 'IOC not found.' });
 
-    // Write to audit log
     await db.auditLogs.create({
       timestamp: new Date(),
       user: req.user.name || 'system',

@@ -117,7 +117,7 @@ export default function Auth({ onRegisterSuccess }: AuthProps) {
     try {
       if (isRegisterMode) {
         // Validate inputs
-        if (!name || !email || !password || !phone) {
+        if (!name || !email || !password) {
           setError('Please complete all required fields.');
           setLoading(false);
           return;
@@ -135,7 +135,6 @@ export default function Auth({ onRegisterSuccess }: AuthProps) {
             name,
             email,
             password,
-            whatsapp: `${countryCode}${phone}`,
             avatar
           })
         });
@@ -427,34 +426,7 @@ export default function Auth({ onRegisterSuccess }: AuthProps) {
                     )}
                   </div>
 
-                  {/* WhatsApp Number with country code */}
-                  <div>
-                    <label className="block text-[10px] uppercase font-mono text-slate-400 mb-1">WhatsApp Number</label>
-                    <div className="flex gap-2">
-                      <div className="relative">
-                        <select
-                          value={countryCode}
-                          onChange={e => setCountryCode(e.target.value)}
-                          className="bg-[#111827] border border-white/10 rounded-lg px-2 py-2 text-xs text-slate-200 focus:outline-none focus:border-cyber-accent transition-colors font-mono"
-                        >
-                          {COUNTRIES.map(c => (
-                            <option key={c.code} value={c.code}>{c.code} ({c.name})</option>
-                          ))}
-                        </select>
-                      </div>
-                      <div className="relative flex-1">
-                        <Phone className="absolute left-3 top-2.5 w-3.5 h-3.5 text-slate-500" />
-                        <input 
-                          type="text"
-                          required
-                          value={phone}
-                          onChange={e => setPhone(e.target.value.replace(/[^0-9]/g, ''))}
-                          placeholder="98765 43210"
-                          className="w-full bg-[#111827] border border-white/10 rounded-lg pl-9 pr-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-cyber-accent transition-colors font-mono"
-                        />
-                      </div>
-                    </div>
-                  </div>
+
 
                   {/* Avatar upload */}
                   <div>

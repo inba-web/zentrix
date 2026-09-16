@@ -58,14 +58,7 @@ router.post('/analyze', authenticateToken, async (req, res) => {
         destIp: '127.0.0.1',
         mitreTactic: 'Initial Access',
         mitreTechnique: 'T1566 - Phishing',
-        payload: results
-      });
-
-      // WhatsApp alert if critical phishing
-      if (results.status === 'Malicious') {
-        const scheduler = require('../services/scheduler');
-        scheduler.triggerImmediateWhatsAppAlert(`Phishing Spoof: ${results.subject}`, `Alert! ${results.sender} attempted credentials spoofing.`);
-      }
+        });
     }
 
     res.json(results);

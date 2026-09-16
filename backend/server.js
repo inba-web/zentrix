@@ -71,7 +71,7 @@ app.use('/api', settingsRouter);
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'Healthy',
-    database: db.isMongoose() ? 'Enterprise MongoDB' : 'Portable JSON Database Fallback',
+    database: 'SQLite Embedded Engine',
     timestamp: new Date()
   });
 });
@@ -162,7 +162,7 @@ async function seedDefaultPlaybooks() {
           { order: 1, action: 'Quarantine File', params: { delete: false } },
           { order: 2, action: 'Isolate Endpoint', params: { enforce: true } },
           { order: 3, action: 'Create Incident', params: { severity: 'CRITICAL' } },
-          { order: 4, action: 'WhatsApp Alert', params: { notify: 'Admin' } }
+          { order: 4, action: 'Local Notification', params: { notify: 'Admin' } }
         ],
         executions: []
       },

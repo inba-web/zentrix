@@ -2,7 +2,6 @@
 const express = require('express');
 const router = express.Router();
 const nodemailer = require('nodemailer');
-const twilio = require('twilio');
 const db = require('../db');
 const os = require('os');
 const { PLATFORM } = require('../utils/platform');
@@ -36,41 +35,6 @@ router.post('/settings/test-email', authenticateToken, async (req, res) => {
     res.json({ success: true, message: `SMTP verification successful. Test email dispatched to ${req.user.email}.` });
   } catch (err) {
     res.status(500).json({ error: `SMTP Verification failed: ${err.message}` });
-  }
-});
-
-// POST /api/settings/test-whatsapp
-router.post('/settings/test-whatsapp', authenticateToken, async (req, res) => {
-  const { sid, token, fromNumber, toNumber } = req.body;
-  if (!sid || !token || !fromNumber || !toNumber) {
-    return res.status(400).json({ error: 'Twilio SID, Auth Token, From Number, and To Number are required.' });
-  }
-  try {
-    const client = twilio(sid, token);
-    await client.messages.create({
-      from: fromNumber.startsWith('whatsapp:') ? fromNumber : `whatsapp:${fromNumber}`,
-      to: toNumber.startsWith('whatsapp:') ? toNumber : `whatsapp:${toNumber}`,
-      body: 'ZENTRIX SOC — WhatsApp configuration verification successful.'
-    });
-    res.json({ success: true, message: 'WhatsApp test message dispatched successfully.' });
-  } catch (err) {
-    res.status(500).json({ error: `WhatsApp verification failed: ${err.message}` });
-  }
-});
-
-// POST /api/settings/test-mongodb
-router.post('/settings/test-mongodb', authenticateToken, async (req, res) => {
-  const { uri } = req.body;
-  if (!uri) return res.status(400).json({ error: 'MongoDB connection URI is required.' });
-  
-  const mongoose = require('mongoose');
-  try {
-    // Create a temporary connection
-    const conn = await mongoose.createConnection(uri, { serverSelectionTimeoutMS: 3000 }).asPromise();
-    await conn.close();
-    res.json({ success: true, message: 'MongoDB connection successful.' });
-  } catch (err) {
-    res.status(500).json({ error: `MongoDB connection failed: ${err.message}` });
   }
 });
 
@@ -122,7 +86,7 @@ router.get('/settings/system-versions', authenticateToken, async (req, res) => {
     platform: PLATFORM,
     arch: os.arch(),
     osRelease: os.release(),
-    dbMode: db.isMongoose() ? 'MongoDB Connected' : 'JSON Fallback Mode',
+    dbMode: 'SQLite Embedded Engine',
     appVersion: '1.2.0'
   });
 });

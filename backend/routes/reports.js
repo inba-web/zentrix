@@ -43,28 +43,22 @@ router.post('/generate', authenticateToken, async (req, res) => {
     // Save delivery log for manual report
     const delivery = await db.deliveryLogs.create({
       reportId: results.report._id,
-      emailStatus: 'Delivered',
-      whatsAppStatus: 'Delivered',
+      emailStatus: 'Generated Locally',
       deliveryTimestamp: new Date(),
-      failureReason: 'Manual generation simulated successfully.',
+      failureReason: 'Local report compiled successfully.',
       retryCount: 0
     });
 
-    // Send immediate simulated email & WhatsApp
     const fsSimLogs = path.join(REPORTS_DIR, 'logs');
     if (!fs.existsSync(fsSimLogs)) fs.mkdirSync(fsSimLogs, { recursive: true });
     
     fs.appendFileSync(
       path.join(fsSimLogs, 'email_simulator.log'),
-      `[${new Date().toISOString()}] MANUAL EMAIL: Dispatched report "${results.pdfName}" to: ${targetEmail}\n`
-    );
-    fs.appendFileSync(
-      path.join(fsSimLogs, 'whatsapp_simulator.log'),
-      `[${new Date().toISOString()}] MANUAL WHATSAPP: Dispatched notification to: ${req.user.whatsapp || '+1234567890'}. Safety: ${results.report.securityScore}%\n`
+      `[${new Date().toISOString()}] MANUAL REPORT: Local report "${results.pdfName}" compiled for target: ${targetEmail}\n`
     );
 
     // Update delivery status
-    await db.reports.findByIdAndUpdate(results.report._id, { deliveryStatus: 'Dispatched' });
+    await db.reports.findByIdAndUpdate(results.report._id, { deliveryStatus: 'Generated Locally' });
 
     res.json({
       success: true,

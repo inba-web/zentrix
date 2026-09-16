@@ -79,8 +79,10 @@ function createWindow() {
     title: 'ZENTRIX – Security Operations Center',
     backgroundColor: '#090d16',
     webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false
+      nodeIntegration: false,
+      contextIsolation: true,
+      sandbox: false,
+      preload: path.join(__dirname, 'preload.js')
     }
   });
 
