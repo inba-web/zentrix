@@ -216,7 +216,7 @@ async function startServer() {
   packetCaptureService.init(io);
   simulator.init(io);
 
-  server.listen(PORT, () => {
+  server.listen(PORT, '0.0.0.0', () => {
     console.log(`[SYSTEM] Unified ZENTRIX SOC Backend services initialized on port ${PORT}`);
     console.log(`[SYSTEM] Socket.io WebSocket server active.`);
   });

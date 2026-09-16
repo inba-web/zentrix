@@ -5,6 +5,7 @@ const { exec } = require('child_process');
 const si = require('systeminformation');
 const { PLATFORM } = require('../utils/platform');
 const db = require('../db');
+const sysInfoCache = require('../utils/sysInfoCache');
 
 let ioInstance = null;
 let tailInterval = null;
@@ -97,7 +98,7 @@ function tailLogFile(filePath, io, sourceName = null) {
 // Generate actual system events as local logs when root permissions are absent
 async function generateLocalSystemLogs() {
   try {
-    const procs = await si.processes();
+    const procs = await sysInfoCache.getProcesses();
     const list = procs.list || [];
     if (list.length > 0) {
       // Pick a random active process to write a log

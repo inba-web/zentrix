@@ -1,6 +1,7 @@
 const si = require('systeminformation');
 const fs = require('fs');
 const path = require('path');
+const sysInfoCache = require('../utils/sysInfoCache');
 
 let ioInstance = null;
 let edrInterval = null;
@@ -73,8 +74,8 @@ async function broadcastEDRAlert(alert, io) {
 async function pollEDR(io) {
   try {
     const [procs, connections, cpuLoad, mem] = await Promise.all([
-      si.processes(),
-      si.networkConnections(),
+      sysInfoCache.getProcesses(),
+      sysInfoCache.getNetworkConnections(),
       si.currentLoad(),
       si.mem()
     ]);

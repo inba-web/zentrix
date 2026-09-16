@@ -4,9 +4,12 @@ const os = require('os');
 const { runCmd, PLATFORM } = require('../utils/platform');
 const alertBus = require('../utils/alertBus');
 const db = require('../db');
+const sysInfoCache = require('../utils/sysInfoCache');
 
 let ioInstance = null;
 let loops = [];
+let cachedOpenPorts = 0;
+let cachedActiveHosts = 0;
 
 async function collectAndEmit() {
   if (!ioInstance) return;
@@ -14,14 +17,14 @@ async function collectAndEmit() {
     const [cpu, mem, procs, netConns, fsSize, netStats] = await Promise.all([
       si.currentLoad(),
       si.mem(),
-      si.processes(),
-      si.networkConnections(),
+      sysInfoCache.getProcesses(),
+      sysInfoCache.getNetworkConnections(),
       si.fsSize(),
       si.networkStats()
     ]);
 
-    const activeConnsCount = netConns.filter(c => c.state === 'ESTABLISHED').length;
-    const topProcs = procs.list
+    const activeConnsCount = (netConns || []).filter(c => c.state === 'ESTABLISHED').length;
+    const topProcs = (procs.list || [])
       .sort((a, b) => b.cpu - a.cpu)
       .slice(0, 25)
       .map(p => ({
@@ -36,7 +39,7 @@ async function collectAndEmit() {
     const cpuUsedPercent = Math.round(cpu.currentLoad);
 
     // Dynamic actual disk usage
-    const rootFs = fsSize.find(f => f.mount === '/') || fsSize[0] || { size: 1, used: 0, use: 0 };
+    const rootFs = (fsSize || []).find(f => f.mount === '/') || fsSize[0] || { size: 1, used: 0, use: 0 };
     const diskUsedPercent = Math.round(rootFs.use || 0);
 
     // Dynamic actual network throughput
@@ -72,14 +75,6 @@ async function collectAndEmit() {
     const mediumCount = alertsBySeverity.MEDIUM;
     const healthScore = Math.max(0, 100 - (criticalCount * 15 + highCount * 5 + mediumCount * 1));
 
-    // Async commands resolution for active hosts and open ports count
-    const openPortsCount = await new Promise((resolve) => {
-      getOpenPortsCount(count => resolve(count));
-    });
-    const activeHostsCount = await new Promise((resolve) => {
-      getActiveHostsCount(count => resolve(count));
-    });
-
     const telemetryData = {
       ts: new Date().toISOString(),
       cpu: cpuUsedPercent,
@@ -87,9 +82,9 @@ async function collectAndEmit() {
       ramUsedGB: (mem.used / 1e9).toFixed(1),
       ramTotalGB: (mem.total / 1e9).toFixed(1),
       disk: diskUsedPercent,
-      activeProcesses: procs.list.length,
-      activeHosts: activeHostsCount,
-      openPorts: openPortsCount,
+      activeProcesses: (procs.list || []).length,
+      activeHosts: cachedActiveHosts,
+      openPorts: cachedOpenPorts,
       activeIncidents: activeIncidentsCount,
       alertsDistribution: alertsBySeverity,
       downloadSpeed: downloadMbps,
@@ -111,7 +106,7 @@ async function collectAndEmit() {
       diskUsage: diskUsedPercent.toString(),
       diskIO: { read: '1.2', write: '0.4' },
       network: { download: downloadMbps, upload: uploadMbps },
-      activeProcesses: procs.list.length,
+      activeProcesses: (procs.list || []).length,
       systemUptime: os.uptime(),
       openConnections: activeConnsCount,
       topProcesses: topProcs
@@ -139,7 +134,6 @@ function getOpenPortsCount(callback) {
     : 'ss -tuln | grep LISTEN';
   runCmd(openPortsCmd, openPortsCmd, (err, stdout) => {
     if (err || !stdout) return callback(0);
-    // Split and count rows (filter empty rows)
     const lines = stdout.split('\n').filter(l => l.trim().length > 0);
     callback(lines.length);
   });
@@ -149,7 +143,6 @@ function getActiveHostsCount(callback) {
   const arpCmd = PLATFORM === 'win32' ? 'arp -a' : 'arp -n';
   runCmd(arpCmd, arpCmd, (err, stdout) => {
     if (err || !stdout) return callback(0);
-    // Count distinct IPv4 addresses in ARP printout
     const matches = stdout.match(/\d+\.\d+\.\d+\.\d+/g);
     if (!matches) return callback(0);
     const uniqueIPs = new Set(matches);
@@ -164,8 +157,12 @@ function init(io) {
   loops.forEach(l => clearInterval(l));
   loops = [];
 
-  // Loop 1: telemetry:update every 2s
-  loops.push(setInterval(collectAndEmit, 2000));
+  // Initial fetch for ports and hosts
+  getOpenPortsCount(count => { cachedOpenPorts = count; });
+  getActiveHostsCount(count => { cachedActiveHosts = count; });
+
+  // Loop 1: telemetry:update every 3s
+  loops.push(setInterval(collectAndEmit, 3000));
 
   // Loop 2: alerts:distribution every 5s
   loops.push(setInterval(async () => {
@@ -187,6 +184,7 @@ function init(io) {
   // Loop 3: metrics:openports every 5s
   loops.push(setInterval(() => {
     getOpenPortsCount(count => {
+      cachedOpenPorts = count;
       ioInstance.emit('metrics:openports', count);
     });
   }, 5000));
@@ -194,6 +192,7 @@ function init(io) {
   // Loop 4: metrics:activehosts every 10s
   loops.push(setInterval(() => {
     getActiveHostsCount(count => {
+      cachedActiveHosts = count;
       ioInstance.emit('metrics:activehosts', count);
     });
   }, 10000));
@@ -205,9 +204,10 @@ function init(io) {
     ioInstance.emit('metrics:runningscans', count);
   }, 3000));
 
-  console.log('[TELEMETRY] Real-time host system information polling loop active (2s interval).');
+  console.log('[TELEMETRY] Real-time host system information polling loop active (3s interval).');
 }
 
 module.exports = {
   init
 };
+
